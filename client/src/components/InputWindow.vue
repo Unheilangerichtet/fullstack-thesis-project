@@ -8,34 +8,53 @@
             EXAMPLE GRAMMARS
           </button>
           <div class="dropdown-content" v-if="toggleDropdown">
-            <a href="">Exp_1</a>
-            <a href="">Exp_2</a>
-            <a href="">Exp_3</a>
-            <a href="">Exp_4</a>
-            <a href="">Exp_5</a>
-            <a href="">Exp_6</a>
+            <a @click="fillExp(1)">abc Grammar</a>
+            <a @click="fillExp(2)">Even-Length Palindrome Grammar</a>
+            <a @click="fillExp(3)">Balanced Parenthesis</a>
+            <a @click="fillExp(4)">Simple Arithmetic Expressions</a>
+            <a @click="fillExp(5)">Binary Numbers</a>
+            <a @click="fillExp(6)">start & end with a</a>
           </div>
         </div>
       </div>
       <div class="grid-item grammar-box-wrapper">
         <div class="grammar-box">
-          <div class="grammar-box-heading">GRAMMAR</div>
+          <!-- &#x3A3; => Sigma -->
+          <div class="grammar-box-heading">GRAMMAR & WORD</div>
           <textarea
+            v-model="startsymbolValue"
             type="text"
-            id="grammar"
-            name="grammar"
-            placeholder="Enter grammar..."
+            id="startsymbol"
+            name="startsymbol"
+            placeholder="Enter Startsymbol, for exp. S..."
           ></textarea>
-        </div>
-      </div>
-      <div class="grid-item word-box-wrapper">
-        <div class="word-box">
-          <div class="grammar-box-heading">WORD</div>
           <textarea
+            v-model="alphabetValue"
+            type="text"
+            id="alphabet"
+            name="alphabet"
+            placeholder="Enter Alphabet / Terminal Symbols..."
+          ></textarea>
+          <textarea
+            v-model="variablesValue"
+            type="text"
+            id="variables"
+            name="variables"
+            placeholder="Enter Variables / Nonterminal Symbols..."
+          ></textarea>
+          <textarea
+            v-model="productionsValue"
+            type="text"
+            id="productions"
+            name="productions"
+            placeholder="Enter Productions, for exp. S->A,A->B..."
+          ></textarea>
+          <textarea
+            v-model="wordValue"
             type="text"
             id="word"
             name="word"
-            placeholder="Enter word..."
+            placeholder="Enter word, for exp. 'abc'..."
           ></textarea>
         </div>
       </div>
@@ -50,9 +69,6 @@
       <div class="grid-item free-exercise-box">
         <button class="free-exercise-button">FREE EXERCISE</button>
       </div>
-      <div class="grid-item guided-exp-box">
-        <button class="guided-exp-button">GUIDED EXAMPLE</button>
-      </div>
       <ControlPanel class="control-panel-wrapper"></ControlPanel>
       <div class="grid-item extra-box-wrapper">
         <div class="extra-box"></div>
@@ -63,25 +79,86 @@
 
 <script>
 import ControlPanel from './ControlPanel.vue'
+import CalculationService from '../services/CalculationService'
 
 export default {
   name: 'InputWindow',
   data () {
     return {
-      toggleDropdown: false
+      toggleDropdown: false,
+      grammarValue: '',
+      startsymbolValue: '',
+      alphabetValue: '',
+      variablesValue: '',
+      productionsValue: '',
+      wordValue: ''
     }
   },
   components: { ControlPanel },
   methods: {
+
     chooseExpGrammar () {
-      if (this.toggleDropdown === false) {
-        this.toggleDropdown = true
-      } else {
-        this.toggleDropdown = false
-      }
+      this.toggleDropdown = !this.toggleDropdown
     },
+
     solutionFunction () {
-      console.log('solutionFunction called!')
+      CalculationService.isInputValid(this.variablesValue, this.alphabetValue, this.productionsValue, this.startsymbolValue, this.wordValue)
+      const result = CalculationService.isWordInGrammarFast(this.productionsValue, this.startsymbolValue, this.wordValue)
+      console.log(`Found: ${result.found}, Duration: ${result.duration} ms`)
+    },
+
+    fillExp (value) {
+      switch (value) {
+        case 1:
+          // abc Grammar
+          this.startsymbolValue = 'S'
+          this.alphabetValue = 'a,b,c'
+          this.variablesValue = 'S,A,B,C'
+          this.productionsValue = 'S->A,S->B,S->C,S->SA,S->SB,S->SC,A->a,B->b,C->c'
+          this.wordValue = 'abc'
+          break
+        case 2:
+          // Even-Length Palindrome Grammar
+          this.startsymbolValue = 'S'
+          this.alphabetValue = 'a,b'
+          this.variablesValue = 'S'
+          this.productionsValue = 'S->aSb,S->bSa,S->ba,S->ab'
+          this.wordValue = 'babab'
+          break
+        case 3:
+          // Balanced Parenthesis:
+          this.startsymbolValue = 'S'
+          this.alphabetValue = '(,)'
+          this.variablesValue = 'S'
+          this.productionsValue = 'S->(S), S->SS, S->()'
+          this.wordValue = '(()())'
+          break
+        case 4:
+          // Simple Arithmetic Expressions
+          this.startsymbolValue = 'E'
+          this.alphabetValue = 'a,+,*,(,)'
+          this.variablesValue = 'E'
+          this.productionsValue = 'E->E+E, E->E*E, E->(E), E->a'
+          this.wordValue = '(a+a)*a'
+          break
+        case 5:
+          // Binary Numbers
+          this.startsymbolValue = 'S'
+          this.alphabetValue = '0,1'
+          this.variablesValue = 'S'
+          this.productionsValue = 'S->0S,S->1S,S->0,S->1'
+          this.wordValue = ''
+          break
+        case 6:
+          // Strings starting and ending with the Symbol 'a'
+          this.startsymbolValue = 'S'
+          this.alphabetValue = 'a,b'
+          this.variablesValue = 'S,A,B'
+          this.productionsValue = 'S->aA,A->aA,A->aB,A->bA,B->b'
+          this.wordValue = 'ababa'
+          break
+      }
+      this.chooseExpGrammar()
     }
   }
 }
@@ -109,10 +186,15 @@ textarea {
   flex-direction: column;
 }
 
-#grammar {
+#alphabet,
+#variables,
+#startsymbol,
+#productions,
+#word {
   flex-grow: 1;
   color: black;
   resize: none;
+  margin: 3px;
 }
 #word {
   flex-grow: 1;
@@ -234,26 +316,18 @@ button:hover {
 }
 
 .grammar-box-wrapper {
-  grid-area: 2 / 1 / 5 / 7;
-}
-
-.word-box-wrapper {
-  grid-area: 5 / 1 / 7 / 7;
+  grid-area: 2 / 1 / 8 / 7;
 }
 
 .solution-box {
-  grid-area: 7 / 1 / 8 / 7;
-}
-
-.guided-exercise-box {
   grid-area: 8 / 1 / 9 / 7;
 }
 
-.free-exercise-box {
+.guided-exercise-box {
   grid-area: 9 / 1 / 10 / 7;
 }
 
-.guided-exp-box {
+.free-exercise-box {
   grid-area: 10 / 1 / -1 / 7;
 }
 
