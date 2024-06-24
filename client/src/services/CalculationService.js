@@ -1,7 +1,6 @@
 // import Api from '@/services/Api'
 
 export default {
-
   isInputValid (variables, alphabet, productions, startsymbol, word) {
     // check if variables are valid
     const variableValidity = this.areVariablesValid(variables)
@@ -64,7 +63,7 @@ export default {
     if (productions === '') {
       return [false, 'the productions are missing!']
     }
-    const rules = productions.split(',').map(rule => rule.split('->'))
+    const rules = productions.split(',').map((rule) => rule.split('->'))
     console.log(`rules: \n`, rules)
     for (let rule of rules) {
       console.log('rule: ', rule)
@@ -72,7 +71,10 @@ export default {
         return [false, `The rule "${rule}" is not valid!`]
       }
       if (rule[0].length > rule[1].length) {
-        return [false, `The rule ${rule} is not valid! productions from Typ 1 Grammars cannot have a left side which is longer then the right side!`]
+        return [
+          false,
+          `The rule ${rule} is not valid! productions from Typ 1 Grammars cannot have a left side which is longer then the right side!`
+        ]
       }
     }
     return [true, 'The productions are valid!']
@@ -82,7 +84,10 @@ export default {
     if (startsymbol === '') {
       return [false, 'the startsymbol is missing']
     } else if (startsymbol.length !== 1) {
-      return [false, `the startsymbol "${startsymbol}" is not valid! startsymbols must be of length 1`]
+      return [
+        false,
+        `the startsymbol "${startsymbol}" is not valid! startsymbols must be of length 1`
+      ]
     }
     return [true, 'the startsymbol is valid!']
   },
@@ -93,7 +98,10 @@ export default {
     }
     for (let char of word) {
       if (!alphabet.includes(char)) {
-        return [false, `the word "${word}" is not valid! the alphabet does not contain ${char}!`]
+        return [
+          false,
+          `the word "${word}" is not valid! the alphabet does not contain ${char}!`
+        ]
       }
     }
     return [true, `the word "${word}" is valid!`]
