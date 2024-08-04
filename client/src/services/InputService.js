@@ -2,8 +2,21 @@ import Api from '@/services/Api'
 
 // Export an object that has a register method to it
 export default {
-  sendInput () {
-    console.log('Input function in service was called!')
-    return Api().get('/input')
+  async sendInput (productionsValue, startsymbolValue, wordValue) {
+    console.log('Input function in service was called!') // Debugging
+    const data = {
+      startSymbol: String(startsymbolValue),
+      productions: String(productionsValue),
+      word: String(wordValue)
+    }
+
+    try {
+      const response = await Api().post('/input', data)
+      console.log('Result from server:', response.data)
+      return response.data
+    } catch (error) {
+      console.error('An error has occurred:', error)
+      throw error
+    }
   }
 }

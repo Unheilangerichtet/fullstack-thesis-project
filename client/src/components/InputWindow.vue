@@ -80,6 +80,7 @@
 <script>
 import ControlPanel from './ControlPanel.vue'
 import CalculationService from '../services/CalculationService'
+import InputService from '../services/InputService'
 
 export default {
   name: 'InputWindow',
@@ -101,10 +102,15 @@ export default {
       this.toggleDropdown = !this.toggleDropdown
     },
 
-    solutionFunction () {
-      CalculationService.isInputValid(this.variablesValue, this.alphabetValue, this.productionsValue, this.startsymbolValue, this.wordValue)
-      const result = CalculationService.isWordInGrammarFast(this.productionsValue, this.startsymbolValue, this.wordValue)
-      console.log(`Found: ${result.found}, Duration: ${result.duration} ms`)
+    async solutionFunction () {
+      try {
+        CalculationService.isInputValid(this.variablesValue, this.alphabetValue, this.productionsValue, this.startsymbolValue, this.wordValue)
+        const result = await InputService.sendInput(this.productionsValue, this.startsymbolValue, this.wordValue)
+        this.$emit('result-data', result)
+        console.log('result:', result)
+      } catch (error) {
+        console.log('Error:', error)
+      }
     },
 
     fillExp (value) {
@@ -147,14 +153,14 @@ export default {
           this.alphabetValue = '0,1'
           this.variablesValue = 'S'
           this.productionsValue = 'S->0S,S->1S,S->0,S->1'
-          this.wordValue = ''
+          this.wordValue = '101010'
           break
         case 6:
           // Strings starting and ending with the Symbol 'a'
           this.startsymbolValue = 'S'
           this.alphabetValue = 'a,b'
-          this.variablesValue = 'S,A,B'
-          this.productionsValue = 'S->aA,A->aA,A->aB,A->bA,B->b'
+          this.variablesValue = 'S,V'
+          this.productionsValue = 'S->aVa,V->Va,V->Vb,V->a,V->b'
           this.wordValue = 'ababa'
           break
       }
@@ -289,7 +295,7 @@ button:hover {
   margin: 7px;
   border: 2px solid #4f4f4f;
   border-radius: 3px;
-  background-color: #f0f2e8;
+  background-color: white;
 }
 
 .input-window {
