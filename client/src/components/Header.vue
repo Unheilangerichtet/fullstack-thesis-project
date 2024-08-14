@@ -3,10 +3,10 @@
     <img v-bind:src="lmuLogo" id="lmu-logo" />
     <div class="header-flag">
       <div class="header-text">
-        <br />DECISION PROBLEM FOR CONTEXT-SENSITIVE GRAMMARS
+        <br />{{headerTxt}}
       </div>
       <div class="language-button-container">
-        <button class="language-button">DE</button>
+        <button class="language-button" @click="changeLanguage()">{{ language }}</button>
       </div>
     </div>
   </div>
@@ -17,7 +17,20 @@ export default {
   name: 'Header',
   data () {
     return {
-      lmuLogo: require('../assets/images/lmu-logo-zugeschnitten.png')
+      lmuLogo: require('../assets/images/lmu-logo-zugeschnitten.png'),
+      language: 'EN',
+      headerTxt: 'DECISION PROBLEM FOR CONTEXT-SENSITIVE GRAMMARS'
+    }
+  },
+  methods: {
+    changeLanguage () {
+      this.language = this.language === 'DE' ? 'EN' : 'DE'
+      if (this.language === 'DE') {
+        this.headerTxt = 'ENTSCHEIDEN DES WORTPROBLEMS FÜR KONTEXTSENSITIVE GRAMMATIKEN'
+      } else {
+        this.headerTxt = 'DECISION PROBLEM FOR CONTEXT-SENSITIVE GRAMMARS'
+      }
+      this.$emit('change-language', this.language)
     }
   }
 }

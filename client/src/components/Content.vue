@@ -1,6 +1,6 @@
 <template>
   <div class="content-window">
-    <InputWindow id="input-window" @result-data="handleDataSend"/>
+    <InputWindow id="input-window" @result-data="handleDataSend" :language="this.language"/>
     <OutputWindow id="output-window" :receivedData="dataFromInput"/>
   </div>
 </template>
@@ -16,6 +16,9 @@ export default {
     return {
       dataFromInput: ''
     }
+  },
+  props: {
+    language: String
   },
   methods: {
     handleDataSend (data) {

@@ -1,26 +1,24 @@
 <template>
   <div class="input-window-wrapper">
-    <div class="input-window-heading">INPUT</div>
+    <div class="input-window-heading">{{inputTxt}}</div>
     <div class="input-window">
       <div class="grid-item exp-grammars-box">
         <div class="dropdown">
-          <button class="exp-grammar-button" @click="chooseExpGrammar()">
-            EXAMPLE GRAMMARS
-          </button>
+          <button class="exp-grammar-button" @click="chooseExpGrammar()">{{ expGrammarTxt }}</button>
           <div class="dropdown-content" v-if="toggleDropdown">
-            <a @click="fillExp(1)">abc Grammar</a>
-            <a @click="fillExp(2)">Even-Length Palindrome Grammar</a>
-            <a @click="fillExp(3)">Balanced Parenthesis</a>
-            <a @click="fillExp(4)">Simple Arithmetic Expressions</a>
-            <a @click="fillExp(5)">Binary Numbers</a>
-            <a @click="fillExp(6)">start & end with a</a>
+            <a @click="fillExp(1)">{{ expGrammar1txt }}</a>
+            <a @click="fillExp(2)">{{ expGrammar2txt }}</a>
+            <a @click="fillExp(3)">{{ expGrammar3txt }}</a>
+            <a @click="fillExp(4)">{{ expGrammar4txt }}</a>
+            <a @click="fillExp(5)">{{ expGrammar5txt }}</a>
+            <a @click="fillExp(6)">{{ expGrammar6txt }}</a>
           </div>
         </div>
       </div>
       <div class="grid-item grammar-box-wrapper">
         <div class="grammar-box">
           <!-- &#x3A3; => Sigma -->
-          <div class="grammar-box-heading">GRAMMAR & WORD</div>
+          <div class="grammar-box-heading">{{ inputBoxTxt }}</div>
           <textarea
             v-model="startsymbolValue"
             type="text"
@@ -60,14 +58,14 @@
       </div>
       <div class="grid-item solution-box">
         <button @click="solutionFunction()" class="solution-button">
-          SOLUTION
+          {{ solutionButtonTxt }}
         </button>
       </div>
       <div class="grid-item guided-exercise-box">
-        <button class="guided-exercise-button">GUIDED EXERCISE</button>
+        <button class="guided-exercise-button">{{ guidedExerciseButtonTxt }}</button>
       </div>
       <div class="grid-item free-exercise-box">
-        <button class="free-exercise-button">FREE EXERCISE</button>
+        <button class="free-exercise-button">{{ freeExerciseButtonTxt }}</button>
       </div>
       <ControlPanel class="control-panel-wrapper"></ControlPanel>
       <div class="grid-item extra-box-wrapper">
@@ -92,11 +90,65 @@ export default {
       alphabetValue: '',
       variablesValue: '',
       productionsValue: '',
-      wordValue: ''
+      wordValue: '',
+      inputTxt: 'INPUT',
+      expGrammarTxt: 'EXAMPLE GRAMMARS',
+      inputBoxTxt: 'GRAMMAR & WORD',
+      solutionButtonTxt: 'SOLUTION',
+      guidedExerciseButtonTxt: 'GUIDED EXERCISE',
+      freeExerciseButtonTxt: 'FREE EXERCISE',
+      expGrammar1txt: 'abc Grammar',
+      expGrammar2txt: 'Even-Length Palindrome Grammar',
+      expGrammar3txt: 'Balanced Parenthesis',
+      expGrammar4txt: 'Simple Arithmetic Expressions',
+      expGrammar5txt: 'Binary Numbers',
+      expGrammar6txt: 'start & end with a'
+    }
+  },
+  props: {
+    language: String
+  },
+  watch: {
+    language () {
+      this.onLanguageChange()
     }
   },
   components: { ControlPanel },
   methods: {
+
+    onLanguageChange () {
+      console.log('InputWindow: onLanguageChange() was called!') // Debugging
+      switch (this.language) {
+        case 'DE':
+          this.inputTxt = 'EINGABE'
+          this.expGrammarTxt = 'BEISPIEL GRAMMATIKEN'
+          this.inputBoxTxt = 'GRAMMATIK & WORT'
+          this.solutionButtonTxt = 'LÖSUNG'
+          this.guidedExerciseButtonTxt = 'GEFÜHRTE ÜBUNG'
+          this.freeExerciseButtonTxt = 'FREIE ÜBUNG'
+          this.expGrammar1txt = 'abc Grammatik'
+          this.expGrammar2txt = 'Palidrome gerader Länge'
+          this.expGrammar3txt = 'ausgewogene Klammern'
+          this.expGrammar4txt = 'einfache Arithmetische Ausdrücke'
+          this.expGrammar5txt = 'binärzahlen'
+          this.expGrammar6txt = 'startet & endet mit a'
+          break
+        case 'EN':
+          this.inputTxt = 'INPUT'
+          this.expGrammarTxt = 'EXAMPLE GRAMMARS'
+          this.inputBoxTxt = 'GRAMMAR & WORD'
+          this.solutionButtonTxt = 'SOLUTION'
+          this.guidedExerciseButtonTxt = 'GUIDED EXERCISE'
+          this.freeExerciseButtonTxt = 'FREE EXERCISE'
+          this.expGrammar1txt = 'abc Grammar'
+          this.expGrammar2txt = 'Even-Length Palindrome Grammar'
+          this.expGrammar3txt = 'Balanced Parenthesis'
+          this.expGrammar4txt = 'Simple Arithmetic Expressions'
+          this.expGrammar5txt = 'Binary Numbers'
+          this.expGrammar6txt = 'start & end with a'
+          break
+      }
+    },
 
     chooseExpGrammar () {
       this.toggleDropdown = !this.toggleDropdown
