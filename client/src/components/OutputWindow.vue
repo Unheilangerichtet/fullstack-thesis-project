@@ -1,7 +1,7 @@
 <template>
   <div class="output-window">
      <div class="tree-diagram-container">
-       <TreeDiagram class="tree-diagramm"></TreeDiagram>
+       <TreeDiagram class="tree-diagramm" :newTreeData="this.treeData"></TreeDiagram>
      </div>
   </div>
 </template>
@@ -13,7 +13,8 @@ export default {
   name: 'OutputWindow',
   data () {
     return {
-      relationsArray: ''
+      relationsArray: [],
+      treeData: ''
     }
   },
   props: {
@@ -34,11 +35,47 @@ export default {
         const [child, parent] = pair.split(',')
         return { child, parent }
       })
-      // create a hierarchy from the array of child-parent pairs.
+      this.relationsArray.push({child: 'S', parent: null})
+      this.relationsArray = this.removeDuplicateChildren(this.relationsArray)
+      // create hierarchy structure
       const root = d3.stratify()
         .id(d => d.child)
         .parentId(d => d.parent)(this.relationsArray)
       console.log('root:', root)
+
+      // Convert stratified structure to hierarchical structure
+      const hierarchyData = d3.hierarchy(root)
+
+      function convertToTree (node) {
+        const children = node.children ? node.children.map(convertToTree) : []
+        return {
+          name: node.data.id,
+          children: children.length ? children : undefined
+        }
+      }
+
+      const treeDataObject = convertToTree(hierarchyData)
+
+      this.treeData = JSON.stringify(treeDataObject, null, 2)
+
+      console.log('treeData:', this.treeData)
+
+      this.$emit('new-tree-data', this.treeData)
+    },
+
+    removeDuplicateChildren (pairs) {
+      const seenChildren = new Set()
+      const uniquePairs = []
+      for (let i = 0; i < pairs.length; i++) {
+        const child = pairs[i].child
+        const parent = pairs[i].parent
+        if (!seenChildren.has(child)) {
+          uniquePairs.push({ child, parent })
+          seenChildren.add(child)
+        }
+      }
+      console.log('uniquePairs', uniquePairs)
+      return uniquePairs
     }
   },
   components: { TreeDiagram }

@@ -20,14 +20,10 @@
 import * as d3 from 'd3'
 
 export default {
-
   name: 'TreeDiagram',
-
   mounted () {
-    this.createTreeDiagram()
     console.log('createTreeDiagram')
   },
-
   data () {
     return {
       svgWidth: 100,
@@ -37,6 +33,7 @@ export default {
       zoomInIcon: require('../assets/icons/zoom_in.svg'),
       zoomOutIcon: require('../assets/icons/zoom_out.svg'),
       resetZoomIcon: require('../assets/icons/restart_alt.svg'),
+      recievedTreeData: '', // workinprogress
       treeData: {
         'name': 'Root',
         'children': [
@@ -74,7 +71,18 @@ export default {
       }
     }
   },
-
+  props: {
+    newTreeData: {
+      type: String
+    }
+  },
+  watch: {
+    newTreeData () {
+      console.log('newTreeData in TreeDiagram.vue:', this.newTreeData)
+      this.treeData = JSON.parse(this.newTreeData)
+      this.createTreeDiagram()
+    }
+  },
   methods: {
 
     zoomed (event) {
@@ -94,6 +102,8 @@ export default {
     },
 
     createTreeDiagram () {
+      // Clear the previous tree
+      d3.select(this.$refs.treeSvg).selectAll('*').remove()
       // Set the dimensions and margins of the diagram
       const margin = { top: 10, right: 10, bottom: 10, left: 10 }
       const treeContainerWidth = d3.select('#tree-diagram').node().getBoundingClientRect().width
@@ -425,7 +435,11 @@ export default {
       root = d3.hierarchy(this.treeData, (d) => d.children)
       root.x0 = treeContainerHeight / 2
       root.y0 = 20
-      root.children.forEach(collapse)
+
+      if (root.children) {
+        root.children.forEach(collapse)
+      }
+
       update(root)
       this.resetZoom()
 
