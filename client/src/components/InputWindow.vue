@@ -188,7 +188,7 @@ export default {
           this.startsymbolValue = 'S'
           this.alphabetValue = '(,)'
           this.variablesValue = 'S'
-          this.productionsValue = 'S->(S), S->SS, S->()'
+          this.productionsValue = 'S->(S),S->SS,S->()'
           this.wordValue = '(()())'
           break
         case 4:
@@ -196,7 +196,7 @@ export default {
           this.startsymbolValue = 'E'
           this.alphabetValue = 'a,+,*,(,)'
           this.variablesValue = 'E'
-          this.productionsValue = 'E->E+E, E->E*E, E->(E), E->a'
+          this.productionsValue = 'S->S+S,S->S*S,S->(S),S->a'
           this.wordValue = '(a+a)*a'
           break
         case 5:
