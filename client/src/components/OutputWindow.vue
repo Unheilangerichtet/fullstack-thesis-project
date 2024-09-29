@@ -1,7 +1,7 @@
 <template>
-  <div class="output-window">
+  <div class="output-window" id="output-window">
      <div class="tree-diagram-container">
-       <TreeDiagram class="tree-diagramm" :newTreeData="this.treeData"></TreeDiagram>
+       <TreeDiagram class="tree-diagramm" :newTreeData="this.treeData" :word="receivedWord" :layerChange="layerChange"></TreeDiagram>
      </div>
   </div>
 </template>
@@ -21,7 +21,9 @@ export default {
     receivedData: {
       type: Object,
       required: true
-    }
+    },
+    receivedWord: '',
+    layerChange: 0
   },
   watch: {
     receivedData () {
@@ -30,6 +32,14 @@ export default {
   },
   methods: {
     onPropChange () {
+      const outputWindowDiv = document.getElementById('output-window')
+      if (this.receivedData.result === true) {
+        outputWindowDiv.classList.add('output-window-true-styles')
+        outputWindowDiv.classList.remove('output-window-false-styles')
+      } else {
+        outputWindowDiv.classList.add('output-window-false-styles')
+        outputWindowDiv.classList.remove('output-window-true-styles')
+      }
       // create a array of objects where each element represents a child,parent pair
       this.relationsArray = JSON.parse(this.receivedData.relations).map(pair => {
         const [child, parent] = pair.split(',')
@@ -89,6 +99,16 @@ export default {
 
     border: 2px solid #4F4F4F;
     border-radius: 3px;
+}
+
+.output-window-true-styles {
+  border: 2px solid green;
+  border-radius: 3px;
+}
+
+.output-window-false-styles {
+  border: 2px solid red;
+  border-radius: 3px;
 }
 
 .output-window-heading {

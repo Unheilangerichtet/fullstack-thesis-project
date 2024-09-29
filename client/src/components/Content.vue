@@ -1,7 +1,7 @@
 <template>
   <div class="content-window">
-    <InputWindow id="input-window" @result-data="handleDataSend" :language="this.language"/>
-    <OutputWindow id="output-window" :receivedData="dataFromInput"/>
+    <InputWindow id="input-window" @word="handleWordSend" @result-data="handleDataSend" @layer-change="handleLayerChange" :language="this.language"/>
+    <OutputWindow id="output-window" :receivedWord="wordFromInput" :receivedData="dataFromInput" :layerChange="layerChange"/>
   </div>
 </template>
 
@@ -14,7 +14,9 @@ export default {
   components: {InputWindow, OutputWindow},
   data () {
     return {
-      dataFromInput: ''
+      dataFromInput: '',
+      wordFromInput: '',
+      layerChange: 0
     }
   },
   props: {
@@ -24,6 +26,13 @@ export default {
     handleDataSend (data) {
       console.log('Content.vue has recieved data')
       this.dataFromInput = data
+    },
+    handleWordSend (word) {
+      console.log('Content.vue has recieved word')
+      this.wordFromInput = word
+    },
+    handleLayerChange (direction) {
+      this.layerChange = direction
     }
   }
 }

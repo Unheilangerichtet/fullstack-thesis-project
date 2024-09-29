@@ -18,7 +18,8 @@
       <div class="grid-item grammar-box-wrapper">
         <div class="grammar-box">
           <!-- &#x3A3; => Sigma -->
-          <div class="grammar-box-heading">{{ inputBoxTxt }}</div>
+          <!-- <div class="grammar-box-heading">{{ inputBoxTxt }}</div> -->
+          <div class="textarea-header"> {{ startsymbolTextareaHeader }}</div>
           <textarea
             v-model="startsymbolValue"
             type="text"
@@ -26,6 +27,7 @@
             name="startsymbol"
             placeholder="Enter Startsymbol, for exp. S..."
           ></textarea>
+          <div class="textarea-header"> {{ alphabetTextareaHeader }}</div>
           <textarea
             v-model="alphabetValue"
             type="text"
@@ -33,6 +35,7 @@
             name="alphabet"
             placeholder="Enter Alphabet / Terminal Symbols..."
           ></textarea>
+          <div class="textarea-header"> {{ variablesTextareaHeader }}</div>
           <textarea
             v-model="variablesValue"
             type="text"
@@ -40,6 +43,7 @@
             name="variables"
             placeholder="Enter Variables / Nonterminal Symbols..."
           ></textarea>
+          <div class="textarea-header"> {{ productionsTextareaHeader }}</div>
           <textarea
             v-model="productionsValue"
             type="text"
@@ -47,6 +51,7 @@
             name="productions"
             placeholder="Enter Productions, for exp. S->A,A->B..."
           ></textarea>
+          <div class="textarea-header"> {{ wordTextareaHeader }}</div>
           <textarea
             v-model="wordValue"
             type="text"
@@ -62,14 +67,42 @@
         </button>
       </div>
       <div class="grid-item guided-exercise-box">
-        <button class="guided-exercise-button">{{ guidedExerciseButtonTxt }}</button>
+        <button class="guided-exercise-button" @click="toggleShowExerciseInputBox()">{{ guidedExerciseButtonTxt }}</button>
       </div>
       <div class="grid-item free-exercise-box">
         <button class="free-exercise-button">{{ freeExerciseButtonTxt }}</button>
       </div>
-      <ControlPanel class="control-panel-wrapper"></ControlPanel>
-      <div class="grid-item extra-box-wrapper">
-        <div class="extra-box"></div>
+      <ControlPanel class="control-panel-wrapper" @layer-change="handleLayerChange"></ControlPanel>
+      <div class="grid-item info-button-1-wrapper">
+        <button class="info-button-1">
+          Info 1
+        </button>
+      </div>
+      <div class="grid-item info-button-2-wrapper">
+        <button class="info-button-2">
+          Info 2
+        </button>
+      </div>
+      <div class="grid-item info-button-3-wrapper">
+        <button class="info-button-3">
+          Info 3
+        </button>
+      </div>
+      <div class="grid-item extra-box-wrapper" v-show="showExerciseInputBox">
+        <div class="extra-box">
+          <div class="excercise-input-box-heading">{{ excerciseInputBoxHeading }}</div>
+          <textarea
+            type="text"
+            id="exercise input"
+            name="exercise input"
+            placeholder="Enter words that are reachable with one production"
+          ></textarea>
+          <div class="send-input-box">
+            <button class="send-input-button">
+              {{ inputButtonText }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -84,6 +117,7 @@ export default {
   name: 'InputWindow',
   data () {
     return {
+      showExerciseInputBox: true,
       toggleDropdown: false,
       grammarValue: '',
       startsymbolValue: '',
@@ -102,7 +136,14 @@ export default {
       expGrammar3txt: 'Balanced Parenthesis',
       expGrammar4txt: 'Simple Arithmetic Expressions',
       expGrammar5txt: 'Binary Numbers',
-      expGrammar6txt: 'start & end with a'
+      expGrammar6txt: 'start & end with a',
+      excerciseInputBoxHeading: 'EXERCISE INPUT',
+      inputButtonText: 'SEND INPUT',
+      startsymbolTextareaHeader: 'STARTSYMBOL',
+      alphabetTextareaHeader: 'ALPHABET',
+      variablesTextareaHeader: 'VARIABLES',
+      productionsTextareaHeader: 'PRODUCTIONS',
+      wordTextareaHeader: 'WORD'
     }
   },
   props: {
@@ -115,6 +156,13 @@ export default {
   },
   components: { ControlPanel },
   methods: {
+    toggleShowExerciseInputBox () {
+      this.showExerciseInputBox = !this.showExerciseInputBox
+    },
+
+    handleLayerChange (direction) {
+      this.$emit('layer-change', direction)
+    },
 
     onLanguageChange () {
       console.log('InputWindow: onLanguageChange() was called!') // Debugging
@@ -132,6 +180,13 @@ export default {
           this.expGrammar4txt = 'einfache Arithmetische Ausdrücke'
           this.expGrammar5txt = 'binärzahlen'
           this.expGrammar6txt = 'startet & endet mit a'
+          this.excerciseInputBoxHeading = 'ÜBUNG EINGABE'
+          this.inputButtonText = 'EINGABE SENDEN'
+          this.startsymbolTextareaHeader = 'STARTSYMBOL'
+          this.alphabetTextareaHeader = 'ALPHABET'
+          this.variablesTextareaHeader = 'VARIABLEN'
+          this.productionsTextareaHeader = 'PRODUKTIONEN'
+          this.wordTextareaHeader = 'WORT'
           break
         case 'EN':
           this.inputTxt = 'INPUT'
@@ -146,6 +201,13 @@ export default {
           this.expGrammar4txt = 'Simple Arithmetic Expressions'
           this.expGrammar5txt = 'Binary Numbers'
           this.expGrammar6txt = 'start & end with a'
+          this.excerciseInputBoxHeading = 'EXERCISE INPUT'
+          this.inputButtonText = 'SEND INPUT'
+          this.startsymbolTextareaHeader = 'STARTSYMBOL'
+          this.alphabetTextareaHeader = 'ALPHABET'
+          this.variablesTextareaHeader = 'VARIABLES'
+          this.productionsTextareaHeader = 'PRODUCTIONS'
+          this.wordTextareaHeader = 'WORD'
           break
       }
     },
@@ -159,6 +221,7 @@ export default {
         CalculationService.isInputValid(this.variablesValue, this.alphabetValue, this.productionsValue, this.startsymbolValue, this.wordValue)
         const result = await InputService.sendInput(this.productionsValue, this.startsymbolValue, this.wordValue)
         this.$emit('result-data', result)
+        this.$emit('word', this.wordValue)
         console.log('result:', result)
       } catch (error) {
         console.log('Error:', error)
@@ -231,17 +294,28 @@ export default {
 
 textarea {
   outline: none;
+  resize: none;
+  color: black;
+  flex-grow: 1;
 }
 
-.grammar-box-heading {
-  padding: 5px 15px;
+.grammar-box-heading ,
+.excercise-input-box-heading{
+  padding: 5px 5px;
+  font-size: medium;
+}
+
+.extra-box{
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
 }
 
 .grammar-box,
 .word-box {
-  padding: 5px;
   display: flex;
   flex-direction: column;
+  padding: 5px;
 }
 
 #alphabet,
@@ -273,7 +347,8 @@ textarea {
 .free-exercise-button,
 .guided-exp-button,
 .exp-grammar-button,
-.solution-button {
+.solution-button,
+.send-input-button {
   border: none;
   cursor: pointer;
   width: 100%;
@@ -288,10 +363,15 @@ textarea {
 
 .guided-exercise-button,
 .free-exercise-button,
-.guided-exp-button {
+.guided-exp-button,
+.send-input-button {
   background-color: #4f4f4f;
   border: 2px solid #4f4f4f;
   border-radius: 3px;
+}
+
+.send-input-box {
+  margin-top: 5px;
 }
 
 button:hover {
@@ -302,10 +382,10 @@ button:hover {
 .free-exercise-button:hover,
 .guided-exp-button:hover,
 .exp-grammar-button:hover,
-.solution-button:hover {
+.solution-button:hover,
+.send-input-button:hover {
   background-color: white;
   color: black;
-  font-weight: bold;
   font-size: large;
   transition: all 0.2s;
 }
@@ -313,7 +393,8 @@ button:hover {
 .free-exercise-button:active,
 .guided-exp-button:active,
 .exp-grammar-button:active,
-.solution-button:active {
+.solution-button:active,
+.send-input-button:active {
   transform: translateY(4px);
   font-size: medium;
   transition: all 0.2s;
@@ -390,7 +471,19 @@ button:hover {
 }
 
 .control-panel-wrapper {
-  grid-area: 1 / 7 / 6 / -1;
+  grid-area: 1 / 7 / 3 / -1;
+}
+
+.info-button-1-wrapper {
+  grid-area: 3 / 7 / 4 / -1;
+}
+
+.info-button-2-wrapper {
+  grid-area: 4 / 7 / 5 / -1;
+}
+
+.info-button-3-wrapper {
+  grid-area: 5 / 7 / 6 / -1;
 }
 
 .extra-box-wrapper {
@@ -399,5 +492,38 @@ button:hover {
 
 .grid-item {
   padding: 5px;
+}
+
+.textarea-header {
+  font-size: small;
+}
+
+.info-button-1,
+.info-button-2,
+.info-button-3 {
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background-color: #2e814c;
+  border: 2px solid #2e814c;
+  border-radius: 3px;
+}
+
+.info-button-1:hover,
+.info-button-2:hover,
+.info-button-3:hover {
+  background-color: white;
+  color: black;
+  font-size: large;
+  transition: all 0.2s;
+}
+
+.info-button-1:active,
+.info-button-2:active,
+.info-button-3:active {
+  transform: translateY(4px);
+  font-size: medium;
+  transition: all 0.2s;
 }
 </style>
