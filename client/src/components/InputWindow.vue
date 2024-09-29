@@ -72,18 +72,19 @@
       <div class="grid-item free-exercise-box">
         <button class="free-exercise-button">{{ freeExerciseButtonTxt }}</button>
       </div>
-      <ControlPanel class="control-panel-wrapper" @layer-change="handleLayerChange"></ControlPanel>
-      <div class="grid-item info-button-1-wrapper">
+      <ExerciseSelector class="exercise-selector-component"></ExerciseSelector>
+      <ControlPanel class="control-panel-wrapper" @layer-change="handleLayerChange"  v-show=false></ControlPanel>
+      <div class="grid-item info-button-1-wrapper" v-show=false>
         <button class="info-button-1">
           Info 1
         </button>
       </div>
-      <div class="grid-item info-button-2-wrapper">
+      <div class="grid-item info-button-2-wrapper" v-show=false>
         <button class="info-button-2">
           Info 2
         </button>
       </div>
-      <div class="grid-item info-button-3-wrapper">
+      <div class="grid-item info-button-3-wrapper" v-show=false>
         <button class="info-button-3">
           Info 3
         </button>
@@ -112,6 +113,7 @@
 import ControlPanel from './ControlPanel.vue'
 import CalculationService from '../services/CalculationService'
 import InputService from '../services/InputService'
+import ExerciseSelector from './ExerciseSelector.vue'
 
 export default {
   name: 'InputWindow',
@@ -154,7 +156,7 @@ export default {
       this.onLanguageChange()
     }
   },
-  components: { ControlPanel },
+  components: { ControlPanel, ExerciseSelector },
   methods: {
     toggleShowExerciseInputBox () {
       this.showExerciseInputBox = !this.showExerciseInputBox
@@ -448,6 +450,11 @@ button:hover {
   border-bottom-right-radius: 3px;
   display: grid;
   align-items: center;
+}
+
+.exercise-selector-component {
+  padding: 5xp;
+  grid-area: 1 / 7 / 5 / -1;
 }
 
 .exp-grammars-box {
