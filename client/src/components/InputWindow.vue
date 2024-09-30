@@ -17,8 +17,6 @@
       </div>
       <div class="grid-item grammar-box-wrapper">
         <div class="grammar-box">
-          <!-- &#x3A3; => Sigma -->
-          <!-- <div class="grammar-box-heading">{{ inputBoxTxt }}</div> -->
           <div class="textarea-header"> {{ startsymbolTextareaHeader }}</div>
           <textarea
             v-model="startsymbolValue"
@@ -62,7 +60,7 @@
         </div>
       </div>
       <div class="grid-item solution-box">
-        <button @click="solutionFunction()" class="solution-button">
+        <button @click="solutionFunction()" class="solution-button" :disabled="isSolutionButtonDisabled" title="input grammar & word first">
           {{ solutionButtonTxt }}
         </button>
       </div>
@@ -72,34 +70,20 @@
       <div class="grid-item free-exercise-box">
         <button class="free-exercise-button">{{ freeExerciseButtonTxt }}</button>
       </div>
-      <ExerciseSelector class="exercise-selector-component"></ExerciseSelector>
+      <ExerciseSelector class="exercise-selector-component" :isInputValid="this.isInputValid" @exercise-mode="enableExerciseInput"></ExerciseSelector>
       <ControlPanel class="control-panel-wrapper" @layer-change="handleLayerChange"></ControlPanel>
-      <div class="grid-item info-button-1-wrapper" v-show=false>
-        <button class="info-button-1">
-          Info 1
-        </button>
-      </div>
-      <div class="grid-item info-button-2-wrapper" v-show=false>
-        <button class="info-button-2">
-          Info 2
-        </button>
-      </div>
-      <div class="grid-item info-button-3-wrapper" v-show=false>
-        <button class="info-button-3">
-          Info 3
-        </button>
-      </div>
-      <div class="grid-item extra-box-wrapper" v-show="showExerciseInputBox">
-        <div class="extra-box">
-          <div class="excercise-input-box-heading">{{ excerciseInputBoxHeading }}</div>
+      <div class="grid-item extra-box-wrapper" v-show="showExerciseInputBox" :disabled=!isExerciseModeValid>
+        <div class="extra-box" :class="{disabled: !this.isExerciseModeValid}">
+          <div class="excercise-input-box-heading" :disabled=!isExerciseModeValid>{{ excerciseInputBoxHeading }}</div>
           <textarea
             type="text"
-            id="exercise input"
+            id="exercise-input"
             name="exercise input"
             placeholder="Enter words that are reachable with one production"
+            :disabled=!isExerciseModeValid
           ></textarea>
-          <div class="send-input-box">
-            <button class="send-input-button">
+          <div class="send-input-button-box">
+            <button class="send-input-button" :disabled=!isExerciseModeValid>
               {{ inputButtonText }}
             </button>
           </div>
@@ -145,7 +129,9 @@ export default {
       alphabetTextareaHeader: 'ALPHABET',
       variablesTextareaHeader: 'VARIABLES',
       productionsTextareaHeader: 'PRODUCTIONS',
-      wordTextareaHeader: 'WORD'
+      wordTextareaHeader: 'WORD',
+      isInputValid: false,
+      isExerciseModeValid: false
     }
   },
   props: {
@@ -154,10 +140,33 @@ export default {
   watch: {
     language () {
       this.onLanguageChange()
+    },
+    isSolutionButtonDisabled () {
+      this.isInputValid = this.checkInputValidity
     }
   },
   components: { ControlPanel, ExerciseSelector },
+  computed: {
+    isSolutionButtonDisabled () {
+      return !this.startsymbolValue ||
+             !this.alphabetValue ||
+             !this.variablesValue ||
+             !this.productionsValue ||
+             !this.wordValue
+    }
+  },
   methods: {
+    enableExerciseInput (mode) {
+      console.log('exercise-mode', mode)
+      this.isExerciseModeValid = true
+    },
+    checkInputValidity () {
+      return !this.startsymbolValue ||
+             !this.alphabetValue ||
+             !this.variablesValue ||
+             !this.productionsValue ||
+             !this.wordValue
+    },
     toggleShowExerciseInputBox () {
       this.showExerciseInputBox = !this.showExerciseInputBox
     },
@@ -337,8 +346,7 @@ textarea {
 }
 
 .grammar-box,
-.word-box,
-.extra-box {
+.word-box {
   background-color: #2e814c;
   border: 2px solid #2e814c;
   border-radius: 3px;
@@ -361,6 +369,7 @@ textarea {
   background-color: #2e814c;
   border: 2px solid #2e814c;
   border-radius: 3px;
+  font-weight: bold;
 }
 
 .guided-exercise-button,
@@ -370,9 +379,10 @@ textarea {
   background-color: #4f4f4f;
   border: 2px solid #4f4f4f;
   border-radius: 3px;
+  font-weight: bold;
 }
 
-.send-input-box {
+.send-input-bubox {
   margin-top: 5px;
 }
 
@@ -380,22 +390,27 @@ button:hover {
   opacity: 90%;
 }
 
-.guided-exercise-button:hover,
-.free-exercise-button:hover,
-.guided-exp-button:hover,
 .exp-grammar-button:hover,
-.solution-button:hover,
+.solution-button:enabled:hover,
 .send-input-button:hover {
   background-color: white;
-  color: black;
-  font-size: large;
+  color: #2e814c;
   transition: all 0.2s;
 }
+
+.guided-exercise-button:hover,
+.free-exercise-button:hover,
+.send-input-button:hover {
+  background-color: white;
+  color: #4f4f4f;
+  transition: all 0.2s;
+}
+
 .guided-exercise-button:active,
 .free-exercise-button:active,
 .guided-exp-button:active,
 .exp-grammar-button:active,
-.solution-button:active,
+.solution-button:enabled:active,
 .send-input-button:active {
   transform: translateY(4px);
   font-size: medium;
@@ -423,6 +438,7 @@ button:hover {
 }
 
 .input-window-wrapper {
+  font-weight: bold;
   display: flex;
   flex-direction: column;
 
@@ -481,18 +497,6 @@ button:hover {
   grid-area: 1 / 7 / 3 / -1;
 }
 
-.info-button-1-wrapper {
-  grid-area: 3 / 7 / 4 / -1;
-}
-
-.info-button-2-wrapper {
-  grid-area: 4 / 7 / 5 / -1;
-}
-
-.info-button-3-wrapper {
-  grid-area: 5 / 7 / 6 / -1;
-}
-
 .extra-box-wrapper {
   grid-area: 7 / 7 / -1 / -1;
 }
@@ -505,32 +509,31 @@ button:hover {
   font-size: small;
 }
 
-.info-button-1,
-.info-button-2,
-.info-button-3 {
+.solution-button:disabled {
+  cursor: not-allowed;
+  background-color: #2e814c80;
   border: none;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
+}
+
+.extra-box {
   background-color: #2e814c;
   border: 2px solid #2e814c;
   border-radius: 3px;
+  height: 100%;
 }
 
-.info-button-1:hover,
-.info-button-2:hover,
-.info-button-3:hover {
-  background-color: white;
-  color: black;
-  font-size: large;
-  transition: all 0.2s;
+.extra-box-wrapper:disabled,
+.extra-box:disabled,
+.excercise-input-box-heading:disabled,
+#exercise-input:disabled,
+.send-input-button:disabled {
+  cursor: not-allowed;
+  opacity: 30%;
 }
 
-.info-button-1:active,
-.info-button-2:active,
-.info-button-3:active {
-  transform: translateY(4px);
-  font-size: medium;
-  transition: all 0.2s;
+.extra-box.disabled {
+  cursor: not-allowed;
+  background-color: #2e814c80;
+  border: 2px solid #2e814c80;
 }
 </style>

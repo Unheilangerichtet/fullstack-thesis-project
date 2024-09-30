@@ -140,7 +140,7 @@ export default {
       this.root.y0 = 100
 
       if (this.root.children) {
-        this.root.children.forEach(this.collapse)
+        this.collapse(this.root)
       }
 
       this.update(this.root)

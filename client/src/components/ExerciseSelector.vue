@@ -31,7 +31,7 @@
         title="start the exercise"
         class="start-button"
         @click="startExercise"
-        :disabled="!selectedOption || !selectedMode">Start</button>
+        :disabled="(!selectedOption || !selectedMode) || !isInputValid">START</button>
     </div>
   </div>
 </template>
@@ -48,6 +48,9 @@ export default {
       treeModeBtnTxt: 'TREE'
     }
   },
+  props: {
+    isInputValid: false
+  },
   methods: {
     selectOption (option) {
       this.selectedOption = option // set selected option (path/tree)
@@ -56,9 +59,27 @@ export default {
       this.selectedMode = mode // set selected mode (guided/free)
     },
     startExercise () {
-      if (this.selectedOption && this.selectedMode) {
-        alert(`Exercise started with: ${this.selectedOption} and ${this.selectedMode}`)
+      if (this.selectedOption && this.selectedMode && this.isInputValid) {
+        // alert(`Exercise started with: ${this.selectedOption} and ${this.selectedMode}`)
         // Logic to start the exercise with chosen options
+        // this.$emit('start-exercise')
+        const exp = this.selectedMode.concat('-', this.selectedOption)
+        console.log('mode', exp)
+        this.$emit('exercise-mode', exp)
+        // this.$emit('exercise-state', true)
+        // switch (exp) {
+        //   case 'guided-path':
+        //     this.$emit('exercise-mode', exp)
+        //     break
+        //   case 'free-path':
+        //     break
+        //   case 'guided-tree':
+        //     break
+        //   case 'free-tree':
+        //     break
+        //   default:
+        //     console.log(`The Exercise Mode ${exp} does not exist`)
+        // }
       }
     }
   }
@@ -127,14 +148,8 @@ button.active {
 
 .row-3 {
   margin-top: 8px;
-
-}
-
-.start-button {
-  /* grid-area: 4 / 0 / -1 / 1; */
-  width: 100%;
-  height: 100%;
-  border-radius: 3px;
+  background-color: white;
+  border-radius: 5px;
 }
 
 button:hover {
@@ -142,35 +157,28 @@ button:hover {
 }
 
 button.start-button {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
   background-color: #2e814c;
   color: white;
+  font-weight: bold;
+}
+
+button.start-button:hover:enabled {
+  background-color: white;
+  color: #2e814c
+}
+
+button.start-button:active {
+  /* transform: translateY(4px);
+  font-size: medium; */
+  font-size: small;
+  transition: all 0.2s;
 }
 
 button.start-button:disabled {
-  background-color: #2e814cc5;
+  background-color: #2e814c80;
   cursor: not-allowed;
 }
 </style>
-
-<!--
-<template>
-  <div>
-    <button>TEST</button>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'ExerciseSelector',
-  data () {
-    return {
-    }
-  },
-  methods: {
-  }
-}
-</script>
-
-<style>
-</style>
--->

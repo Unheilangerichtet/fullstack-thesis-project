@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <div class="control-box">
-            <div class="layer-heading">LAYER: Y</div>
+            <div class="layer-heading">LAYER</div>
             <div class="layer-buttons-container">
                 <button id="layerBackButton" @click="layerButtonsFunction('back')">
                     <img v-bind:src="LayerBackIcon" id="LayerBackIcon">
@@ -56,6 +56,16 @@ export default {
     height: 100%;
     display: flex;
     justify-content: space-between;
+}
+
+#layerBackButton {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+#layerForwardButton {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
 #layerBackButton, #layerForwardButton {
