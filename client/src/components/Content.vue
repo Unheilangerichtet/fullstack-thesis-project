@@ -1,7 +1,7 @@
 <template>
   <div class="content-window">
     <InputWindow id="input-window" @word="handleWordSend" @result-data="handleDataSend" @layer-change="handleLayerChange" :language="this.language"/>
-    <OutputWindow id="output-window" :receivedWord="wordFromInput" :receivedData="dataFromInput" :layerChange="layerChange"/>
+    <OutputWindow ref="outputWindow" id="output-window" :receivedWord="wordFromInput" :receivedData="dataFromInput"/>
   </div>
 </template>
 
@@ -32,7 +32,8 @@ export default {
       this.wordFromInput = word
     },
     handleLayerChange (direction) {
-      this.layerChange = direction
+      this.$refs.outputWindow.handleLayerChange(direction)
+      console.log('handleLayerChange in Content.vue activated')
     }
   }
 }

@@ -20,9 +20,6 @@ import * as d3 from 'd3'
 
 export default {
   name: 'TreeDiagram',
-  mounted () {
-    console.log('createTreeDiagram')
-  },
   data () {
     return {
       i: 0, // work in progress
@@ -38,15 +35,15 @@ export default {
       zoomInIcon: require('../assets/icons/zoom_in.svg'),
       zoomOutIcon: require('../assets/icons/zoom_out.svg'),
       resetZoomIcon: require('../assets/icons/restart_alt.svg'),
-      recievedTreeData: ''
+      recievedTreeData: '',
+      maxDepth: 0
     }
   },
   props: {
     newTreeData: {
       type: String
     },
-    word: '',
-    layerChange: 0
+    word: ''
   },
   watch: {
     newTreeData () {
@@ -56,10 +53,8 @@ export default {
     },
     word () {
       console.log('recievedWord: ', this.word)
-    },
-    layerChange () {
-      this.onLayerChange()
     }
+
   },
   computed: {
     margin () {
@@ -67,15 +62,39 @@ export default {
     }
   },
   methods: {
-    onLayerChange () {
-      console.log('layerChange Value', this.layerChange)
-      if (this.layerChange === 1) {
-
-      } else {
-
+    onLayerChange (direction) {
+      const nodes = this.root.descendants()
+      const maxDepth = Math.max(...nodes.map(d => d.depth))
+      if (direction === -1) {
+        nodes.forEach(d => {
+          if (d.depth === (maxDepth - 1)) {
+            if (d.children) {
+              d._children = d.children
+              d.children = null
+            }
+          } else if (d.depth < (maxDepth - 1)) {
+            if (d._children) {
+              d.children = d._children
+              d._children = null
+            }
+          }
+        })
+      } else if (direction === 1) {
+        nodes.forEach(d => {
+          if (d.depth <= maxDepth + 1) {
+            if (d._children) {
+              d.children = d._children
+              d._children = null
+            }
+          } else {
+            if (d.children) {
+              d._children = d.children
+              d.children = null
+            }
+          }
+        })
       }
-      // change layer based on 'layerChange' value
-      // if 'layerChange' == -1 then go a layer back, else go a layer forward
+      this.update(this.root)
     },
     zoomed (event) {
       d3.select(this.$refs.treeSvg).select('g').attr('transform', event.transform)
@@ -131,12 +150,8 @@ export default {
       // Properly adjust vertical (x) and horizontal (y) positioning with margins
       const initialSpacing = 180 // Default spacing that d3 uses for vertical positioning
       nodes.forEach((d) => {
-        console.log('marginX', this.marginX)
-        console.log('marginY', this.marginY)
         d.y = d.depth * this.marginX // Horizontal spacing (x-axis)
         d.x = (d.x / initialSpacing) * this.marginY // Adjust vertical spacing (y-axis)
-        console.log('d.y', d.y)
-        console.log('d.x', d.x)
       })
 
       // Calculate the maximum and minimum x positions to center the tree vertically
@@ -146,20 +161,17 @@ export default {
 
       // Update the width of the SVG dynamically based on tree depth
       const maxDepth = Math.max(...nodes.map(d => d.depth))
+      this.maxDepth = maxDepth
       const dynamicWidth = margin.left + margin.right + this.marginX * (maxDepth + 1)
       this.svgWidth = dynamicWidth < this.treeContainerWidth ? this.treeContainerWidth + 10 : dynamicWidth
 
       // Center the tree vertically and shift to the right
       const verticalShift = (this.treeContainerHeight - treeHeight) / 2 - minX
       const horizontalShift = 20 // Add some margin to the left
-      console.log('verticalShift', verticalShift)
-      console.log('horizontalShift', horizontalShift)
 
       nodes.forEach(d => {
         d.x += verticalShift // Center the tree vertically
         d.y += horizontalShift // Shift the tree to the right
-        console.log('d.y after shift', d.y)
-        console.log('d.x after shift', d.x)
       })
 
       // ****************** Links section ***************************
@@ -211,16 +223,10 @@ export default {
         .append('g')
         .attr('class', 'link-text')
         .attr('transform', (d) => {
-          console.log('d', d.y, d.x)
-          console.log('d.parent', d.parent.y, d.parent.x)
           const midpoint = {
             x: (d.x + d.parent.x) / 2,
             y: (d.y + d.parent.y) / 2
           }
-          if (Number.isNaN(midpoint.y)) {
-            console.log('NOT A NUMBER!', typeof midpoint.y)
-          }
-          // return 'translate(' + midpoint.y + ',' + midpoint.x + ')'
           return `translate(${midpoint.y}, ${midpoint.x})`
         })
 
@@ -251,16 +257,10 @@ export default {
         .transition()
         .duration(duration)
         .attr('transform', (d) => {
-          console.log('d', d.y, d.x)
-          console.log('d.parent', d.parent.y, d.parent.x)
           const midpoint = {
             x: (d.x + d.parent.x) / 2,
             y: (d.y + d.parent.y) / 2
           }
-          if (Number.isNaN(midpoint.y)) {
-            console.log('NOT A NUMBER!', typeof midpoint.y)
-          }
-          // return 'translate(' + midpoint.y + ',' + midpoint.x + ')'
           return `translate(${midpoint.y}, ${midpoint.x})`
         })
 
@@ -442,8 +442,6 @@ export default {
         d.children = d._children
         d._children = null
       }
-      console.log(d.ancestors()[1])
-      console.log(d.ancestors()[1].children)
       this.update(d)
     },
 

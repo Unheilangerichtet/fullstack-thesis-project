@@ -73,7 +73,7 @@
         <button class="free-exercise-button">{{ freeExerciseButtonTxt }}</button>
       </div>
       <ExerciseSelector class="exercise-selector-component"></ExerciseSelector>
-      <ControlPanel class="control-panel-wrapper" @layer-change="handleLayerChange"  v-show=false></ControlPanel>
+      <ControlPanel class="control-panel-wrapper" @layer-change="handleLayerChange"></ControlPanel>
       <div class="grid-item info-button-1-wrapper" v-show=false>
         <button class="info-button-1">
           Info 1
@@ -454,7 +454,7 @@ button:hover {
 
 .exercise-selector-component {
   padding: 5xp;
-  grid-area: 1 / 7 / 5 / -1;
+  grid-area: 3 / 7 / 7 / -1;
 }
 
 .exp-grammars-box {
@@ -494,7 +494,7 @@ button:hover {
 }
 
 .extra-box-wrapper {
-  grid-area: 6 / 7 / -1 / -1;
+  grid-area: 7 / 7 / -1 / -1;
 }
 
 .grid-item {

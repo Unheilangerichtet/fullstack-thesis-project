@@ -1,7 +1,7 @@
 <template>
   <div class="output-window" id="output-window">
      <div class="tree-diagram-container">
-       <TreeDiagram class="tree-diagramm" :newTreeData="this.treeData" :word="receivedWord" :layerChange="layerChange"></TreeDiagram>
+       <TreeDiagram  ref="treeDiagram" class="tree-diagramm" :newTreeData="this.treeData" :word="receivedWord"></TreeDiagram>
      </div>
   </div>
 </template>
@@ -22,8 +22,7 @@ export default {
       type: Object,
       required: true
     },
-    receivedWord: '',
-    layerChange: 0
+    receivedWord: ''
   },
   watch: {
     receivedData () {
@@ -31,6 +30,9 @@ export default {
     }
   },
   methods: {
+    handleLayerChange (direction) {
+      this.$refs.treeDiagram.onLayerChange(direction)
+    },
     onPropChange () {
       const outputWindowDiv = document.getElementById('output-window')
       if (this.receivedData.result === true) {
