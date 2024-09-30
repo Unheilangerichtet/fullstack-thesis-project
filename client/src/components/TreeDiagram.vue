@@ -22,12 +22,11 @@ export default {
   name: 'TreeDiagram',
   data () {
     return {
-      i: 0, // work in progress
-      duration: 750, // work in progress
-      g: null, // work in progress
-      root: null, // work in progress
-      marginX: 220, // Default horizontal margin
-      marginY: 200, // Default vertical margin
+      i: 0,
+      duration: 750,
+      root: null,
+      marginX: 220,
+      marginY: 200,
       svgWidth: 100,
       svgHeight: 100,
       initialTransform: null,
@@ -62,6 +61,17 @@ export default {
     }
   },
   methods: {
+    getNodeNamesByDepth () {
+      const nodes = d3.hierarchy(this.treeData, (d) => d.children).descendants()
+      const nodesByDepth = {}
+      nodes.forEach(node => {
+        if (!nodesByDepth[node.depth]) {
+          nodesByDepth[node.depth] = []
+        }
+        nodesByDepth[node.depth].push(node.data.name)
+      })
+      return Object.values(nodesByDepth)
+    },
     onLayerChange (direction) {
       const nodes = this.root.descendants()
       const maxDepth = Math.max(...nodes.map(d => d.depth))
@@ -94,6 +104,7 @@ export default {
           }
         })
       }
+      console.log(this.getNodeNamesByDepth())
       this.update(this.root)
     },
     zoomed (event) {
