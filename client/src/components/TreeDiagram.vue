@@ -1,6 +1,6 @@
 <template>
   <div id="tree-diagram">
-    <div class="zoom-buttons">
+    <!-- <div class="zoom-buttons">
       <button @click="zoomIn">
         <img v-bind:src="zoomInIcon" id="zoomInIcon">
       </button>
@@ -10,8 +10,8 @@
       <button @click="resetZoom">
         <img v-bind:src="resetZoomIcon" id="resetZoomIcon">
       </button>
-    </div>
-    <svg id="treeSVG" ref="treeSvg" :width="svgWidth" :height="svgHeight"></svg>
+    </div> -->
+    <svg id="treeSVG" ref="treeSvg"></svg>
   </div>
 </template>
 
@@ -29,7 +29,7 @@ export default {
       marginY: 200,
       svgWidth: 100,
       svgHeight: 100,
-      initialTransform: null,
+      initialTransform: 1,
       zoom: d3.zoom().on('zoom', this.zoomed),
       zoomInIcon: require('../assets/icons/zoom_in.svg'),
       zoomOutIcon: require('../assets/icons/zoom_out.svg'),
@@ -69,6 +69,7 @@ export default {
         this.$emit('node-names-by-depth', nodeNamesByDepth)
       }
     },
+
     getNodeNamesByDepth () {
       const nodes = d3.hierarchy(this.treeData, (d) => d.children).descendants()
       const nodesByDepth = {}
@@ -119,17 +120,17 @@ export default {
       d3.select(this.$refs.treeSvg).select('g').attr('transform', event.transform)
     },
     zoomIn () {
-      d3.select(this.$refs.treeSvg).call(this.zoom.scaleBy, 1.1)
+      d3.select(this.$refs.treeSvg).select('g').transition().duration(200).call(this.zoom.scaleBy, 1.1)
     },
     zoomOut () {
-      d3.select(this.$refs.treeSvg).call(this.zoom.scaleBy, 0.9)
+      d3.select(this.$refs.treeSvg).select('g').transition().duration(200).call(this.zoom.scaleBy, 0.9)
     },
     resetZoom () {
-      d3.select(this.$refs.treeSvg).call(this.zoom.transform, this.initialTransform)
+      d3.select(this.$refs.treeSvg).transition().duration(200).call(this.zoom.transform, this.initialTransform)
     },
     createTreeDiagram () {
       this.clearTree()
-      this.initializeZoom()
+      d3.select(this.$refs.treeSvg).call(this.zoom)
 
       this.margin = { top: 10, right: 10, bottom: 10, left: 10 }
       this.treeContainerWidth = d3.select('#tree-diagram').node().getBoundingClientRect().width
@@ -141,6 +142,8 @@ export default {
         .attr('height', this.treeContainerHeight)
         .attr('background', 'red')
         .append('g')
+        // .call(this.zoom) // changes for zoom
+        // .append('g')
 
       this.root = d3.hierarchy(this.treeData, (d) => d.children)
       this.root.x0 = this.treeContainerHeight / 2
@@ -159,10 +162,10 @@ export default {
     update (source) {
       const treeData = d3.tree().nodeSize([60, 50])(this.root)
       const duration = this.duration
-      const margin = this.margin
+      // const margin = this.margin
 
-      const extreHeight = d3.select(this.$refs.treeSvg).select('g').node().getBBox().height
-      this.svgHeight = 600 + extreHeight
+      // const extreHeight = d3.select(this.$refs.treeSvg).select('g').node().getBBox().height
+      // this.svgHeight = 600 + extreHeight
 
       const nodes = treeData.descendants()
       const links = treeData.descendants().slice(1)
@@ -170,7 +173,7 @@ export default {
       // Properly adjust vertical (x) and horizontal (y) positioning with margins
       const initialSpacing = 180 // Default spacing that d3 uses for vertical positioning
       nodes.forEach((d) => {
-        d.y = d.depth * this.marginX // Horizontal spacing (x-axis)
+        d.y = d.depth * this.marginX + 30 // Horizontal spacing (x-axis)
         d.x = (d.x / initialSpacing) * this.marginY // Adjust vertical spacing (y-axis)
       })
 
@@ -182,16 +185,14 @@ export default {
       // Update the width of the SVG dynamically based on tree depth
       const maxDepth = Math.max(...nodes.map(d => d.depth))
       this.maxDepth = maxDepth
-      const dynamicWidth = margin.left + margin.right + this.marginX * (maxDepth + 1)
-      this.svgWidth = dynamicWidth < this.treeContainerWidth ? this.treeContainerWidth + 10 : dynamicWidth
+      // const dynamicWidth = margin.left + margin.right + this.marginX * (maxDepth + 1)
+      // this.svgWidth = dynamicWidth < this.treeContainerWidth ? this.treeContainerWidth + 10 : dynamicWidth
 
       // Center the tree vertically and shift to the right
       const verticalShift = (this.treeContainerHeight - treeHeight) / 2 - minX
-      const horizontalShift = 20 // Add some margin to the left
 
       nodes.forEach(d => {
         d.x += verticalShift // Center the tree vertically
-        d.y += horizontalShift // Shift the tree to the right
       })
 
       // ****************** Links section ***************************
@@ -474,10 +475,6 @@ export default {
     clearTree () {
       d3.select(this.$refs.treeSvg).selectAll('*').remove()
     },
-    initializeZoom () {
-      this.initialTransform = d3.zoomIdentity.translate(10, 0)
-      d3.select(this.$refs.treeSvg).select('g').call(this.zoom.transform, this.initialTransform)
-    },
     findPathToWord (root, word) {
       const path = []
       function traverse (node) {
@@ -507,7 +504,6 @@ export default {
 #tree-diagram {
   width: 100%;
   height: 100%;
-  overflow: scroll;
   box-sizing: border-box;
 }
 

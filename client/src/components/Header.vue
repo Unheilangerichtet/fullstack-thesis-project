@@ -26,7 +26,7 @@ export default {
     changeLanguage () {
       this.language = this.language === 'DE' ? 'EN' : 'DE'
       if (this.language === 'DE') {
-        this.headerTxt = 'ENTSCHEIDEN DES WORTPROBLEMS FÜR KONTEXTSENSITIVE GRAMMATIKEN'
+        this.headerTxt = 'WORTPROBLEMS FÜR KONTEXTSENSITIVE GRAMMATIKEN'
       } else {
         this.headerTxt = 'DECISION PROBLEM FOR CONTEXT-SENSITIVE GRAMMARS'
       }

@@ -206,6 +206,7 @@ export default {
     handleLayerChange (direction) {
       this.$emit('layer-change', direction)
     },
+
     onLanguageChange () {
       console.log('InputWindow: onLanguageChange() was called!') // Debugging
       switch (this.language) {

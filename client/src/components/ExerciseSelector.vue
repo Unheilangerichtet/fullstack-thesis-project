@@ -53,10 +53,10 @@ export default {
   },
   methods: {
     selectOption (option) {
-      this.selectedOption = option // set selected option (path/tree)
+      this.selectedOption = option // (path/tree)
     },
     selectMode (mode) {
-      this.selectedMode = mode // set selected mode (guided/free)
+      this.selectedMode = mode // (guided/free)
     },
     startExercise () {
       if (this.selectedOption && this.selectedMode && this.isInputValid) {
@@ -100,9 +100,7 @@ export default {
 }
 
 button {
-  /* padding: 10px 20px; */
   border: none;
-  /* border-radius: 5px; */
   cursor: pointer;
   font-size: medium;
   background-color: #919191;
