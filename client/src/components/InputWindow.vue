@@ -64,26 +64,27 @@
           {{ solutionButtonTxt }}
         </button>
       </div>
-      <div class="grid-item guided-exercise-box">
-        <button class="guided-exercise-button" @click="toggleShowExerciseInputBox()">{{ guidedExerciseButtonTxt }}</button>
+      <div class="grid-item info-button-1-box">
+        <button class="info-button-1">{{ infoButton1Txt }}</button>
       </div>
-      <div class="grid-item free-exercise-box">
-        <button class="free-exercise-button">{{ freeExerciseButtonTxt }}</button>
+      <div class="grid-item info-button-2-box">
+        <button class="info-button-2">{{ infoButton2Txt }}</button>
       </div>
       <ExerciseSelector class="exercise-selector-component" :isInputValid="this.isInputValid" @exercise-mode="enableExerciseInput"></ExerciseSelector>
-      <ControlPanel class="control-panel-wrapper" @layer-change="handleLayerChange"></ControlPanel>
+      <ControlPanel ref="controlPanel" class="control-panel-wrapper" @layer-change="handleLayerChange"></ControlPanel>
       <div class="grid-item extra-box-wrapper" v-show="showExerciseInputBox" :disabled=!isExerciseModeValid>
         <div class="extra-box" :class="{disabled: !this.isExerciseModeValid}">
           <div class="excercise-input-box-heading" :disabled=!isExerciseModeValid>{{ excerciseInputBoxHeading }}</div>
           <textarea
             type="text"
             id="exercise-input"
+            v-model="exerciseInput"
             name="exercise input"
             placeholder="Enter words that are reachable with one production"
             :disabled=!isExerciseModeValid
           ></textarea>
           <div class="send-input-button-box">
-            <button class="send-input-button" :disabled=!isExerciseModeValid>
+            <button class="send-input-button" @click="sendExerciseInput()" :disabled=!isExerciseModeValid>
               {{ inputButtonText }}
             </button>
           </div>
@@ -114,9 +115,9 @@ export default {
       inputTxt: 'INPUT',
       expGrammarTxt: 'EXAMPLE GRAMMARS',
       inputBoxTxt: 'GRAMMAR & WORD',
-      solutionButtonTxt: 'SOLUTION',
-      guidedExerciseButtonTxt: 'GUIDED EXERCISE',
-      freeExerciseButtonTxt: 'FREE EXERCISE',
+      solutionButtonTxt: 'SHOW SOLUTION',
+      infoButton1Txt: 'INFO BUTTON 1',
+      infoButton2Txt: 'INFO BUTTON 2',
       expGrammar1txt: 'abc Grammar',
       expGrammar2txt: 'Even-Length Palindrome Grammar',
       expGrammar3txt: 'Balanced Parenthesis',
@@ -131,11 +132,15 @@ export default {
       productionsTextareaHeader: 'PRODUCTIONS',
       wordTextareaHeader: 'WORD',
       isInputValid: false,
-      isExerciseModeValid: false
+      isExerciseModeValid: false,
+      exerciseMode: '',
+      exerciseInput: '',
+      currentExercisedepth: 1
     }
   },
   props: {
-    language: String
+    language: String,
+    nodeNamesByDepth: []
   },
   watch: {
     language () {
@@ -143,6 +148,9 @@ export default {
     },
     isSolutionButtonDisabled () {
       this.isInputValid = this.checkInputValidity
+    },
+    nodeNamesByDepth () {
+      console.log('nodeNamesByDepth were recieved in the Input Window!', this.nodeNamesByDepth)
     }
   },
   components: { ControlPanel, ExerciseSelector },
@@ -156,9 +164,37 @@ export default {
     }
   },
   methods: {
-    enableExerciseInput (mode) {
+    sendExerciseInput () {
+      if (this.exerciseMode === 'guided-tree') {
+        this.guidedTreeExercise()
+      }
+    },
+    guidedTreeExercise () {
+      let depth = this.currentExercisedepth
+      const result = this.isInputCorrect(this.exerciseInput, this.nodeNamesByDepth[depth])
+      if (result) {
+        this.$refs.controlPanel.layerButtonsFunction(1) // go one layer forward
+      } else {
+        alert('the input was wrong')
+      }
+      ++this.currentExercisedepth
+      // Implement the Logic for the Exercise Mode guided-path
+    },
+    isInputCorrect (str1, array2) {
+      const array1 = str1.split(',').map(word => word.trim())
+      const set1 = new Set(array1)
+      const set2 = new Set(array2.map(word => word.trim()))
+      console.log('Set1: Input Set', Array.from(set1))
+      console.log('Set2: Solution Set', Array.from(set2))
+      return set1.size === set2.size && [...set1].every(value => set2.has(value))
+    },
+    async enableExerciseInput (mode) {
+      await this.solutionFunction()
       console.log('exercise-mode', mode)
+      console.log('layer info test', 'InputWindow')
+      this.exerciseMode = mode
       this.isExerciseModeValid = true
+      this.$emit('exercise-mode', mode)
     },
     checkInputValidity () {
       return !this.startsymbolValue ||
@@ -167,14 +203,9 @@ export default {
              !this.productionsValue ||
              !this.wordValue
     },
-    toggleShowExerciseInputBox () {
-      this.showExerciseInputBox = !this.showExerciseInputBox
-    },
-
     handleLayerChange (direction) {
       this.$emit('layer-change', direction)
     },
-
     onLanguageChange () {
       console.log('InputWindow: onLanguageChange() was called!') // Debugging
       switch (this.language) {
@@ -182,9 +213,9 @@ export default {
           this.inputTxt = 'EINGABE'
           this.expGrammarTxt = 'BEISPIEL GRAMMATIKEN'
           this.inputBoxTxt = 'GRAMMATIK & WORT'
-          this.solutionButtonTxt = 'LÖSUNG'
-          this.guidedExerciseButtonTxt = 'GEFÜHRTE ÜBUNG'
-          this.freeExerciseButtonTxt = 'FREIE ÜBUNG'
+          this.solutionButtonTxt = 'ZEIGE LÖSUNG'
+          this.infoButton1Txt = 'INFO KNOPF 1'
+          this.infoButton2Txt = 'INFO KNOPF 2'
           this.expGrammar1txt = 'abc Grammatik'
           this.expGrammar2txt = 'Palidrome gerader Länge'
           this.expGrammar3txt = 'ausgewogene Klammern'
@@ -203,9 +234,9 @@ export default {
           this.inputTxt = 'INPUT'
           this.expGrammarTxt = 'EXAMPLE GRAMMARS'
           this.inputBoxTxt = 'GRAMMAR & WORD'
-          this.solutionButtonTxt = 'SOLUTION'
-          this.guidedExerciseButtonTxt = 'GUIDED EXERCISE'
-          this.freeExerciseButtonTxt = 'FREE EXERCISE'
+          this.solutionButtonTxt = 'SHOW SOLUTION'
+          this.infoButton1Txt = 'INFO BUTTON 1'
+          this.infoButton2Txt = 'INFO BUTTON 2'
           this.expGrammar1txt = 'abc Grammar'
           this.expGrammar2txt = 'Even-Length Palindrome Grammar'
           this.expGrammar3txt = 'Balanced Parenthesis'
@@ -353,8 +384,8 @@ textarea {
   height: 100%;
 }
 
-.guided-exercise-button,
-.free-exercise-button,
+.info-button-1,
+.info-button-2,
 .guided-exp-button,
 .exp-grammar-button,
 .solution-button,
@@ -372,8 +403,8 @@ textarea {
   font-weight: bold;
 }
 
-.guided-exercise-button,
-.free-exercise-button,
+.info-button-1,
+.info-button-2,
 .guided-exp-button,
 .send-input-button {
   background-color: #4f4f4f;
@@ -398,16 +429,16 @@ button:hover {
   transition: all 0.2s;
 }
 
-.guided-exercise-button:hover,
-.free-exercise-button:hover,
+.info-button-1:hover,
+.info-button-2:hover,
 .send-input-button:hover {
   background-color: white;
   color: #4f4f4f;
   transition: all 0.2s;
 }
 
-.guided-exercise-button:active,
-.free-exercise-button:active,
+.info-button-1:active,
+.info-button-2:active,
 .guided-exp-button:active,
 .exp-grammar-button:active,
 .solution-button:enabled:active,
@@ -485,11 +516,11 @@ button:hover {
   grid-area: 8 / 1 / 9 / 7;
 }
 
-.guided-exercise-box {
+.info-button-1-box {
   grid-area: 9 / 1 / 10 / 7;
 }
 
-.free-exercise-box {
+.info-button-2-box {
   grid-area: 10 / 1 / -1 / 7;
 }
 
@@ -534,6 +565,6 @@ button:hover {
 .extra-box.disabled {
   cursor: not-allowed;
   background-color: #2e814c80;
-  border: 2px solid #2e814c80;
+  border: none;
 }
 </style>

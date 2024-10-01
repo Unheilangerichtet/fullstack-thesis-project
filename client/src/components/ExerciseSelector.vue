@@ -60,26 +60,9 @@ export default {
     },
     startExercise () {
       if (this.selectedOption && this.selectedMode && this.isInputValid) {
-        // alert(`Exercise started with: ${this.selectedOption} and ${this.selectedMode}`)
-        // Logic to start the exercise with chosen options
-        // this.$emit('start-exercise')
         const exp = this.selectedMode.concat('-', this.selectedOption)
-        console.log('mode', exp)
         this.$emit('exercise-mode', exp)
-        // this.$emit('exercise-state', true)
-        // switch (exp) {
-        //   case 'guided-path':
-        //     this.$emit('exercise-mode', exp)
-        //     break
-        //   case 'free-path':
-        //     break
-        //   case 'guided-tree':
-        //     break
-        //   case 'free-tree':
-        //     break
-        //   default:
-        //     console.log(`The Exercise Mode ${exp} does not exist`)
-        // }
+        console.log('layer info test', 'ExerciseSelector')
       }
     }
   }

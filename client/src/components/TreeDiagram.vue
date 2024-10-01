@@ -35,7 +35,8 @@ export default {
       zoomOutIcon: require('../assets/icons/zoom_out.svg'),
       resetZoomIcon: require('../assets/icons/restart_alt.svg'),
       recievedTreeData: '',
-      maxDepth: 0
+      maxDepth: 0,
+      pathToWord: []
     }
   },
   props: {
@@ -61,6 +62,13 @@ export default {
     }
   },
   methods: {
+    onExerciseModeChange (mode) {
+      if (mode === 'free-tree' || mode === 'guided-tree') {
+        const nodeNamesByDepth = this.getNodeNamesByDepth()
+        console.log('nodeNamesByDepth', nodeNamesByDepth)
+        this.$emit('node-names-by-depth', nodeNamesByDepth)
+      }
+    },
     getNodeNamesByDepth () {
       const nodes = d3.hierarchy(this.treeData, (d) => d.children).descendants()
       const nodesByDepth = {}
@@ -119,7 +127,6 @@ export default {
     resetZoom () {
       d3.select(this.$refs.treeSvg).call(this.zoom.transform, this.initialTransform)
     },
-
     createTreeDiagram () {
       this.clearTree()
       this.initializeZoom()
@@ -139,6 +146,9 @@ export default {
       this.root.x0 = this.treeContainerHeight / 2
       this.root.y0 = 100
 
+      this.pathToWord = this.findPathToWord(this.root, this.word)
+      console.log(`path from root to ${this.word}:`, this.pathToWord)
+
       if (this.root.children) {
         this.collapse(this.root)
       }
@@ -146,7 +156,6 @@ export default {
       this.update(this.root)
       this.resetZoom()
     },
-
     update (source) {
       const treeData = d3.tree().nodeSize([60, 50])(this.root)
       const duration = this.duration
@@ -209,7 +218,9 @@ export default {
         .duration(duration)
         .attr('d', (d) => this.diagonal(d, d.parent))
         .style('fill', 'none')
-        .style('stroke', '#ccc')
+        .style('stroke', d => {
+          return this.pathToWord.includes(d.parent.data.name) && this.pathToWord.includes(d.data.name) ? '#2e814c90' : '#ccc'
+        })
         .style('stroke-width', '5px')
 
         // Remove any exiting links
@@ -435,7 +446,6 @@ export default {
         d.y0 = d.y
       })
     },
-
     diagonal (s, d) {
       const path = `M ${s.y} ${s.x}
                   C ${(s.y + d.y) / 2} ${s.x},
@@ -444,7 +454,6 @@ export default {
 
       return path
     },
-
     click (event, d) {
       if (d.children) {
         d._children = d.children
@@ -455,7 +464,6 @@ export default {
       }
       this.update(d)
     },
-
     collapse (d) {
       if (d.children) {
         d._children = d.children
@@ -463,16 +471,33 @@ export default {
         d.children = null
       }
     },
-
     clearTree () {
       d3.select(this.$refs.treeSvg).selectAll('*').remove()
     },
-
     initializeZoom () {
       this.initialTransform = d3.zoomIdentity.translate(10, 0)
       d3.select(this.$refs.treeSvg).select('g').call(this.zoom.transform, this.initialTransform)
+    },
+    findPathToWord (root, word) {
+      const path = []
+      function traverse (node) {
+        path.push(node.data.name)
+        if (node.data.name === word) {
+          return true
+        }
+        if (node.children) {
+          for (const child of node.children) {
+            if (traverse(child)) {
+              return true
+            }
+          }
+        }
+        path.pop()
+        return false
+      }
+      traverse(root)
+      return path
     }
-
   }
 }
 </script>

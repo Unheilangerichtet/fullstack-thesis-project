@@ -1,7 +1,20 @@
 <template>
   <div class="content-window">
-    <InputWindow id="input-window" @word="handleWordSend" @result-data="handleDataSend" @layer-change="handleLayerChange" :language="this.language"/>
-    <OutputWindow ref="outputWindow" id="output-window" :receivedWord="wordFromInput" :receivedData="dataFromInput"/>
+    <InputWindow
+      id="input-window"
+      @word="handleWordSend"
+      @result-data="handleDataSend"
+      @layer-change="handleLayerChange"
+      @exercise-mode="handleExerciseMode"
+      :language="this.language"
+      :node-names-by-depth="this.nodeNamesByDepth"/>
+    <OutputWindow
+      ref="outputWindow"
+      id="output-window"
+      :receivedWord="wordFromInput"
+      :receivedData="dataFromInput"
+      :exerciseMode="exerciseMode"
+      @node-names-by-depth="handleNodeNamesByDepth"/>
   </div>
 </template>
 
@@ -16,13 +29,18 @@ export default {
     return {
       dataFromInput: '',
       wordFromInput: '',
-      layerChange: 0
+      layerChange: 0,
+      exerciseMode: '',
+      nodeNamesByDepth: []
     }
   },
   props: {
     language: String
   },
   methods: {
+    handleNodeNamesByDepth (nodeNamesByDepth) {
+      this.nodeNamesByDepth = nodeNamesByDepth
+    },
     handleDataSend (data) {
       console.log('Content.vue has recieved data')
       this.dataFromInput = data
@@ -34,6 +52,9 @@ export default {
     handleLayerChange (direction) {
       this.$refs.outputWindow.handleLayerChange(direction)
       console.log('handleLayerChange in Content.vue activated')
+    },
+    handleExerciseMode (mode) {
+      this.exerciseMode = mode
     }
   }
 }

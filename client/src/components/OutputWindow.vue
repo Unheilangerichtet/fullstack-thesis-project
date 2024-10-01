@@ -1,7 +1,12 @@
 <template>
   <div class="output-window" id="output-window">
      <div class="tree-diagram-container">
-       <TreeDiagram  ref="treeDiagram" class="tree-diagramm" :newTreeData="this.treeData" :word="receivedWord"></TreeDiagram>
+       <TreeDiagram
+        ref="treeDiagram"
+        class="tree-diagramm"
+        :newTreeData="this.treeData"
+        :word="receivedWord"
+        @node-names-by-depth="handleNodeNamesByDepth"/>
      </div>
   </div>
 </template>
@@ -22,16 +27,28 @@ export default {
       type: Object,
       required: true
     },
-    receivedWord: ''
+    receivedWord: '',
+    exerciseMode: ''
   },
   watch: {
     receivedData () {
       this.onPropChange()
+    },
+    exerciseMode () {
+      this.handleExerciseModeChange()
     }
   },
   methods: {
+    handleNodeNamesByDepth (nodeNamesByDepth) {
+      console.log('layer info test:', 'nodes in OutputWindow')
+      this.$emit('node-names-by-depth', nodeNamesByDepth)
+    },
     handleLayerChange (direction) {
       this.$refs.treeDiagram.onLayerChange(direction)
+    },
+    handleExerciseModeChange () {
+      console.log('layer info test:', 'mode in OutputWindow')
+      this.$refs.treeDiagram.onExerciseModeChange(this.exerciseMode)
     },
     onPropChange () {
       const outputWindowDiv = document.getElementById('output-window')
