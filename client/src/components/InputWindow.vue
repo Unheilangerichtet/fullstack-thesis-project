@@ -1,6 +1,6 @@
 <template>
   <div class="input-window-wrapper">
-    <div class="input-window-heading">{{inputTxt}}</div>
+    <!-- <div class="input-window-heading">{{inputTxt}}</div> -->
     <div class="input-window">
       <div class="grid-item exp-grammars-box">
         <div class="dropdown">
@@ -70,8 +70,8 @@
       <div class="grid-item info-button-2-box">
         <button class="info-button-2">{{ infoButton2Txt }}</button>
       </div>
-      <ExerciseSelector class="exercise-selector-component" :isInputValid="this.isInputValid" @exercise-mode="enableExerciseInput"></ExerciseSelector>
-      <ControlPanel ref="controlPanel" class="control-panel-wrapper" @layer-change="handleLayerChange"></ControlPanel>
+      <ExerciseSelector class="exercise-selector-component" :isInputValid="this.isInputValid" @exercise-mode="enableExerciseInput" :language="this.language"></ExerciseSelector>
+      <ControlPanel ref="controlPanel" class="control-panel-wrapper" @layer-change="handleLayerChange" :language="this.language"></ControlPanel>
       <div class="grid-item extra-box-wrapper" v-show="showExerciseInputBox" :disabled=!isExerciseModeValid>
         <div class="extra-box" :class="{disabled: !this.isExerciseModeValid}">
           <div class="excercise-input-box-heading" :disabled=!isExerciseModeValid>{{ excerciseInputBoxHeading }}</div>
@@ -334,7 +334,12 @@ export default {
   font-size: medium;
   color: white;
 }
-
+a {
+  cursor: pointer;
+}
+div {
+  cursor: default;
+}
 textarea {
   outline: none;
   resize: none;
@@ -379,8 +384,8 @@ textarea {
 
 .grammar-box,
 .word-box {
-  background-color: #2e814c;
-  border: 2px solid #2e814c;
+  background-color: var(--lmu-green);
+  border: 2px solid var(--lmu-green);
   border-radius: 3px;
   height: 100%;
 }
@@ -398,8 +403,8 @@ textarea {
 }
 .exp-grammar-button,
 .solution-button {
-  background-color: #2e814c;
-  border: 2px solid #2e814c;
+  background-color: var(--lmu-green);
+  border: 2px solid var(--lmu-green);
   border-radius: 3px;
   font-weight: bold;
 }
@@ -408,8 +413,8 @@ textarea {
 .info-button-2,
 .guided-exp-button,
 .send-input-button {
-  background-color: #4f4f4f;
-  border: 2px solid #4f4f4f;
+  background-color: var(--lmu-gray);
+  border: 2px solid var(--lmu-gray);
   border-radius: 3px;
   font-weight: bold;
 }
@@ -425,16 +430,16 @@ button:hover {
 .exp-grammar-button:hover,
 .solution-button:enabled:hover,
 .send-input-button:hover {
-  background-color: white;
-  color: #2e814c;
+  background-color: var(--lmu-light-gray);
+  color: var(--lmu-green);
   transition: all 0.2s;
 }
 
 .info-button-1:hover,
 .info-button-2:hover,
 .send-input-button:hover {
-  background-color: white;
-  color: #4f4f4f;
+  background-color: var(--lmu-light-gray);
+  color: var(--lmu-gray);
   transition: all 0.2s;
 }
 
@@ -456,7 +461,7 @@ button:hover {
 
 .dropdown-content {
   position: absolute;
-  background-color: #2e814c;
+  background-color: rgba(46, 129, 76, 0.85);
   width: 100%;
 }
 
@@ -466,7 +471,7 @@ button:hover {
   padding: 10px 15px;
 }
 .dropdown a:hover {
-  background-color: #297244;
+  background-color: var(--lmu-green);
 }
 
 .input-window-wrapper {
@@ -475,10 +480,8 @@ button:hover {
   flex-direction: column;
 
   width: 40%;
-  margin: 7px;
-  border: 2px solid #4f4f4f;
   border-radius: 3px;
-  background-color: white;
+  background-color: var(--lmu-light-gray);
 }
 
 .input-window {
@@ -493,8 +496,8 @@ button:hover {
 .input-window-heading {
   width: 100px;
   height: 25px;
-  background-color: #4f4f4f;
-  border: 2px solid #4f4f4f;
+  background-color: var(--lmu-gray);
+  border: 2px solid var(--lmu-gray);
   border-bottom-right-radius: 3px;
   display: grid;
   align-items: center;
@@ -548,8 +551,8 @@ button:hover {
 }
 
 .extra-box {
-  background-color: #2e814c;
-  border: 2px solid #2e814c;
+  background-color: var(--lmu-green);
+  border: 2px solid var(--lmu-green);
   border-radius: 3px;
   height: 100%;
 }

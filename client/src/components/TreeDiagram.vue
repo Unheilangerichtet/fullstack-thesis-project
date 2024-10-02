@@ -525,8 +525,8 @@ path {
 
 svg#treeSVG {
   display: block;
-  min-width: 100.1%;
-  min-width: 100.1%;
+  min-width: 100%;
+  min-width: 100%;
 }
 
 .zoom-buttons {

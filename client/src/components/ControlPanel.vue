@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <div class="control-box">
-            <div class="layer-heading">LAYER</div>
+            <div class="layer-heading">{{ controlPanelHeading }}</div>
             <div class="layer-buttons-container">
                 <button id="layerBackButton" @click="layerButtonsFunction('back')">
                     <img v-bind:src="LayerBackIcon" id="LayerBackIcon">
@@ -22,13 +22,24 @@ export default {
       arrowForwardIcon: require('../assets/icons/arrow_forward.svg'),
       arrowBackIcon: require('../assets/icons/arrow_back.svg'),
       LayerForwardIcon: require('../assets/icons/double_arrow_forward.svg'),
-      LayerBackIcon: require('../assets/icons/double_arrow_back.svg')
-
+      LayerBackIcon: require('../assets/icons/double_arrow_back.svg'),
+      controlPanelHeading: 'LAYER'
+    }
+  },
+  props: {
+    language: String
+  },
+  watch: {
+    language () {
+      this.onLanguageChange()
     }
   },
   methods: {
     layerButtonsFunction (direction) {
       (direction === 'back') ? this.$emit('layer-change', -1) : this.$emit('layer-change', 1)
+    },
+    onLanguageChange () {
+      this.controlPanelHeading = this.language === 'EN' ? 'LAYER' : 'EBENE'
     }
   }
 }
@@ -39,8 +50,8 @@ export default {
     padding: 5px;
 }
 .control-box {
-    background-color:#4F4F4F;
-    border: 2px solid #4F4F4F;
+    background-color:var(--lmu-gray);
+    border: 2px solid var(--lmu-gray);
     border-radius: 3px;
     height: 100%;
 

@@ -1,5 +1,6 @@
 <template>
   <div class="output-window" id="output-window">
+    <div class="output-window-heading">{{outputTxt}}</div>
      <div class="tree-diagram-container">
        <TreeDiagram
         ref="treeDiagram"
@@ -19,7 +20,8 @@ export default {
   data () {
     return {
       relationsArray: [],
-      treeData: ''
+      treeData: '',
+      outputTxt: 'OUTPUT'
     }
   },
   props: {
@@ -114,34 +116,39 @@ export default {
 <style>
 .output-window {
     width: 60%;
-    margin: 7px;
+    margin: 10px;
 
-    border: 2px solid #4F4F4F;
+    border: 2px solid var(--lmu-gray);
     border-radius: 3px;
+    box-shadow: inset 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
 .output-window-true-styles {
-  border: 2px solid green;
+  border: 2px solid rgb(0, 136, 58,0.5);
   border-radius: 3px;
+  box-shadow: inset 0 0 10px 5px rgba(0, 136, 58, 0.2);
 }
 
 .output-window-false-styles {
-  border: 2px solid red;
+  border: 2px solid rgb(224, 41, 65,0.5);
   border-radius: 3px;
+  box-shadow: inset 0 0 10px 5px rgba(224, 41, 65, 0.2);
 }
 
 .output-window-heading {
-    position: relative;
+    position: absolute;
     width: 100px;
     height: 25px;
-    background-color: #4F4F4F;
+    background-color: var(--lmu-gray);
 
-    border: 2px solid #4F4F4F;
+    border: 2px solid var(--lmu-gray);
     border-bottom-right-radius: 3px;
 
     display: grid;
     align-items: center;
-    color: white
+    color: white;
+    font-weight: bold;
+    z-index: 10;
 }
 
 .test-paragraph {

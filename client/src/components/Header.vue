@@ -1,13 +1,20 @@
 <template>
-  <div class="generalheader">
-    <img v-bind:src="lmuLogo" id="lmu-logo" />
-    <div class="header-flag">
-      <div class="header-text">
-        <br />{{headerTxt}}
+  <div>
+    <div class="generalheader">
+      <img v-bind:src="lmuLogo" id="lmu-logo" />
+      <div class="header-flag">
+        <div class="header-text">
+          <br />{{headerTxt}}
+        </div>
+        <div class="language-button-container">
+          <button class="language-button" @click="changeLanguage()">{{ language }}</button>
+        </div>
       </div>
-      <div class="language-button-container">
-        <button class="language-button" @click="changeLanguage()">{{ language }}</button>
-      </div>
+    </div>
+    <div class="wave">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+      </svg>
     </div>
   </div>
 </template>
@@ -21,6 +28,9 @@ export default {
       language: 'EN',
       headerTxt: 'DECISION PROBLEM FOR CONTEXT-SENSITIVE GRAMMARS'
     }
+  },
+  mounted () {
+    console.log(getComputedStyle(this.$el).getPropertyValue('--lmu-green'))
   },
   methods: {
     changeLanguage () {
@@ -40,7 +50,7 @@ export default {
 .generalheader {
   height: 80px;
   width: 100%;
-  background-color: #ffffff;
+  background-color: var(--lmu-gray);
   display: flex;
   flex-direction: row;
   align-content: center;
@@ -52,7 +62,7 @@ export default {
   margin-right: 7px;
   height: 66px;
   width: 100%;
-  background-color: #4f4f4f;
+  background-color: var(--lmu-gray);
   display: flex;
   justify-content: space-between;
   align-content: center;
@@ -78,12 +88,12 @@ export default {
   color: white;
   border: none;
   cursor: pointer;
-  background-color: #4f4f4f;
+  background-color: var(--lmu-gray);
   margin-right: 5px;
 }
 
 .language-button:hover {
-  background-color: #2e814c;
+  background-color: var(--lmu-green);
   opacity: 0.7;
 }
 
@@ -91,5 +101,25 @@ export default {
   margin: 8px;
   border-left: 2px solid white;
   border-right: 2px solid white;
+}
+
+.wave {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.wave svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 51px;
+}
+
+.wave .shape-fill {
+    fill: var(--lmu-gray);
 }
 </style>

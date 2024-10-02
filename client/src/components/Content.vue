@@ -68,10 +68,10 @@ export default {
 }
 
 #input-window {
-  width: 40%;
+  width: 39,15%;
 }
 
 #output-window {
-  width: 60%;
+  width: 60,85%;
 }
 </style>

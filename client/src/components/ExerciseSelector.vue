@@ -1,6 +1,6 @@
 <template>
   <div class="button-container">
-    <div class="row exercise-selector-heading"> EXERCISE MODE</div>
+    <div class="row exercise-selector-heading">{{ exerciseSelectorHeading }}</div>
     <!-- First row: "Path" and "Tree" buttons -->
     <div class="row row-1">
       <button
@@ -42,6 +42,7 @@ export default {
     return {
       selectedOption: null, // stores 'path' or 'tree'
       selectedMode: null, // stores 'guided' or 'free'
+      exerciseSelectorHeading: 'EXERCISE SELECTOR',
       guidedModeBtnTxt: 'GUIDED',
       freeModeBtnTxt: 'FREE',
       pathModeBtnTxt: 'PATH',
@@ -49,7 +50,13 @@ export default {
     }
   },
   props: {
-    isInputValid: false
+    isInputValid: false,
+    language: String
+  },
+  watch: {
+    language () {
+      this.onLanguageChange()
+    }
   },
   methods: {
     selectOption (option) {
@@ -64,6 +71,26 @@ export default {
         this.$emit('exercise-mode', exp)
         console.log('layer info test', 'ExerciseSelector')
       }
+    },
+    onLanguageChange () {
+      switch (this.language) {
+        case 'DE':
+          this.exerciseSelectorHeading = 'ÜBUNGSAUSWAHL'
+          this.guidedModeBtnTxt = 'GEFÜHRT'
+          this.freeModeBtnTxt = 'FREI'
+          this.pathModeBtnTxt = 'PFAD'
+          this.treeModeBtnTxt = 'BAUM'
+          break
+        case 'EN':
+          this.exerciseSelectorHeading = 'EXERCISE SELECTOR'
+          this.guidedModeBtnTxt = 'GUIDED'
+          this.freeModeBtnTxt = 'FREE'
+          this.pathModeBtnTxt = 'PATH'
+          this.treeModeBtnTxt = 'TREE'
+          break
+        default:
+          console.log('unknown language!')
+      }
     }
   }
 }
@@ -76,7 +103,7 @@ export default {
   align-items: center;
 }
 .button-container {
-  background-color: #4f4f4f;
+  background-color: var(--lmu-gray);
   margin: 5px;
   padding: 7px;
   display: grid;
@@ -123,7 +150,7 @@ button {
 }
 
 button.active {
-  background-color: #2e814c; /* Active state color */
+  background-color: var(--lmu-green); /* Active state color */
   color: white;
 }
 
@@ -141,14 +168,14 @@ button.start-button {
   width: 100%;
   height: 100%;
   border-radius: 3px;
-  background-color: #2e814c;
+  background-color: var(--lmu-green);
   color: white;
   font-weight: bold;
 }
 
 button.start-button:hover:enabled {
   background-color: white;
-  color: #2e814c
+  color: var(--lmu-green);
 }
 
 button.start-button:active {
