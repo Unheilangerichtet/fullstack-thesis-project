@@ -169,7 +169,7 @@ button.start-button {
   height: 100%;
   border-radius: 3px;
   background-color: var(--lmu-green);
-  color: white;
+  color: var(--lmu-light-gray);
   font-weight: bold;
 }
 

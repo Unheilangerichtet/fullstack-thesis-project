@@ -66,7 +66,8 @@
       </div>
       <ExerciseSelector class="exercise-selector-component" :isInputValid="this.isInputValid" @exercise-mode="enableExerciseInput" :language="this.language"></ExerciseSelector>
       <ControlPanel ref="controlPanel" class="control-panel-wrapper" @layer-change="handleLayerChange" :language="this.language"></ControlPanel>
-      <div class="grid-item extra-box-wrapper" v-show="true" :disabled=!isExerciseModeValid>
+      <ExerciseFreeInput class="grid-item extra-box-wrapper" v-show="false"></ExerciseFreeInput>
+      <div class="grid-item extra-box-wrapper" v-show="showInputFieldComponent" :disabled=!isExerciseModeValid>
         <!-- v-show="showExerciseInputBox"-->
         <div class="extra-box" :class="{disabled: !this.isExerciseModeValid}">
           <div class="excercise-input-box-heading" :disabled=!isExerciseModeValid>{{ excerciseInputBoxHeading }}</div>
@@ -85,7 +86,7 @@
           </div>
         </div>
       </div>
-      <MultiSelectGrid v-show="false" id="mult-select-component"></MultiSelectGrid>
+      <MultiSelectGrid v-show="showMultiSelectComponent" id="mult-select-component"></MultiSelectGrid>
       <div class="grid-item tutorial-button-box">
         <button class="tutorial-button">{{ tutorialButtonTxt }}</button>
       </div>
@@ -99,6 +100,7 @@ import CalculationService from '../services/CalculationService'
 import InputService from '../services/InputService'
 import ExerciseSelector from './ExerciseSelector.vue'
 import MultiSelectGrid from './MultiSelectGrid.vue'
+import ExerciseFreeInput from './ExerciseFreeInput.vue'
 
 export default {
   name: 'InputWindow',
@@ -134,7 +136,9 @@ export default {
       isExerciseModeValid: false,
       exerciseMode: '',
       exerciseInput: '',
-      currentExercisedepth: 1
+      currentExercisedepth: 1,
+      showMultiSelectComponent: false,
+      showInputFieldComponent: true
     }
   },
   props: {
@@ -152,7 +156,12 @@ export default {
       console.log('nodeNamesByDepth were recieved in the Input Window!', this.nodeNamesByDepth)
     }
   },
-  components: { ControlPanel, ExerciseSelector, MultiSelectGrid },
+  components: {
+    ControlPanel,
+    ExerciseSelector,
+    MultiSelectGrid,
+    ExerciseFreeInput
+  },
   computed: {
     isSolutionButtonDisabled () {
       return !this.startsymbolValue ||
@@ -164,21 +173,24 @@ export default {
   },
   methods: {
     sendExerciseInput () {
-      if (this.exerciseMode === 'guided-tree') {
-        this.guidedTreeExercise()
+      if (this.exerciseMode === 'free-tree') {
+        this.freeTreeExercise()
       }
     },
-    guidedTreeExercise () {
+    freeTreeExercise () {
       let depth = this.currentExercisedepth
-      const result = this.isInputCorrect(this.exerciseInput, this.nodeNamesByDepth[depth])
-      if (result) {
-        this.$refs.controlPanel.layerButtonsFunction(1) // go one layer forward
+      const resultIsCorrect = this.isInputCorrect(this.exerciseInput, this.nodeNamesByDepth[depth])
+      if (resultIsCorrect) {
+        this.$refs.controlPanel.layerButtonsFunction(1)
       } else {
         alert('the input was wrong')
       }
       ++this.currentExercisedepth
-      // Implement the Logic for the Exercise Mode guided-path
     },
+    // guidedTreeExrecise () {
+    //   let depth = this.currentExercisedepth
+    //   const result = this.isSelectionCorrect()
+    // },
     isInputCorrect (str1, array2) {
       const array1 = str1.split(',').map(word => word.trim())
       const set1 = new Set(array1)
@@ -189,8 +201,26 @@ export default {
     },
     async enableExerciseInput (mode) {
       await this.solutionFunction()
-      console.log('exercise-mode', mode)
-      console.log('layer info test', 'InputWindow')
+      switch (mode) {
+        case 'guided-path':
+          this.showMultiSelectComponent = true
+          this.showInputFieldComponent = false
+          break
+        case 'free-path':
+          this.showMultiSelectComponent = false
+          this.showInputFieldComponent = true
+          break
+        case 'guided-tree':
+          this.showMultiSelectComponent = true
+          this.showInputFieldComponent = false
+          break
+        case 'free-tree':
+          this.showMultiSelectComponent = false
+          this.showInputFieldComponent = true
+          break
+        default:
+          console.log('unknown exercise mode:', mode)
+      }
       this.exerciseMode = mode
       this.isExerciseModeValid = true
       this.$emit('exercise-mode', mode)
@@ -536,6 +566,10 @@ button:hover {
   grid-area: 5 / 7 / 10 / -1;
 }
 
+#mult-select-component {
+  grid-area: 5 / 7 / 10 / -1;
+}
+
 .grid-item {
   padding: 5px;
 }
@@ -570,11 +604,5 @@ button:hover {
   cursor: not-allowed;
   background-color: #2e814c80;
   border: none;
-}
-
-#mult-select-component {
-  grid-area: 5 / 7 / 10 / -1;
-  max-width: 100%;
-  max-height: 100%;
 }
 </style>

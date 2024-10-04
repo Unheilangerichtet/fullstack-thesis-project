@@ -1,16 +1,5 @@
 <template>
   <div id="tree-diagram">
-    <!-- <div class="zoom-buttons">
-      <button @click="zoomIn">
-        <img v-bind:src="zoomInIcon" id="zoomInIcon">
-      </button>
-      <button @click="zoomOut">
-        <img v-bind:src="zoomOutIcon" id="zoomOutIcon">
-      </button>
-      <button @click="resetZoom">
-        <img v-bind:src="resetZoomIcon" id="resetZoomIcon">
-      </button>
-    </div> -->
     <svg id="treeSVG" ref="treeSvg"></svg>
   </div>
 </template>
@@ -140,10 +129,7 @@ export default {
         .select(this.$refs.treeSvg)
         .attr('width', this.treeContainerWidth)
         .attr('height', this.treeContainerHeight)
-        .attr('background', 'red')
         .append('g')
-        // .call(this.zoom) // changes for zoom
-        // .append('g')
 
       this.root = d3.hierarchy(this.treeData, (d) => d.children)
       this.root.x0 = this.treeContainerHeight / 2
