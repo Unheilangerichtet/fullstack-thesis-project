@@ -366,13 +366,13 @@ export default {
           if (d.data.name.length > this.word.length) {
             return '#ff5858'
           } else if (d._children) {
-            return 'lightsteelblue'
+            return '#070087'
           } else if (d.children) {
-            return '#ccc'
+            return '#232323'
           } else if (this.word === d.data.name) {
-            return 'lightgreen'
+            return '#00883A'
           } else {
-            return 'darkorange'
+            return '#870A00'
           }
         })
         .attr('filter', 'url(#drop-shadow)')
@@ -385,6 +385,8 @@ export default {
         .attr('y', 0)
         .attr('text-anchor', 'middle')
         .style('font-size', '18px')
+        .style('font-weight', '600')
+        .style('fill', '#f5f5f5')
         .text((d) => d.data.name)
         .attr('cursor', 'pointer')
 
@@ -403,23 +405,23 @@ export default {
         .attr('width', function (d) { return Math.max(50, this.nextSibling.getBBox().width + 10) })
         .attr('height', 50)
         .attr('x', function (d) { return -Math.max(25, (this.nextSibling.getBBox().width + 10) / 2) })
-        .attr('rx', 10) // Set rounded corners
-        .attr('ry', 10) // Set rounded corners
+        .attr('rx', 50) // Set rounded corners
+        .attr('ry', 50) // Set rounded corners
         .style('fill', d => {
           if (d.data.name.length > this.word.length) {
             return '#ff5858'
           } else if (d._children) {
-            return 'lightsteelblue'
+            return '#070087'
           } else if (d.children) {
-            return '#ccc'
+            return '#232323'
           } else if (this.word === d.data.name) {
-            return 'lightgreen'
+            return '#00883A'
           } else {
-            return 'darkorange'
+            return '#870A00'
           }
         })
         .attr('cursor', 'pointer')
-        .style('box-shadow', '0 3px 10px #00000033')
+        .style('box-shadow', '0 3px 10px #232323')
 
         // Remove any exiting nodes
       const nodeExit = node

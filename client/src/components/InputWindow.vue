@@ -64,15 +64,10 @@
           {{ solutionButtonTxt }}
         </button>
       </div>
-      <div class="grid-item info-button-1-box">
-        <button class="info-button-1">{{ infoButton1Txt }}</button>
-      </div>
-      <div class="grid-item info-button-2-box">
-        <button class="info-button-2">{{ infoButton2Txt }}</button>
-      </div>
       <ExerciseSelector class="exercise-selector-component" :isInputValid="this.isInputValid" @exercise-mode="enableExerciseInput" :language="this.language"></ExerciseSelector>
       <ControlPanel ref="controlPanel" class="control-panel-wrapper" @layer-change="handleLayerChange" :language="this.language"></ControlPanel>
-      <div class="grid-item extra-box-wrapper" v-show="showExerciseInputBox" :disabled=!isExerciseModeValid>
+      <div class="grid-item extra-box-wrapper" v-show="true" :disabled=!isExerciseModeValid>
+        <!-- v-show="showExerciseInputBox"-->
         <div class="extra-box" :class="{disabled: !this.isExerciseModeValid}">
           <div class="excercise-input-box-heading" :disabled=!isExerciseModeValid>{{ excerciseInputBoxHeading }}</div>
           <textarea
@@ -90,6 +85,10 @@
           </div>
         </div>
       </div>
+      <MultiSelectGrid v-show="false" id="mult-select-component"></MultiSelectGrid>
+      <div class="grid-item tutorial-button-box">
+        <button class="tutorial-button">{{ tutorialButtonTxt }}</button>
+      </div>
     </div>
   </div>
 </template>
@@ -99,6 +98,7 @@ import ControlPanel from './ControlPanel.vue'
 import CalculationService from '../services/CalculationService'
 import InputService from '../services/InputService'
 import ExerciseSelector from './ExerciseSelector.vue'
+import MultiSelectGrid from './MultiSelectGrid.vue'
 
 export default {
   name: 'InputWindow',
@@ -116,8 +116,7 @@ export default {
       expGrammarTxt: 'EXAMPLE GRAMMARS',
       inputBoxTxt: 'GRAMMAR & WORD',
       solutionButtonTxt: 'SHOW SOLUTION',
-      infoButton1Txt: 'INFO BUTTON 1',
-      infoButton2Txt: 'INFO BUTTON 2',
+      tutorialButtonTxt: 'TUTORIAL',
       expGrammar1txt: 'abc Grammar',
       expGrammar2txt: 'Even-Length Palindrome Grammar',
       expGrammar3txt: 'Balanced Parenthesis',
@@ -153,7 +152,7 @@ export default {
       console.log('nodeNamesByDepth were recieved in the Input Window!', this.nodeNamesByDepth)
     }
   },
-  components: { ControlPanel, ExerciseSelector },
+  components: { ControlPanel, ExerciseSelector, MultiSelectGrid },
   computed: {
     isSolutionButtonDisabled () {
       return !this.startsymbolValue ||
@@ -215,8 +214,6 @@ export default {
           this.expGrammarTxt = 'BEISPIEL GRAMMATIKEN'
           this.inputBoxTxt = 'GRAMMATIK & WORT'
           this.solutionButtonTxt = 'ZEIGE LÖSUNG'
-          this.infoButton1Txt = 'INFO KNOPF 1'
-          this.infoButton2Txt = 'INFO KNOPF 2'
           this.expGrammar1txt = 'abc Grammatik'
           this.expGrammar2txt = 'Palidrome gerader Länge'
           this.expGrammar3txt = 'ausgewogene Klammern'
@@ -236,8 +233,6 @@ export default {
           this.expGrammarTxt = 'EXAMPLE GRAMMARS'
           this.inputBoxTxt = 'GRAMMAR & WORD'
           this.solutionButtonTxt = 'SHOW SOLUTION'
-          this.infoButton1Txt = 'INFO BUTTON 1'
-          this.infoButton2Txt = 'INFO BUTTON 2'
           this.expGrammar1txt = 'abc Grammar'
           this.expGrammar2txt = 'Even-Length Palindrome Grammar'
           this.expGrammar3txt = 'Balanced Parenthesis'
@@ -334,6 +329,9 @@ export default {
   font-size: medium;
   color: white;
 }
+textarea {
+  font-size: 15px;
+}
 a {
   cursor: pointer;
 }
@@ -345,6 +343,10 @@ textarea {
   resize: none;
   color: black;
   flex-grow: 1;
+}
+
+.input-window {
+  height: 100%;
 }
 
 .grammar-box-heading ,
@@ -384,14 +386,18 @@ textarea {
 
 .grammar-box,
 .word-box {
-  background-color: var(--lmu-green);
-  border: 2px solid var(--lmu-green);
+  background-color: var(--lmu-gray);
+  border: 2px solid var(--lmu-gray);
   border-radius: 3px;
   height: 100%;
 }
 
-.info-button-1,
-.info-button-2,
+.tutorial-button-box {
+  width: 100%;
+  height: 100%;
+}
+
+.tutorial-button,
 .guided-exp-button,
 .exp-grammar-button,
 .solution-button,
@@ -401,7 +407,7 @@ textarea {
   width: 100%;
   height: 100%;
 }
-.exp-grammar-button,
+
 .solution-button {
   background-color: var(--lmu-green);
   border: 2px solid var(--lmu-green);
@@ -409,8 +415,8 @@ textarea {
   font-weight: bold;
 }
 
-.info-button-1,
-.info-button-2,
+.exp-grammar-button,
+.tutorial-button,
 .guided-exp-button,
 .send-input-button {
   background-color: var(--lmu-gray);
@@ -435,16 +441,14 @@ button:hover {
   transition: all 0.2s;
 }
 
-.info-button-1:hover,
-.info-button-2:hover,
+.tutorial-button:hover,
 .send-input-button:hover {
   background-color: var(--lmu-light-gray);
   color: var(--lmu-gray);
   transition: all 0.2s;
 }
 
-.info-button-1:active,
-.info-button-2:active,
+.tutorial-button:active,
 .guided-exp-button:active,
 .exp-grammar-button:active,
 .solution-button:enabled:active,
@@ -505,7 +509,7 @@ button:hover {
 
 .exercise-selector-component {
   padding: 5xp;
-  grid-area: 3 / 7 / 7 / -1;
+  grid-area: 1 / 7 / 5 / -1;
 }
 
 .exp-grammars-box {
@@ -520,20 +524,16 @@ button:hover {
   grid-area: 8 / 1 / 9 / 7;
 }
 
-.info-button-1-box {
-  grid-area: 9 / 1 / 10 / 7;
-}
-
-.info-button-2-box {
-  grid-area: 10 / 1 / -1 / 7;
+.tutorial-button-box {
+  grid-area: 10 / 7 / -1 / -1;
 }
 
 .control-panel-wrapper {
-  grid-area: 1 / 7 / 3 / -1;
+  grid-area: 9 / 1 / -1 / 7;
 }
 
 .extra-box-wrapper {
-  grid-area: 7 / 7 / -1 / -1;
+  grid-area: 5 / 7 / 10 / -1;
 }
 
 .grid-item {
@@ -570,5 +570,11 @@ button:hover {
   cursor: not-allowed;
   background-color: #2e814c80;
   border: none;
+}
+
+#mult-select-component {
+  grid-area: 5 / 7 / 10 / -1;
+  max-width: 100%;
+  max-height: 100%;
 }
 </style>

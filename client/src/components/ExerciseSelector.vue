@@ -151,12 +151,12 @@ button {
 
 button.active {
   background-color: var(--lmu-green); /* Active state color */
-  color: white;
+  color: var(--lmu-light-gray);
 }
 
 .row-3 {
   margin-top: 8px;
-  background-color: white;
+  background-color: var(--lmu-light-gray);
   border-radius: 5px;
 }
 
@@ -179,8 +179,6 @@ button.start-button:hover:enabled {
 }
 
 button.start-button:active {
-  /* transform: translateY(4px);
-  font-size: medium; */
   font-size: small;
   transition: all 0.2s;
 }

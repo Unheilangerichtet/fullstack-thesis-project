@@ -12,37 +12,55 @@
       <div class="tile-container">
         <div class="tile">
           <div class="front">{{ TileHaeder1 }}</div>
-          <div class="back">{{ TileTxt1 }}</div>
+          <div class="back">
+            {{ TileTxt1 }}
+            <router-link :to="{ path: '/info', hash: '#info-section-1' }">learn more</router-link>
+          </div>
         </div>
       </div>
       <div class="tile-container">
         <div class="tile">
           <div class="front">{{ TileHaeder2 }}</div>
-          <div class="back">{{ TileTxt2 }}</div>
+          <div class="back">
+            {{ TileTxt2 }}
+            <router-link :to="{ path: '/info', hash: '#info-section-2' }">learn more</router-link>
+          </div>
         </div>
       </div>
       <div class="tile-container">
         <div class="tile">
           <div class="front">{{ TileHaeder3 }}</div>
-          <div class="back">{{ TileTxt3 }}</div>
+          <div class="back">
+            {{ TileTxt3 }}
+            <router-link :to="{ path: '/info', hash: '#info-section-3' }">learn more</router-link>
+          </div>
         </div>
       </div>
       <div class="tile-container">
         <div class="tile">
           <div class="front">{{ TileHaeder4 }}</div>
-          <div class="back">{{ TileTxt4 }}</div>
+          <div class="back">
+            {{ TileTxt4 }}
+            <router-link :to="{ path: '/info', hash: '#info-section-4' }">learn more</router-link>
+          </div>
         </div>
       </div>
       <div class="tile-container">
         <div class="tile">
           <div class="front">{{ TileHaeder5 }}</div>
-          <div class="back">{{ TileTxt5 }}</div>
+          <div class="back">
+            {{ TileTxt5 }}
+            <router-link :to="{ path: '/info', hash: '#info-section-5' }">learn more</router-link>
+          </div>
         </div>
       </div>
       <div class="tile-container">
         <div class="tile">
           <div class="front">{{ TileHaeder6 }}</div>
-          <div class="back">{{ TileTxt6 }}</div>
+          <div class="back">
+              {{ TileTxt6 }}
+              <router-link :to="{ path: '/info', hash: '#info-section-6' }">learn more</router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -91,6 +109,9 @@ export default {
 </script>
 
 <style scoped>
+html {
+  scroll-behavior: smooth;
+}
 .tile-section-wrapper {
   width: 100%;
   height: 500px;
@@ -136,14 +157,14 @@ export default {
 
 .front {
   background-color: var(--lmu-gray);
-  color: white;
+  color: var(--lmu-light-gray);
   font-weight: bold;
 }
 
 .back {
   /* background-color: #297244; */
   background-color: #00883A;
-  color: white;
+  color: var(--lmu-light-gray);
   transform: rotateY(180deg); /* Initially hidden by rotating 180 degrees */
   font-size:medium;
   font-weight: bold;
@@ -185,5 +206,12 @@ export default {
 }
 #layer1Img {
   width: 100%;
+}
+
+a {
+  color: darkorange;
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
 }
 </style>
