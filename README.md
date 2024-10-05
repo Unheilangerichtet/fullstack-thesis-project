@@ -7,6 +7,7 @@ A Vue.js / Express web application for visualizing the algorithm that decides th
 3. the Api uses axios to send the http requst to the server
 
 #### How to start up the project:
+1. in client und server jeweils ```npm install```
 1. move to /fullstack-thesis-project/server
 2. start the server with ```npm start``` or ```npm run start```
 3. move to /fullstack-thesis-project/client

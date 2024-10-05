@@ -1,6 +1,6 @@
 <template>
   <div class="multi-select-grid">
-    <div class="row multi-select-heading">SELECT CORRECT WORDS</div>
+    <div class="row multi-select-heading">SELECT NEXT WORD</div>
     <div class="scrollable-container">
       <div class="my-grid" id="buttonGrid">
         <div
@@ -38,17 +38,7 @@ export default {
         { value: 9, label: 'word 9' },
         { value: 10, label: 'word 10' },
         { value: 11, label: 'word 11' },
-        { value: 12, label: 'word 12' },
-        { value: 2, label: 'word 2' },
-        { value: 3, label: 'word 3' },
-        { value: 4, label: 'word 4' },
-        { value: 5, label: 'word 5' },
-        { value: 6, label: 'word 6' },
-        { value: 7, label: 'word 7' },
-        { value: 8, label: 'word 8' },
-        { value: 9, label: 'word 9' },
-        { value: 10, label: 'word 10' },
-        { value: 11, label: 'word 11' }
+        { value: 12, label: 'word 12' }
       ],
       selectedButtons: [],
       multiSelectHeading: 'SELECT CORRECT WORDS'

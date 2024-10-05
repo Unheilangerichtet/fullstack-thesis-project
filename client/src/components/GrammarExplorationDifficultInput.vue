@@ -1,17 +1,16 @@
 <template>
   <div>
-    <div class="extra-box" :class="{disabled: !this.isExerciseModeValid}">
-      <div class="excercise-input-box-heading" :disabled=!isExerciseModeValid>{{ excerciseInputBoxHeading }}</div>
+    <div class="extra-box">
+      <div class="excercise-input-box-heading">{{ excerciseInputBoxHeading }}</div>
         <textarea
           type="text"
           id="exercise-input"
           v-model="exerciseInput"
           name="exercise input"
           placeholder="Enter words that are reachable with one production"
-          :disabled=!isExerciseModeValid
         ></textarea>
         <div class="send-input-button-box">
-          <button class="send-input-button" @click="sendExerciseInput()" :disabled=!isExerciseModeValid>
+          <button class="send-input-button" @click="sendExerciseInput()">
             {{ inputButtonText }}
           </button>
         </div>
@@ -21,7 +20,7 @@
 
 <script>
 export default {
-  name: 'ExerciseInputField',
+  name: 'GrammarExplorationDifficultInput',
   data () {
     return {
       excerciseInputBoxHeading: 'EXERCISE INPUT',
@@ -55,6 +54,10 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 5px;
+  background-color: var(--lmu-green);
+  border: 2px solid var(--lmu-green);
+  border-radius: 3px;
+  height: 100%;
 }
 
 .excercise-input-box-heading{

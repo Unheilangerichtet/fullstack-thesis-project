@@ -121,7 +121,6 @@ export default {
       this.clearTree()
       d3.select(this.$refs.treeSvg).call(this.zoom)
 
-      this.margin = { top: 10, right: 10, bottom: 10, left: 10 }
       this.treeContainerWidth = d3.select('#tree-diagram').node().getBoundingClientRect().width
       this.treeContainerHeight = d3.select('#tree-diagram').node().getBoundingClientRect().height
 
