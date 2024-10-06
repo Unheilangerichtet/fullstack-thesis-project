@@ -218,6 +218,21 @@ export default {
           this.wordTextareaHeader = 'WORD'
           break
       }
+    },
+    getStartsymbolValue () {
+      return this.startsymbolValue
+    },
+    getAlphabetValue () {
+      return this.alphabetValue
+    },
+    getVariableaValue () {
+      return this.variablesValue
+    },
+    getProductionsValue () {
+      return this.productionsValue
+    },
+    getWordValue () {
+      return this.wordValue
     }
   }
 }
