@@ -2,12 +2,14 @@
   <div class="output-window" id="output-window">
     <div class="output-window-heading">{{outputTxt}}</div>
      <div class="tree-diagram-container">
-       <TreeDiagram
-        ref="treeDiagram"
-        class="tree-diagramm"
-        :newTreeData="this.treeData"
-        :word="receivedWord"
-        @node-names-by-depth="handleNodeNamesByDepth"/>
+        <TreeDiagram
+          ref="treeDiagram"
+          class="tree-diagramm"
+          :newTreeData="this.treeData"
+          :word="receivedWord"
+          @node-names-by-depth="handleNodeNamesByDepth"
+          @path-to-word="handlePathToWord"
+        />
      </div>
   </div>
 </template>
@@ -27,10 +29,16 @@ export default {
   props: {
     receivedData: {
       type: Object,
-      required: true
+      required: false // was true when working
     },
-    receivedWord: '',
-    exerciseMode: ''
+    receivedWord: {
+      type: String,
+      required: false
+    },
+    exerciseMode: {
+      type: String,
+      required: false
+    }
   },
   watch: {
     receivedData () {
@@ -42,14 +50,14 @@ export default {
   },
   methods: {
     handleNodeNamesByDepth (nodeNamesByDepth) {
-      console.log('layer info test:', 'nodes in OutputWindow')
+      console.log('nodeNamesByDepth in OutputWindow.vue')
       this.$emit('node-names-by-depth', nodeNamesByDepth)
     },
     handleLayerChange (direction) {
       this.$refs.treeDiagram.onLayerChange(direction)
     },
     handleExerciseModeChange () {
-      console.log('layer info test:', 'mode in OutputWindow')
+      console.log('handleExerciseModeChange in OutputWindow')
       this.$refs.treeDiagram.onExerciseModeChange(this.exerciseMode)
     },
     onPropChange () {

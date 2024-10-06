@@ -23,16 +23,23 @@ export default {
   name: 'GrammarExplorationDifficultInput',
   data () {
     return {
-      excerciseInputBoxHeading: 'EXERCISE INPUT',
+      excerciseInputBoxHeading: 'Words of next Layer',
       inputButtonText: 'SEND INPUT',
-      isExerciseModeValid: false
+      exerciseInput: '',
+      isExerciseModeValid: false,
+      currentExercisedepth: 1
     }
   },
   props: {
-    // needed?
+    nodeNamesByDepth: {
+      type: Array,
+      required: false
+    }
   },
   watch: {
-    // needed?
+    nodeNamesByDepth () {
+      console.log('nodeNamesByDepth in GED!')
+    }
   },
   components: {
     // needed?
@@ -42,7 +49,24 @@ export default {
   },
   methods: {
     sendExerciseInput () {
-      // Implement Logic
+      let depth = this.currentExercisedepth
+      console.log(depth)
+      console.log('nodeNamesByDepth in GED:', this.nodeNamesByDepth)
+      const resultIsCorrect = this.isInputCorrect(this.exerciseInput, this.nodeNamesByDepth[depth])
+      if (resultIsCorrect) {
+        this.$emit('correct-input', 1)
+      } else {
+        alert('the input was wrong')
+      }
+      ++this.currentExercisedepth
+    },
+    isInputCorrect (str1, array2) {
+      const array1 = str1.split(',').map(word => word.trim())
+      const set1 = new Set(array1)
+      const set2 = new Set(array2.map(word => word.trim()))
+      console.log('Set1: Input Set', Array.from(set1))
+      console.log('Set2: Solution Set', Array.from(set2))
+      return set1.size === set2.size && [...set1].every(value => set2.has(value))
     }
   }
 }

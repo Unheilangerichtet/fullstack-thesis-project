@@ -3,50 +3,47 @@
     <div class="input-window">
       <Grammar
         id="grammar-component"
+        ref="grammarComponent"
         @solution-request="handleSolutionRequest"
         @grammar-and-word-validity="handleIsGrammarInputValid"
         :language="language"
-      >
-      </Grammar>
+      />
       <ExerciseSelector
         class="exercise-selector-component"
         @exercise-mode="enableExerciseInput"
         :isGrammarInputValid="isGrammarInputValid"
         :language="language"
-      >
-      </ExerciseSelector>
+      />
       <ControlPanel
         ref="controlPanel"
         class="grid-item control-panel-wrapper"
         @layer-change="handleLayerChange"
         :language="language"
-      >
-      </ControlPanel>
+      />
       <GrammarExplorationDifficultInput
         class="grid-item grammar-exploration-difficult-component"
         v-show="showGrammarExplorationDifficultInput"
+        @correct-input="handleCorrectInputforGED"
         :disabled=!isExerciseModeValid
         :language="language"
-      >
-      </GrammarExplorationDifficultInput>
+        :nodeNamesByDepth="nodeNamesByDepth"
+      />
       <GrammarExplorationEasyInput
         class="grid-item grammar-exploration-easy-component"
         v-show="showGrammarExplorationEasyInput"
         :language="language"
-      >
-      </GrammarExplorationEasyInput>
+        :nodeNamesByDepth="nodeNamesByDepth"
+      />
       <FindPathDifficultInput
         class="grid-item find-path-difficult-component"
         v-show="showFindPathDifficultInput"
         :language="language"
-      >
-      </FindPathDifficultInput>
+      />
       <FindPathEasyInput
         class="grid-item find-path-easy-component"
         v-show="showFindPathEasyInput"
         :language="language"
-      >
-      </FindPathEasyInput>
+      />
       <div class="grid-item tutorial-button-box">
         <button class="tutorial-button">{{ tutorialButtonTxt }}</button>
       </div>
@@ -80,15 +77,7 @@ export default {
     return {
       showExerciseInputBox: true,
       toggleDropdown: false,
-      grammarValue: '',
-      startsymbolValue: '',
-      alphabetValue: '',
-      variablesValue: '',
-      productionsValue: '',
-      wordValue: '',
       tutorialButtonTxt: 'TUTORIAL',
-      excerciseInputBoxHeading: 'EXERCISE INPUT',
-      inputButtonText: 'SEND INPUT',
       isExerciseModeValid: false,
       exerciseMode: '',
       exerciseInput: '',
@@ -97,7 +86,7 @@ export default {
       showGrammarExplorationDifficultInput: true,
       showFindPathDifficultInput: false,
       showFindPathEasyInput: false,
-      isGrammarInputValid: Boolean
+      isGrammarInputValid: false
     }
   },
   props: {
@@ -105,9 +94,6 @@ export default {
     nodeNamesByDepth: []
   },
   watch: {
-    language () {
-      this.onLanguageChange()
-    },
     nodeNamesByDepth () {
       console.log('nodeNamesByDepth were recieved in the Input Window!', this.nodeNamesByDepth)
     }
@@ -115,6 +101,9 @@ export default {
   computed: {
   },
   methods: {
+    handleCorrectInputforGED (direction) {
+      this.$refs.controlPanel.layerButtonsFunction(direction)
+    },
     handleIsGrammarInputValid (validity) {
       this.isGrammarInputValid = validity
     },
@@ -180,29 +169,28 @@ export default {
       this.$emit('layer-change', direction)
     },
 
-    onLanguageChange () {
-      switch (this.language) {
-        case 'DE':
-          this.excerciseInputBoxHeading = 'ÜBUNG EINGABE'
-          this.inputButtonText = 'EINGABE SENDEN'
-          break
-        case 'EN':
-          this.excerciseInputBoxHeading = 'EXERCISE INPUT'
-          this.inputButtonText = 'SEND INPUT'
-          break
-      }
-    },
-
     chooseExpGrammar () {
       this.toggleDropdown = !this.toggleDropdown
     },
 
     async solutionFunction () {
       try {
-        CalculationService.isInputValid(this.variablesValue, this.alphabetValue, this.productionsValue, this.startsymbolValue, this.wordValue)
-        const result = await InputService.sendInput(this.productionsValue, this.startsymbolValue, this.wordValue)
+        // get Grammar & Word values form Grammar.vue component
+        const grammar = this.$refs.grammarComponent
+        const startsymbolValue = grammar.getStartsymbolValue()
+        const alphabetValue = grammar.getAlphabetValue()
+        const variablesValue = grammar.getVariableaValue()
+        const productionsValue = grammar.getProductionsValue()
+        const wordValue = grammar.getWordValue()
+        console.log(startsymbolValue, alphabetValue, variablesValue, productionsValue, wordValue) // Debugging
+        // Check if Input is Valid
+        CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
+        // Send Input to Server and await result
+        const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
+        // Send result to parent
         this.$emit('result-data', result)
-        this.$emit('word', this.wordValue)
+        this.$emit('word', wordValue)
+        // Log result
         console.log('result:', result)
       } catch (error) {
         console.log('Error:', error)

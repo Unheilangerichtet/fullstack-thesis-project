@@ -35,7 +35,6 @@
         @click="startExercise"
         :disabled="(!selectedGamemode || !selectedDifficulty) || !this.isGrammarInputValid">START</button>
     </div>
-    <!-- TODO: disable start button when grammar and word input are not valid -->
   </div>
 </template>
 

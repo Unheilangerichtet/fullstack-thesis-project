@@ -7,8 +7,8 @@
         @result-data="handleDataSend"
         @layer-change="handleLayerChange"
         @exercise-mode="handleExerciseMode"
-        :language="this.language"
-        :node-names-by-depth="this.nodeNamesByDepth"/>
+        :language="language"
+        :nodeNamesByDepth="nodeNamesByDepth"/>
       <OutputWindow
         ref="outputWindow"
         id="output-window"
@@ -18,7 +18,6 @@
         @node-names-by-depth="handleNodeNamesByDepth"/>
     </div>
     <div id="diagram-legend">
-      <!-- <div></div> -->
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-1"></circle></svg>
       <div>nodes with children</div>
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-2"></circle></svg>
@@ -53,6 +52,7 @@ export default {
   },
   methods: {
     handleNodeNamesByDepth (nodeNamesByDepth) {
+      console.log('nodeNamesByDepth in Content.vue')
       this.nodeNamesByDepth = nodeNamesByDepth
     },
     handleDataSend (data) {
@@ -68,6 +68,7 @@ export default {
       console.log('handleLayerChange in Content.vue activated')
     },
     handleExerciseMode (mode) {
+      console.log('handleExerciseMode in Content.vue')
       this.exerciseMode = mode
     }
   }
