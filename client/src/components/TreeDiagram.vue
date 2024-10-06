@@ -11,7 +11,7 @@ export default {
   name: 'TreeDiagram',
   data () {
     return {
-      i: 0,
+      i: 0, // for node IDs
       duration: 750,
       root: null,
       marginX: 220,
@@ -20,9 +20,6 @@ export default {
       svgHeight: 100,
       initialTransform: 1,
       zoom: d3.zoom().on('zoom', this.zoomed),
-      zoomInIcon: require('../assets/icons/zoom_in.svg'),
-      zoomOutIcon: require('../assets/icons/zoom_out.svg'),
-      resetZoomIcon: require('../assets/icons/restart_alt.svg'),
       recievedTreeData: '',
       maxDepth: 0,
       pathToWord: []
@@ -45,20 +42,14 @@ export default {
     }
 
   },
-  computed: {
-    margin () {
-      return {x: this.marginX, y: this.marginY}
-    }
-  },
   methods: {
-    onExerciseModeChange (mode) {
-      if (mode === 'free-tree' || mode === 'guided-tree') {
-        const nodeNamesByDepth = this.getNodeNamesByDepth()
-        console.log('nodeNamesByDepth', nodeNamesByDepth)
-        this.$emit('node-names-by-depth', nodeNamesByDepth)
-      }
+    onExerciseModeChange () {
+      console.log('onExerciseModeChange in TreeDiagram.vue called')
+      const nodeNamesByDepth = this.getNodeNamesByDepth()
+      const pathToWord = this.findPathToWord(this.root, this.word)
+      this.$emit('path-to-word', pathToWord)
+      this.$emit('node-names-by-depth', nodeNamesByDepth)
     },
-
     getNodeNamesByDepth () {
       const nodes = d3.hierarchy(this.treeData, (d) => d.children).descendants()
       const nodesByDepth = {}
@@ -108,18 +99,12 @@ export default {
     zoomed (event) {
       d3.select(this.$refs.treeSvg).select('g').attr('transform', event.transform)
     },
-    zoomIn () {
-      d3.select(this.$refs.treeSvg).select('g').transition().duration(200).call(this.zoom.scaleBy, 1.1)
-    },
-    zoomOut () {
-      d3.select(this.$refs.treeSvg).select('g').transition().duration(200).call(this.zoom.scaleBy, 0.9)
-    },
     resetZoom () {
       d3.select(this.$refs.treeSvg).transition().duration(200).call(this.zoom.transform, this.initialTransform)
     },
     createTreeDiagram () {
-      this.clearTree()
-      d3.select(this.$refs.treeSvg).call(this.zoom)
+      d3.select(this.$refs.treeSvg).selectAll('*').remove()
+      d3.select(this.$refs.treeSvg).call(this.zoom).on('dblclick.zoom', null)
 
       this.treeContainerWidth = d3.select('#tree-diagram').node().getBoundingClientRect().width
       this.treeContainerHeight = d3.select('#tree-diagram').node().getBoundingClientRect().height
@@ -142,24 +127,19 @@ export default {
       }
 
       this.update(this.root)
-      this.resetZoom()
+      // this.resetZoom()
     },
     update (source) {
       const treeData = d3.tree().nodeSize([60, 50])(this.root)
       const duration = this.duration
-      // const margin = this.margin
-
-      // const extreHeight = d3.select(this.$refs.treeSvg).select('g').node().getBBox().height
-      // this.svgHeight = 600 + extreHeight
-
       const nodes = treeData.descendants()
       const links = treeData.descendants().slice(1)
 
       // Properly adjust vertical (x) and horizontal (y) positioning with margins
-      const initialSpacing = 180 // Default spacing that d3 uses for vertical positioning
+      const initialSpacing = 180
       nodes.forEach((d) => {
-        d.y = d.depth * this.marginX + 30 // Horizontal spacing (x-axis)
-        d.x = (d.x / initialSpacing) * this.marginY // Adjust vertical spacing (y-axis)
+        d.y = d.depth * this.marginX + 30
+        d.x = (d.x / initialSpacing) * this.marginY
       })
 
       // Calculate the maximum and minimum x positions to center the tree vertically
@@ -170,8 +150,6 @@ export default {
       // Update the width of the SVG dynamically based on tree depth
       const maxDepth = Math.max(...nodes.map(d => d.depth))
       this.maxDepth = maxDepth
-      // const dynamicWidth = margin.left + margin.right + this.marginX * (maxDepth + 1)
-      // this.svgWidth = dynamicWidth < this.treeContainerWidth ? this.treeContainerWidth + 10 : dynamicWidth
 
       // Center the tree vertically and shift to the right
       const verticalShift = (this.treeContainerHeight - treeHeight) / 2 - minX
@@ -439,7 +417,6 @@ export default {
                   C ${(s.y + d.y) / 2} ${s.x},
                     ${(s.y + d.y) / 2} ${d.x},
                     ${d.y} ${d.x}`
-
       return path
     },
     click (event, d) {
@@ -458,9 +435,6 @@ export default {
         d._children.forEach(this.collapse)
         d.children = null
       }
-    },
-    clearTree () {
-      d3.select(this.$refs.treeSvg).selectAll('*').remove()
     },
     findPathToWord (root, word) {
       const path = []
