@@ -23,7 +23,7 @@
       <GrammarExplorationDifficultInput
         class="grid-item grammar-exploration-difficult-component"
         v-show="showGrammarExplorationDifficultInput"
-        @correct-input="handleCorrectInputforGED"
+        @correct-input="handleCorrectInputforGrammarExploration"
         :disabled=!isExerciseModeValid
         :language="language"
         :nodeNamesByDepth="nodeNamesByDepth"
@@ -31,8 +31,11 @@
       <GrammarExplorationEasyInput
         class="grid-item grammar-exploration-easy-component"
         v-show="showGrammarExplorationEasyInput"
+        @correct-input="handleCorrectInputforGrammarExploration"
         :language="language"
         :nodeNamesByDepth="nodeNamesByDepth"
+        :grammarValue="grammarValue"
+        :wordValue="wordValue"
       />
       <FindPathDifficultInput
         class="grid-item find-path-difficult-component"
@@ -86,7 +89,9 @@ export default {
       showGrammarExplorationDifficultInput: true,
       showFindPathDifficultInput: false,
       showFindPathEasyInput: false,
-      isGrammarInputValid: false
+      isGrammarInputValid: false,
+      grammarValue: [], // [startsymbolValue, alphabetValue, variablesValue, productionsValue]
+      wordValue: ''
     }
   },
   props: {
@@ -101,7 +106,8 @@ export default {
   computed: {
   },
   methods: {
-    handleCorrectInputforGED (direction) {
+    handleCorrectInputforGrammarExploration (direction) {
+      console.log('correct-input in InputWindow')
       this.$refs.controlPanel.layerButtonsFunction(direction)
     },
     handleIsGrammarInputValid (validity) {
@@ -182,6 +188,8 @@ export default {
         const variablesValue = grammar.getVariableaValue()
         const productionsValue = grammar.getProductionsValue()
         const wordValue = grammar.getWordValue()
+        this.grammarValue = [startsymbolValue, alphabetValue, variablesValue, productionsValue]
+        this.wordValue = wordValue
         console.log(startsymbolValue, alphabetValue, variablesValue, productionsValue, wordValue) // Debugging
         // Check if Input is Valid
         CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
@@ -198,6 +206,8 @@ export default {
     },
 
     async handleSolutionRequest (variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue) {
+      this.grammarValue = [startsymbolValue, alphabetValue, variablesValue, productionsValue]
+      this.wordValue = wordValue
       try {
         CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)

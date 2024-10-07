@@ -3,10 +3,10 @@
         <div class="control-box">
             <div class="layer-heading">{{ controlPanelHeading }}</div>
             <div class="layer-buttons-container">
-                <button id="layerBackButton" @click="layerButtonsFunction('back')">
+                <button id="layerBackButton" @click="layerButtonsFunction(-1)">
                     <img v-bind:src="LayerBackIcon" id="LayerBackIcon">
                 </button>
-                <button id="layerForwardButton" @click="layerButtonsFunction('forward')">
+                <button id="layerForwardButton" @click="layerButtonsFunction(1)">
                     <img v-bind:src="LayerForwardIcon" id="LayerForwardIcon">
                 </button>
             </div>
@@ -36,7 +36,12 @@ export default {
   },
   methods: {
     layerButtonsFunction (direction) {
-      (direction === 'back') ? this.$emit('layer-change', -1) : this.$emit('layer-change', 1)
+      console.log('layerButtonsFunction called')
+      if (direction === 1) {
+        this.$emit('layer-change', 1)
+      } else {
+        this.$emit('layer-change', -1)
+      }
     },
     onLanguageChange () {
       this.controlPanelHeading = this.language === 'EN' ? 'LAYER' : 'EBENE'

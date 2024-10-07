@@ -6,10 +6,10 @@
         <div
           class="button"
           v-for="button in buttons"
-          :key="button.value"
+          :key="button.id"
           :data-value="button.value"
-          :class="{ selected: isSelected(button.value) }"
-          @click="toggleSelect(button.value)"
+          :class="{ selected: isSelected(button.label) }"
+          @click="toggleSelect(button.label)"
         >
           {{ button.label }}
         </div>
@@ -19,6 +19,17 @@
       <button
         class="start-button" @click="start">SEND INPUT</button>
     </div>
+
+    <!-- Overlay -->
+    <div v-if="isPopupVisible" class="overlay" @click="closePopup"></div>
+    <!-- Pop-up Window -->
+    <div v-if="isPopupVisible" class="popup">
+      <p class="popup-message">Your input was incorrect. Please try again or skip.</p>
+      <div class="popup-buttons">
+        <button class="popup-btn try-again" @click="tryAgain">Try Again</button>
+        <button class="popup-btn skip" @click="skip">Skip</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -26,38 +37,169 @@
 export default {
   data () {
     return {
-      buttons: [
-        { value: 1, label: 'word 1' },
-        { value: 2, label: 'word 2' },
-        { value: 3, label: 'word 3' },
-        { value: 4, label: 'word 4' },
-        { value: 5, label: 'word 5' },
-        { value: 6, label: 'word 6' },
-        { value: 7, label: 'word 7' },
-        { value: 8, label: 'word 8' },
-        { value: 9, label: 'word 9' },
-        { value: 10, label: 'word 10' },
-        { value: 11, label: 'word 11' },
-        { value: 12, label: 'word 12' }
-      ],
+      buttons: [],
       selectedButtons: [],
-      multiSelectHeading: 'SELECT CORRECT WORDS'
+      multiSelectHeading: 'SELECT CORRECT WORDS',
+      currentExercisedepth: 1,
+      isPopupVisible: false
+    }
+  },
+  props: {
+    nodeNamesByDepth: {
+      type: Array,
+      required: false
+    },
+    grammarValue: {
+      type: Array, // [startsymbolValue, alphabetValue, variablesValue, productionsValue]
+      required: false
+    },
+    wordValue: {
+      type: String,
+      required: false
+    }
+  },
+  watch: {
+    grammarValue () {
+      console.log('grammarValue in GEE:', this.grammarValue)
+    },
+    nodeNamesByDepth () {
+      this.generateButtons()
+      console.log('nodeNamesByDepth in GrExpEasy!')
     }
   },
   methods: {
-    toggleSelect (value) {
-      const index = this.selectedButtons.indexOf(value)
+    toggleSelect (label) {
+      const index = this.selectedButtons.indexOf(label)
       if (index === -1) {
-        this.selectedButtons.push(value)
+        this.selectedButtons.push(label)
       } else {
         this.selectedButtons.splice(index, 1)
       }
     },
-    isSelected (value) {
-      return this.selectedButtons.includes(value)
+    isSelected (label) {
+      return this.selectedButtons.includes(label)
+    },
+    isSelectionCorrect () {
+      const correctWords = this.nodeNamesByDepth[this.currentExercisedepth]
+      if (correctWords.length !== this.selectedButtons.length) return false
+      return correctWords.sort().every((value, index) => value === this.selectedButtons.sort()[index])
     },
     start () {
-      alert(`You selected: ${this.selectedButtons.join(', ')}`)
+      const result = this.isSelectionCorrect()
+      if (result) {
+        this.$emit('correct-input', 1)
+        this.selectedButtons = []
+        this.currentExercisedepth++
+        this.generateButtons()
+      } else {
+        this.openPopup()
+      }
+      // alert(`You selected: ${this.selectedButtons.join(', ')} \n your selection is ${result}`)
+    },
+    findMinMaxLength () {
+      const nodeNames = this.nodeNamesByDepth[this.currentExercisedepth]
+      let minLength = this.wordValue.length
+      let maxLength = 0
+      nodeNames.forEach(name => {
+        const length = name.length
+        if (length < minLength) minLength = length
+        if (length > maxLength) maxLength = length
+      })
+      console.log('minLength, maxLength', minLength, maxLength)
+      return { minLength: minLength, maxLength: maxLength }
+    },
+    processGrammarValues () {
+      const startSymbol = this.grammarValue[0]
+      const alphabet = this.grammarValue[1]
+      const variables = this.grammarValue[2]
+
+      const alphabetArray = alphabet
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item !== '')
+      const variablesArray = variables
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item !== '' && item !== startSymbol)
+
+      const combinedArray = [...alphabetArray, ...variablesArray]
+      return combinedArray
+    },
+    generateRandomStrings () {
+      const numRandomWords = Math.max(Math.floor(this.nodeNamesByDepth[this.currentExercisedepth].length / 2), 2)
+      const chars = this.processGrammarValues()
+      const { minLength, maxLength } = this.findMinMaxLength()
+      const result = []
+      const maxAttempts = 100
+      let attempts = 0
+      while (result.length < numRandomWords && attempts < maxAttempts) {
+        const randomlength = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength
+        let randomString = ''
+
+        for (let j = 0; j < randomlength; j++) {
+          const randomIndex = Math.floor(Math.random() * chars.length)
+          randomString += chars[randomIndex]
+        }
+
+        if (!this.nodeNamesByDepth[this.currentExercisedepth].includes(randomString)) {
+          result.push(randomString)
+          attempts++
+        }
+      }
+      return result
+    },
+    generateButtons () {
+      const correctWords = this.nodeNamesByDepth[this.currentExercisedepth]
+      console.log('correctWords:', correctWords)
+      const randomWords = this.generateRandomStrings()
+      console.log('randomWords', randomWords)
+
+      this.buttons = []
+      let idCounter = 1
+
+      correctWords.forEach(word => {
+        this.buttons.push({
+          id: idCounter++,
+          label: word,
+          value: true
+        })
+      })
+
+      randomWords.forEach(word => {
+        this.buttons.push({
+          id: idCounter++,
+          label: word,
+          value: false
+        })
+      })
+
+      this.shuffleArray(this.buttons)
+    },
+    shuffleArray (array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]
+      }
+    },
+    openPopup () {
+      this.isPopupVisible = true
+    },
+    closePopup () {
+      this.isPopupVisible = false
+    },
+    tryAgain () {
+      this.selectedButtons = []
+      this.generateButtons()
+      // alert('You chose to try again!')
+      this.closePopup()
+    },
+    skip () {
+      this.$emit('correct-input', 1)
+      this.selectedButtons = []
+      this.currentExercisedepth++
+      this.generateButtons()
+      // alert('You chose to skip!')
+      this.closePopup()
     }
   }
 }
@@ -72,7 +214,6 @@ export default {
 }
 .multi-select-grid {
     display: grid;
-    /* grid-template-rows: 20% 70% 10%; */
     grid-template-rows: auto 1fr auto;
     align-items: center;
     justify-content: center;
@@ -141,4 +282,82 @@ export default {
 .row-3 {
   margin-top: 6px;
 }
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Pop-up Container */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 2px solid #ccc;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+/* Animation for fade-in effect */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Pop-up Message */
+.popup-message {
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Pop-up Buttons */
+.popup-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.popup-btn {
+  width: 100px;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  background-color: #333;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+/* Try Again Button */
+.popup-btn.try-again {
+  background-color: #4CAF50; /* Green for try again */
+}
+
+.popup-btn.try-again:hover {
+  background-color: #45a049;
+}
+
+/* Skip Button */
+.popup-btn.skip {
+  background-color: #f44336; /* Red for skip */
+}
+
+.popup-btn.skip:hover {
+  background-color: #e53935;
+}
+
 </style>
