@@ -47,6 +47,14 @@ export default {
       console.log('onExerciseModeChange in TreeDiagram.vue called')
       const nodeNamesByDepth = this.getNodeNamesByDepth()
       const pathToWord = this.findPathToWord(this.root, this.word)
+
+      const exerciseData = {
+        pathToWord: this.pathToWord,
+        nodeNamesByDepth: nodeNamesByDepth
+      }
+      this.$emit('exercise-data', exerciseData)
+      console.log('exercise-data in TreeDiagram', exerciseData.pathToWord, exerciseData.nodeNamesByDepth)
+
       this.$emit('path-to-word', pathToWord)
       this.$emit('node-names-by-depth', nodeNamesByDepth)
     },
@@ -121,6 +129,14 @@ export default {
 
       this.pathToWord = this.findPathToWord(this.root, this.word)
       console.log(`path from root to ${this.word}:`, this.pathToWord)
+      const nodeNamesByDepth = this.getNodeNamesByDepth()
+      // const pathToWord = this.findPathToWord(this.root, this.word)
+
+      const exerciseData = {
+        pathToWord: this.pathToWord,
+        nodeNamesByDepth: nodeNamesByDepth
+      }
+      this.$emit('exercise-data', exerciseData)
 
       if (this.root.children) {
         this.collapse(this.root)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="extra-box">
-      <div class="excercise-input-box-heading">{{ excerciseInputBoxHeading }}</div>
+      <div class="excercise-input-box-heading">{{ inputHeading }}</div>
         <textarea
           type="text"
           id="exercise-input"
@@ -11,38 +11,110 @@
         ></textarea>
         <div class="send-input-button-box">
           <button class="send-input-button" @click="sendExerciseInput()">
-            {{ inputButtonText }}
+            {{ inputBtnTet }}
           </button>
         </div>
     </div>
+    <Popup
+      ref="popup"
+      @popup-btn-1="handlePopupBtn1"
+      @popup-btn-2="handlePopupBtn2"
+    />
   </div>
 </template>
 
 <script>
+import Popup from './Popup.vue'
 export default {
   name: 'FindPathDifficultInput',
+  components: {Popup},
   data () {
     return {
-      excerciseInputBoxHeading: 'EXERCISE INPUT',
-      inputButtonText: 'SEND INPUT',
-      isExerciseModeValid: false
+      inputHeading: 'WRITE NEXT WORD',
+      inputBtnTet: 'SEND INPUT',
+      isExerciseModeValid: false,
+      exerciseInput: '',
+      currentExerciseDepth: 1
     }
   },
   props: {
-    // needed?
+    language: '',
+    wordValue: '',
+    grammarValue: [],
+    pathToWord: [],
+    nodeNamesByDepth: [],
+    gameState: false
   },
   watch: {
-    // needed?
-  },
-  components: {
-    // needed?
-  },
-  computed: {
-    // needed?
+    pathToWord () {
+      console.log('pathToWord in FPD', this.pathToWord)
+    },
+    language () {
+      this.onLanguageChange()
+    }
   },
   methods: {
+    newGame () {
+      this.exerciseInput = ''
+      this.currentExerciseDepth = 1
+    },
+    resetGameState () {
+      this.$emit('game-state-change', 'findPathDif')
+      this.exerciseInput = ''
+      this.currentExerciseDepth = 1
+    },
     sendExerciseInput () {
-      // Implement Logic
+      if (!this.gameState) {
+        this.$refs.popup.createOneBtnPopup(
+          'There is no active Game running',
+          'OK'
+        )
+      } else if (this.isInputCorrect()) {
+        this.$emit('correct-input', 1)
+        ++this.currentExerciseDepth
+        if (this.exerciseInput === this.wordValue) {
+          this.$refs.popup.createOneBtnPopup(
+            `Congratulations, you found the path to '${this.wordValue}'!`,
+            'OK'
+          )
+          this.resetGameState()
+        }
+      } else {
+        this.$refs.popup.createTwoBtnPopup(
+          'Your Input was wrong!',
+          'Try Again',
+          'Skip'
+        )
+      }
+    },
+    isInputCorrect () {
+      console.log('this.currentExerciseDepth', this.currentExerciseDepth)
+      console.log('this.pathToWord[this.currentExerciseDepth]', this.pathToWord[this.currentExerciseDepth])
+      return (this.exerciseInput === this.pathToWord[this.currentExerciseDepth])
+    },
+    handlePopupBtn1 () {
+      this.exerciseInput = ''
+      // document.getElementById('exercise-input').value = ''
+    },
+    handlePopupBtn2 () {
+      this.exerciseInput = ''
+      // document.getElementById('exercise-input').value = ''
+      ++this.currentExerciseDepth
+      this.$emit('correct-input', 1)
+    },
+    onLanguageChange () {
+      switch (this.language) {
+        case 'EN':
+          this.inputHeading = 'WRITE NEXT WORD'
+          this.inputBtnTxt = 'SEND INPUT'
+          break
+        case 'DE':
+          this.inputHeading = 'SCHREIBE DAS NÄCHSTE WORT AUF DEM PFAD'
+          this.inputBtnTxt = 'INPUT SENDEN'
+          break
+        default:
+          console.log('unknown language!')
+      }
     }
   }
 }

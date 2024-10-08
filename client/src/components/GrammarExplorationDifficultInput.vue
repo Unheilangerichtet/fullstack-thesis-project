@@ -14,59 +14,105 @@
             {{ inputButtonText }}
           </button>
         </div>
+        <Popup
+          ref="popup"
+          @popup-btn-1="handlePopupBtn1"
+          @popup-btn-2="handlePopupBtn2"
+        />
     </div>
   </div>
 </template>
 
 <script>
+import Popup from './Popup.vue'
+
 export default {
   name: 'GrammarExplorationDifficultInput',
+  components: {Popup},
   data () {
     return {
-      excerciseInputBoxHeading: 'Words of next Layer',
+      excerciseInputBoxHeading: 'WORDS OF NEXT LAYER',
       inputButtonText: 'SEND INPUT',
       exerciseInput: '',
       isExerciseModeValid: false,
-      currentExercisedepth: 1
+      currentExerciseDepth: 1,
+      popup: this.$refs.popup
     }
   },
   props: {
-    nodeNamesByDepth: {
-      type: Array,
-      required: false
-    }
+    nodeNamesByDepth: [],
+    language: '',
+    wordValue: '',
+    gameState: false
   },
   watch: {
     nodeNamesByDepth () {
       console.log('nodeNamesByDepth in GED!')
+    },
+    language () {
+      this.onLanguageChange()
     }
   },
-  components: {
-    // needed?
-  },
-  computed: {
-    // needed?
-  },
   methods: {
-    sendExerciseInput () {
-      let depth = this.currentExercisedepth
-      console.log(depth)
-      console.log('nodeNamesByDepth in GED:', this.nodeNamesByDepth)
-      const resultIsCorrect = this.isInputCorrect(this.exerciseInput, this.nodeNamesByDepth[depth])
-      if (resultIsCorrect) {
-        this.$emit('correct-input', 1)
-      } else {
-        alert('the input was wrong')
-      }
-      ++this.currentExercisedepth
+    resetGameState () {
+      this.$emit('game-state-change', 'grExpDif')
+      this.exerciseInput = ''
+      this.currentExerciseDepth = 1
     },
-    isInputCorrect (str1, array2) {
-      const array1 = str1.split(',').map(word => word.trim())
-      const set1 = new Set(array1)
-      const set2 = new Set(array2.map(word => word.trim()))
-      console.log('Set1: Input Set', Array.from(set1))
-      console.log('Set2: Solution Set', Array.from(set2))
-      return set1.size === set2.size && [...set1].every(value => set2.has(value))
+    sendExerciseInput () {
+      let depth = this.currentExerciseDepth
+      if (!this.gameState) {
+        this.$refs.popup.createOneBtnPopup(
+          'There is no active Game running',
+          'OK'
+        )
+      } else if (this.isInputCorrect()) {
+        this.$emit('correct-input', 1)
+        ++this.currentExerciseDepth
+        if (this.nodeNamesByDepth[depth].includes(this.wordValue)) {
+          this.$refs.popup.createOneBtnPopup(
+            `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
+            'OK'
+          )
+          this.resetGameState()
+        }
+      } else {
+        this.$refs.popup.createTwoBtnPopup(
+          `Your Input was wrong! Try Again or Skip to the next Layer`,
+          'Try Again',
+          'Skip'
+        )
+      }
+    },
+    isInputCorrect () {
+      const input = this.exerciseInput
+      const solution = this.nodeNamesByDepth[this.currentExerciseDepth]
+      const inputArray = input.split(',').map(word => word.trim())
+      const inputSet = new Set(inputArray)
+      const solutionSet = new Set(solution.map(word => word.trim()))
+      return inputSet.size === solutionSet.size && [...inputSet].every(value => solutionSet.has(value))
+    },
+    handlePopupBtn1 () {
+      document.getElementById('exercise-input').value = ''
+    },
+    handlePopupBtn2 () {
+      document.getElementById('exercise-input').value = ''
+      ++this.currentExerciseDepth
+      this.$emit('correct-input', 1)
+    },
+    onLanguageChange () {
+      switch (this.language) {
+        case 'EN':
+          this.excerciseInputBoxHeading = 'WORDS OF NEXT LAYER'
+          this.inputButtonText = 'SEND INPUT'
+          break
+        case 'DE':
+          this.excerciseInputBoxHeading = 'WÖRTER DER NÄCHSTEN SCHICHT'
+          this.inputButtonText = 'INPUT SENDEN'
+          break
+        default:
+          console.log('unknown language!')
+      }
     }
   }
 }

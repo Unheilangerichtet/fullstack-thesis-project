@@ -8,14 +8,18 @@
         @layer-change="handleLayerChange"
         @exercise-mode="handleExerciseMode"
         :language="language"
-        :nodeNamesByDepth="nodeNamesByDepth"/>
+        :exerciseData="exerciseData"
+        />
+        <!-- :nodeNamesByDepth="nodeNamesByDepth" -->
       <OutputWindow
         ref="outputWindow"
         id="output-window"
         :receivedWord="wordFromInput"
         :receivedData="dataFromInput"
         :exerciseMode="exerciseMode"
-        @node-names-by-depth="handleNodeNamesByDepth"/>
+        @node-names-by-depth="handleNodeNamesByDepth"
+        @exercise-data="handleExerciseData"
+      />
     </div>
     <div id="diagram-legend">
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-1"></circle></svg>
@@ -44,13 +48,20 @@ export default {
       wordFromInput: '',
       layerChange: 0,
       exerciseMode: '',
-      nodeNamesByDepth: []
+      nodeNamesByDepth: [],
+      exerciseData: {
+        type: Object,
+        required: false
+      }
     }
   },
   props: {
     language: String
   },
   methods: {
+    handleExerciseData (exerciseData) {
+      this.exerciseData = exerciseData
+    },
     handleNodeNamesByDepth (nodeNamesByDepth) {
       console.log('nodeNamesByDepth in Content.vue')
       this.nodeNamesByDepth = nodeNamesByDepth

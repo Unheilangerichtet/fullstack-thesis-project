@@ -9,6 +9,7 @@
           :word="receivedWord"
           @node-names-by-depth="handleNodeNamesByDepth"
           @path-to-word="handlePathToWord"
+          @exercise-data="handleExerciseData"
         />
      </div>
   </div>
@@ -49,6 +50,10 @@ export default {
     }
   },
   methods: {
+    handleExerciseData (exerciseData) {
+      console.log('exercise-data in OutputWindow.vue')
+      this.$emit('exercise-data', exerciseData)
+    },
     handleNodeNamesByDepth (nodeNamesByDepth) {
       console.log('nodeNamesByDepth in OutputWindow.vue')
       this.$emit('node-names-by-depth', nodeNamesByDepth)
@@ -58,7 +63,7 @@ export default {
     },
     handleExerciseModeChange () {
       console.log('handleExerciseModeChange in OutputWindow')
-      this.$refs.treeDiagram.onExerciseModeChange(this.exerciseMode)
+      this.$refs.treeDiagram.onExerciseModeChange()
     },
     onPropChange () {
       const outputWindowDiv = document.getElementById('output-window')

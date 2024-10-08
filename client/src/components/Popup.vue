@@ -4,8 +4,9 @@
     <div v-if="isPopupVisible" class="popup">
       <p class="popup-message">{{ popupMsgTxt }}</p>
       <div class="popup-buttons">
-        <button class="popup-btn try-again" @click="tryAgain">Try Again</button>
-        <button class="popup-btn skip" @click="skip">Skip</button>
+        <button v-show="showBtn1" class="popup-btn btn-one" @click="handleBtn1Click">{{ btn1Txt }}</button>
+        <button v-show="showBtn2" class="popup-btn btn-two" @click="handleBtn2Click">{{ btn2Txt }}</button>
+        <button v-show="showBtn3" class="popup-btn btn-three" @click="handleBtn3Click">{{ btn3Txt }}</button>
       </div>
     </div>
   </div>
@@ -18,30 +19,106 @@ export default {
       isPopupVisible: false,
       popupMsgTxt: '',
       btn1Txt: '',
-      btn2Txt: ''
+      btn2Txt: '',
+      btn3Txt: '',
+      showBtn1: true,
+      showBtn2: true,
+      showBtn3: false
     }
   },
   methods: {
     openPopup () {
+      console.log('open Popup')
       this.isPopupVisible = true
     },
     closePopup () {
       this.isPopupVisible = false
     },
-    tryAgain () {
-      alert('You chose to try again!')
+    handleBtn1Click () {
+      this.closePopup()
+      this.$emit('popup-btn-1')
+      // alert('You chose to try again!')
     },
-    skip () {
-      alert('You chose to skip!')
+    handleBtn2Click () {
+      this.closePopup()
+      this.$emit('popup-btn-2')
+      // alert('You chose to btn-two!')
+    },
+    handleBtn3Click () {
+      this.closePopup()
+      this.$emit('popup-btn-3')
     },
     setPopupMsgTxt (msg) {
+      console.log('set Popup Msg')
       this.popupMsgTxt = msg
     },
     setBtn1Txt (txt) {
+      console.log('Set Popup Btn 1 Msg')
       this.btn1Txt = txt
     },
     setBtn2Txt (txt) {
+      console.log('Set Popup Btn 2 Msg')
       this.btn2Txt = txt
+    },
+    setBtn3Txt (txt) {
+      console.log('Set Popup Btn 3 Msg')
+      this.btn3Txt = txt
+    },
+    clearAll () {
+      this.popupMsgTxt = ''
+      this.btn1Txt = ''
+      this.btn2Txt = ''
+      this.btn3Txt = ''
+      this.showBtn1 = false
+      this.showBtn2 = false
+      this.showBtn3 = false
+    },
+    removeBtn (btn) {
+      switch (btn) {
+        case 1:
+          this.btn1Txt = ''
+          this.showBtn1 = false
+          break
+        case 2:
+          this.btn3Txt = ''
+          this.showBtn2 = false
+          break
+        case 3:
+          this.btn3Txt = ''
+          this.showBtn3 = false
+          break
+        default: console.log('you try to remove an unknown button')
+      }
+    },
+    addBtn (btn) {
+      switch (btn) {
+        case 1:
+          this.showBtn1 = true
+          break
+        case 2:
+          this.showBtn2 = true
+          break
+        case 3:
+          this.showBtn3 = true
+          break
+        default: console.log('you try to remove an unknown button')
+      }
+    },
+    createTwoBtnPopup (popupTxt, btnOneTxt, btnTwoTxt) {
+      this.clearAll()
+      this.setPopupMsgTxt(popupTxt)
+      this.addBtn(1)
+      this.setBtn1Txt(btnOneTxt)
+      this.addBtn(2)
+      this.setBtn2Txt(btnTwoTxt)
+      this.openPopup()
+    },
+    createOneBtnPopup (popupTxt, btnTxt) {
+      this.clearAll()
+      this.setPopupMsgTxt(popupTxt)
+      this.addBtn(3)
+      this.setBtn3Txt(btnTxt)
+      this.openPopup()
     }
   }
 }
@@ -102,20 +179,21 @@ export default {
   transition: background-color 0.2s ease;
 }
 
-.popup-btn.try-again {
-  background-color: var(--lmu-green); /* Green for try again */
+.popup-btn.btn-one {
+  background-color: var(--lmu-gray); /* Green for try again */
 }
 
-.popup-btn.try-again:hover {
+.popup-btn.btn-one:hover,
+.popup-btn.btn-three:hover {
   background-color: #45a049;
 }
 
 /* Skip Button */
-.popup-btn.skip {
-  background-color: var(--lmu-gray); /* Red for skip */
+.popup-btn.btn-two {
+  background-color: var(--lmu-gray); /* Red for btn-two */
 }
 
-.popup-btn.skip:hover {
+.popup-btn.btn-two:hover {
   background-color: #e53935;
 }
 </style>

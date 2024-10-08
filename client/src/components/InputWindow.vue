@@ -22,30 +22,53 @@
       />
       <GrammarExplorationDifficultInput
         class="grid-item grammar-exploration-difficult-component"
-        v-show="showGrammarExplorationDifficultInput"
-        @correct-input="handleCorrectInputforGrammarExploration"
+        ref="grExpDif"
+        v-show="inputWindowState.isGrammarExplorationDifficultVisible"
+        @correct-input="handleCorrectInput"
+        @game-state-change="handleGameStateChange"
         :disabled=!isExerciseModeValid
         :language="language"
         :nodeNamesByDepth="nodeNamesByDepth"
+        :gameState="gameState.grExpDif"
+        :wordValue="wordValue"
       />
       <GrammarExplorationEasyInput
         class="grid-item grammar-exploration-easy-component"
-        v-show="showGrammarExplorationEasyInput"
-        @correct-input="handleCorrectInputforGrammarExploration"
+        ref="grExpEasy"
+        v-show="inputWindowState.isGrammarExplorationEasyVisible"
+        @correct-input="handleCorrectInput"
+        @game-state-change="handleGameStateChange"
         :language="language"
         :nodeNamesByDepth="nodeNamesByDepth"
         :grammarValue="grammarValue"
         :wordValue="wordValue"
+        :gameState="gameState.grExpEasy"
       />
       <FindPathDifficultInput
         class="grid-item find-path-difficult-component"
-        v-show="showFindPathDifficultInput"
+        ref="findPathDif"
+        v-show="inputWindowState.isFindPathDifficultVisible"
+        @correct-input="handleCorrectInput"
+        @game-state-change="handleGameStateChange"
         :language="language"
+        :nodeNamesByDepth="nodeNamesByDepth"
+        :pathToWord="pathToWord"
+        :grammarValue="grammarValue"
+        :wordValue="wordValue"
+        :gameState="gameState.findPathDif"
       />
       <FindPathEasyInput
         class="grid-item find-path-easy-component"
-        v-show="showFindPathEasyInput"
+        ref="findPathEasy"
+        v-show="inputWindowState.isFindPathEasyVisible"
+        @correct-input="handleCorrectInput"
+        @game-state-change="handleGameStateChange"
         :language="language"
+        :nodeNamesByDepth="nodeNamesByDepth"
+        :pathToWord="pathToWord"
+        :grammarValue="grammarValue"
+        :wordValue="wordValue"
+        :gameState="gameState.findPathEasy"
       />
       <div class="grid-item tutorial-button-box">
         <button class="tutorial-button">{{ tutorialButtonTxt }}</button>
@@ -85,28 +108,62 @@ export default {
       exerciseMode: '',
       exerciseInput: '',
       currentExercisedepth: 1,
-      showGrammarExplorationEasyInput: false,
-      showGrammarExplorationDifficultInput: true,
-      showFindPathDifficultInput: false,
-      showFindPathEasyInput: false,
       isGrammarInputValid: false,
       grammarValue: [], // [startsymbolValue, alphabetValue, variablesValue, productionsValue]
-      wordValue: ''
+      wordValue: '',
+      nodeNamesByDepth: [],
+      pathToWord: [],
+      gameState: {
+        grExpEasy: false,
+        grExpDif: false,
+        findPathEasy: false,
+        findPathDif: false
+      },
+      inputWindowState: {
+        isGrammarExplorationEasyVisible: false,
+        isGrammarExplorationDifficultVisible: false,
+        isFindPathEasyVisible: false,
+        isFindPathDifficultVisible: true
+      }
     }
   },
   props: {
     language: String,
-    nodeNamesByDepth: []
+    exerciseData: {
+      type: Object,
+      reqired: false
+    }
   },
   watch: {
     nodeNamesByDepth () {
       console.log('nodeNamesByDepth were recieved in the Input Window!', this.nodeNamesByDepth)
+    },
+    exerciseData () {
+      this.nodeNamesByDepth = this.exerciseData.nodeNamesByDepth
+      this.pathToWord = this.exerciseData.pathToWord
+      console.log('exerciseData in InputWindow', this.nodeNamesByDepth, this.pathToWord)
     }
   },
-  computed: {
-  },
   methods: {
-    handleCorrectInputforGrammarExploration (direction) {
+    handleGameStateChange (game) {
+      switch (game) {
+        case 'findPathDif':
+          this.gameState.findPathDif = false
+          break
+        case 'findPathEasy':
+          this.gameState.findPathEasy = false
+          break
+        case 'grExpDif':
+          this.gameState.grExpDif = false
+          break
+        case 'grExpEasy':
+          this.gameState.grExpEasy = false
+          break
+        default:
+          console.log(`game-state-change on unknown game: ${game}`)
+      }
+    },
+    handleCorrectInput (direction) {
       console.log('correct-input in InputWindow')
       this.$refs.controlPanel.layerButtonsFunction(direction)
     },
@@ -141,28 +198,40 @@ export default {
       const mode = `${gamemode}_${difficulty}`
       switch (mode) {
         case 'find-the-path_easy':
-          this.showGrammarExplorationEasyInput = false
-          this.showGrammarExplorationDifficultInput = false
-          this.showFindPathEasyInput = true
-          this.showFindPathDifficultInput = false
+          this.inputWindowState = {
+            isGrammarExplorationEasyVisible: false,
+            isGrammarExplorationDifficultVisible: false,
+            isFindPathEasyVisible: true,
+            isFindPathDifficultVisible: false
+          }
+          this.gameState = { findPathEasy: true, findPathDif: false, grExpEasy: false, grExpDif: false }
           break
         case 'find-the-path_difficult':
-          this.showGrammarExplorationEasyInput = false
-          this.showGrammarExplorationDifficultInput = false
-          this.showFindPathEasyInput = false
-          this.showFindPathDifficultInput = true
+          this.inputWindowState = {
+            isGrammarExplorationEasyVisible: false,
+            isGrammarExplorationDifficultVisible: false,
+            isFindPathEasyVisible: false,
+            isFindPathDifficultVisible: true
+          }
+          this.gameState = { findPathEasy: false, findPathDif: true, grExpEasy: false, grExpDif: false }
           break
         case 'grammar-exploration_easy':
-          this.showGrammarExplorationEasyInput = true
-          this.showGrammarExplorationDifficultInput = false
-          this.showFindPathEasyInput = false
-          this.showFindPathDifficultInput = false
+          this.inputWindowState = {
+            isGrammarExplorationEasyVisible: true,
+            isGrammarExplorationDifficultVisible: false,
+            isFindPathEasyVisible: false,
+            isFindPathDifficultVisible: false
+          }
+          this.gameState = { findPathEasy: false, findPathDif: false, grExpEasy: true, grExpDif: false }
           break
         case 'grammar-exploration_difficult':
-          this.showGrammarExplorationEasyInput = false
-          this.showGrammarExplorationDifficultInput = true
-          this.showFindPathEasyInput = false
-          this.showFindPathDifficultInput = false
+          this.inputWindowState = {
+            isGrammarExplorationEasyVisible: false,
+            isGrammarExplorationDifficultVisible: true,
+            isFindPathEasyVisible: false,
+            isFindPathDifficultVisible: false
+          }
+          this.gameState = { findPathEasy: false, findPathDif: false, grExpEasy: false, grExpDif: true }
           break
         default:
           console.log('unknown exercise mode:', mode)

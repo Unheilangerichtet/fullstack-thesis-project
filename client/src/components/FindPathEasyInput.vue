@@ -1,15 +1,15 @@
 <template>
   <div class="multi-select-grid">
-    <div class="row multi-select-heading">SELECT NEXT WORD</div>
+    <div class="row multi-select-heading"> {{ inputHeading }}</div>
     <div class="scrollable-container">
       <div class="my-grid" id="buttonGrid">
         <div
           class="button"
           v-for="button in buttons"
-          :key="button.value"
-          :data-value="button.value"
-          :class="{ selected: isSelected(button.value) }"
-          @click="toggleSelect(button.value)"
+          :key="button.label"
+          :data-value="button.label"
+          :class="{ selected: isSelected(button.label) }"
+          @click="toggleSelect(button.label)"
         >
           {{ button.label }}
         </div>
@@ -17,47 +17,135 @@
     </div>
     <div class="row row-3">
       <button
-        class="start-button" @click="start">SEND INPUT</button>
+        class="start-button" @click="start">{{ inputBtnTxt }}</button>
     </div>
+    <Popup
+      ref="popup"
+      @popup-btn-1="handlePopupBtn1"
+      @popup-btn-2="handlePopupBtn2"
+    />
   </div>
 </template>
 
 <script>
+import Popup from './Popup.vue'
+
 export default {
+  name: 'FindPathEasyInput',
+  components: {Popup},
   data () {
     return {
-      buttons: [
-        { value: 1, label: 'word 1' },
-        { value: 2, label: 'word 2' },
-        { value: 3, label: 'word 3' },
-        { value: 4, label: 'word 4' },
-        { value: 5, label: 'word 5' },
-        { value: 6, label: 'word 6' },
-        { value: 7, label: 'word 7' },
-        { value: 8, label: 'word 8' },
-        { value: 9, label: 'word 9' },
-        { value: 10, label: 'word 10' },
-        { value: 11, label: 'word 11' },
-        { value: 12, label: 'word 12' }
-      ],
-      selectedButtons: [],
-      multiSelectHeading: 'SELECT CORRECT WORDS'
+      currentExercisedepth: 1,
+      buttons: [],
+      selectedButton: '',
+      inputHeading: 'SELECT NEXT WORDS',
+      inputBtnTxt: 'SEND INPUT'
+    }
+  },
+  props: {
+    language: '',
+    wordValue: '',
+    grammarValue: [],
+    pathToWord: [],
+    nodeNamesByDepth: [],
+    gameState: false
+  },
+  watch: {
+    nodeNamesByDepth () {
+      this.currentExercisedepth = 1
+      this.generateButtons()
+    },
+    language () {
+      this.onLanguageChange()
     }
   },
   methods: {
-    toggleSelect (value) {
-      const index = this.selectedButtons.indexOf(value)
-      if (index === -1) {
-        this.selectedButtons.push(value)
-      } else {
-        this.selectedButtons.splice(index, 1)
-      }
+    toggleSelect (label) {
+      this.selectedButton = label
     },
-    isSelected (value) {
-      return this.selectedButtons.includes(value)
+    isSelected (label) {
+      return this.selectedButton === label
+    },
+    resetGameState () {
+      this.$emit('game-state-change', 'findPathEasy')
+      this.buttons = []
+      this.selectedButton = ''
+      this.currentExerciseDepth = 1
     },
     start () {
-      alert(`You selected: ${this.selectedButtons.join(', ')}`)
+      const result = this.selectedButton === this.pathToWord[this.currentExercisedepth]
+      if (!this.gameState) {
+        this.$refs.popup.createOneBtnPopup(
+          'There is no active Game running',
+          'OK'
+        )
+      } else if (result) {
+        this.$emit('correct-input', 1)
+        if (this.selectedButton === this.wordValue) {
+          this.$refs.popup.createOneBtnPopup(
+            `Congratulations, you found the path to '${this.wordValue}'!`,
+            'OK'
+          )
+          this.resetGameState()
+        } else {
+          this.selectedButton = ''
+          this.currentExercisedepth++
+          this.generateButtons()
+        }
+      } else {
+        this.$refs.popup.createTwoBtnPopup(
+          'Your Input was wrong!',
+          'Try Again',
+          'Skip'
+        )
+      }
+    },
+    handlePopupBtn1 () {
+      this.selectedButton = ''
+    },
+    handlePopupBtn2 () {
+      this.$emit('correct-input', 1)
+      this.selectedButton = ''
+      this.currentExercisedepth++
+      this.generateButtons()
+    },
+    generateButtons () {
+      const selection = this.nodeNamesByDepth[this.currentExercisedepth]
+      this.buttons = []
+      selection.forEach(word => {
+        if (word === this.wordValue) {
+          this.buttons.push({
+            label: word,
+            value: true
+          })
+        } else {
+          this.buttons.push({
+            label: word,
+            value: false
+          })
+        }
+      })
+      this.shuffleArray(this.buttons)
+    },
+    shuffleArray (array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]
+      }
+    },
+    onLanguageChange () {
+      switch (this.language) {
+        case 'EN':
+          this.inputHeading = 'SELECT NEXT WORDS'
+          this.inputBtnTxt = 'SEND INPUT'
+          break
+        case 'DE':
+          this.inputHeading = 'WÄHLE NÄCHSTES WORT AUS'
+          this.inputBtnTxt = 'INPUT SENDEN'
+          break
+        default:
+          console.log('unknown language!')
+      }
     }
   }
 }
@@ -72,7 +160,6 @@ export default {
 }
 .multi-select-grid {
     display: grid;
-    /* grid-template-rows: 20% 70% 10%; */
     grid-template-rows: auto 1fr auto;
     align-items: center;
     justify-content: center;
@@ -85,19 +172,18 @@ export default {
 }
 
 .scrollable-container {
-    max-width: 100%; /* Fixed width for the scrollable area */
-    max-height: 100%; /* Fixed height to restrict space */
-    overflow-y: scroll; /* Enable vertical scrolling */
-    border: 2px solid  var(--lmu-gray);
+    min-height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    overflow-y: scroll;
     border-radius: 3px;
-    background-color: var(--lmu-light-gray); /* Container background color */
+    background-color: var(--lmu-light-gray);
     padding: 3px;
 }
 
 .my-grid {
     position: relative;
     display: grid;
-    /* grid-template-columns: repeat(2, 100%); */
     gap: 5px;
     overflow: hidden;
     max-height: 100%;
@@ -105,9 +191,8 @@ export default {
 
 .button {
     padding: 5px;
-    border: 2px solid  var(--lmu-gray);
     border-radius: 5px;
-    background-color: #ccc;
+    background-color: #c4c4c4;
     color: var(--lmu-gray);
     cursor: pointer;
     text-align: center;

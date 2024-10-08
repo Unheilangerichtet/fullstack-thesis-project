@@ -1,6 +1,6 @@
 <template>
   <div class="multi-select-grid">
-    <div class="row multi-select-heading">SELECT CORRECT WORDS</div>
+    <div class="row multi-select-heading">{{ inputHeading }}</div>
     <div class="scrollable-container">
       <div class="my-grid" id="buttonGrid">
         <div
@@ -17,54 +17,44 @@
     </div>
     <div class="row row-3">
       <button
-        class="start-button" @click="start">SEND INPUT</button>
+        class="start-button" @click="start">{{ inputButtonText }}</button>
     </div>
-
-    <!-- Overlay -->
-    <div v-if="isPopupVisible" class="overlay" @click="closePopup"></div>
-    <!-- Pop-up Window -->
-    <div v-if="isPopupVisible" class="popup">
-      <p class="popup-message">Your input was incorrect. Please try again or skip.</p>
-      <div class="popup-buttons">
-        <button class="popup-btn try-again" @click="tryAgain">Try Again</button>
-        <button class="popup-btn skip" @click="skip">Skip</button>
-      </div>
-    </div>
+    <Popup
+      ref="popup"
+      @popup-btn-1="handlePopupBtn1"
+      @popup-btn-2="handlePopupBtn2"
+    />
   </div>
 </template>
 
 <script>
+import Popup from './Popup.vue'
 export default {
+  name: 'GrammarExplorationEasyInput',
+  components: {Popup},
   data () {
     return {
+      inputHeading: 'SELECT CORRECT WORDS',
+      inputButtonText: 'SEND INPUT',
       buttons: [],
       selectedButtons: [],
-      multiSelectHeading: 'SELECT CORRECT WORDS',
-      currentExercisedepth: 1,
+      currentExerciseDepth: 1,
       isPopupVisible: false
     }
   },
   props: {
-    nodeNamesByDepth: {
-      type: Array,
-      required: false
-    },
-    grammarValue: {
-      type: Array, // [startsymbolValue, alphabetValue, variablesValue, productionsValue]
-      required: false
-    },
-    wordValue: {
-      type: String,
-      required: false
-    }
+    nodeNamesByDepth: [],
+    grammarValue: [],
+    wordValue: '',
+    gameState: false,
+    language: ''
   },
   watch: {
-    grammarValue () {
-      console.log('grammarValue in GEE:', this.grammarValue)
+    gameState () {
+      if (this.gameState) this.generateButtons()
     },
-    nodeNamesByDepth () {
-      this.generateButtons()
-      console.log('nodeNamesByDepth in GrExpEasy!')
+    language () {
+      this.onLanguageChange()
     }
   },
   methods: {
@@ -80,24 +70,54 @@ export default {
       return this.selectedButtons.includes(label)
     },
     isSelectionCorrect () {
-      const correctWords = this.nodeNamesByDepth[this.currentExercisedepth]
+      const correctWords = this.nodeNamesByDepth[this.currentExerciseDepth]
       if (correctWords.length !== this.selectedButtons.length) return false
       return correctWords.sort().every((value, index) => value === this.selectedButtons.sort()[index])
     },
+    resetGameState () {
+      this.$emit('game-state-change', 'grExpEasy')
+      this.buttons = []
+      this.selectedButtons = []
+      this.currentExerciseDepth = 1
+    },
     start () {
-      const result = this.isSelectionCorrect()
-      if (result) {
+      if (!this.gameState) {
+        this.$refs.popup.createOneBtnPopup(
+          'There is no active Game running',
+          'OK'
+        )
+      } else if (this.isSelectionCorrect()) {
         this.$emit('correct-input', 1)
-        this.selectedButtons = []
-        this.currentExercisedepth++
-        this.generateButtons()
+        if (this.nodeNamesByDepth[this.currentExerciseDepth].includes(this.wordValue)) {
+          this.$refs.popup.createOneBtnPopup(
+            `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
+            'OK'
+          )
+          this.resetGameState()
+        } else {
+          this.selectedButtons = []
+          ++this.currentExerciseDepth
+          this.generateButtons()
+        }
       } else {
-        this.openPopup()
+        this.$refs.popup.createTwoBtnPopup(
+          `Your Selection was wrong! Try Again or Skip to the next Layer`,
+          'Try Again',
+          'Skip'
+        )
       }
-      // alert(`You selected: ${this.selectedButtons.join(', ')} \n your selection is ${result}`)
+    },
+    handlePopupBtn1 () {
+      this.selectedButtons = []
+    },
+    handlePopupBtn2 () {
+      this.selectedButtons = []
+      ++this.currentExerciseDepth
+      this.generateButtons()
+      this.$emit('correct-input', 1)
     },
     findMinMaxLength () {
-      const nodeNames = this.nodeNamesByDepth[this.currentExercisedepth]
+      const nodeNames = this.nodeNamesByDepth[this.currentExerciseDepth]
       let minLength = this.wordValue.length
       let maxLength = 0
       nodeNames.forEach(name => {
@@ -126,7 +146,7 @@ export default {
       return combinedArray
     },
     generateRandomStrings () {
-      const numRandomWords = Math.max(Math.floor(this.nodeNamesByDepth[this.currentExercisedepth].length / 2), 2)
+      const numRandomWords = Math.max(Math.floor(this.nodeNamesByDepth[this.currentExerciseDepth].length / 2), 2)
       const chars = this.processGrammarValues()
       const { minLength, maxLength } = this.findMinMaxLength()
       const result = []
@@ -141,7 +161,7 @@ export default {
           randomString += chars[randomIndex]
         }
 
-        if (!this.nodeNamesByDepth[this.currentExercisedepth].includes(randomString)) {
+        if (!this.nodeNamesByDepth[this.currentExerciseDepth].includes(randomString)) {
           result.push(randomString)
           attempts++
         }
@@ -149,7 +169,7 @@ export default {
       return result
     },
     generateButtons () {
-      const correctWords = this.nodeNamesByDepth[this.currentExercisedepth]
+      const correctWords = this.nodeNamesByDepth[this.currentExerciseDepth]
       console.log('correctWords:', correctWords)
       const randomWords = this.generateRandomStrings()
       console.log('randomWords', randomWords)
@@ -181,25 +201,19 @@ export default {
         [array[i], array[j]] = [array[j], array[i]]
       }
     },
-    openPopup () {
-      this.isPopupVisible = true
-    },
-    closePopup () {
-      this.isPopupVisible = false
-    },
-    tryAgain () {
-      this.selectedButtons = []
-      this.generateButtons()
-      // alert('You chose to try again!')
-      this.closePopup()
-    },
-    skip () {
-      this.$emit('correct-input', 1)
-      this.selectedButtons = []
-      this.currentExercisedepth++
-      this.generateButtons()
-      // alert('You chose to skip!')
-      this.closePopup()
+    onLanguageChange () {
+      switch (this.language) {
+        case 'EN':
+          this.inputHeading = 'SELECT CORRECT WORDS'
+          this.inputButtonText = 'SEND INPUT'
+          break
+        case 'DE':
+          this.inputHeading = 'WÄHLE DIE KORREKTEN WÖRTER AUS'
+          this.inputButtonText = 'INPUT SENDEN'
+          break
+        default:
+          console.log('unknown language!')
+      }
     }
   }
 }
@@ -226,19 +240,18 @@ export default {
 }
 
 .scrollable-container {
-    max-width: 100%; /* Fixed width for the scrollable area */
-    max-height: 100%; /* Fixed height to restrict space */
-    overflow-y: scroll; /* Enable vertical scrolling */
-    border: 2px solid  var(--lmu-gray);
+    min-height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    overflow-y: scroll;
     border-radius: 3px;
-    background-color: var(--lmu-light-gray); /* Container background color */
+    background-color: var(--lmu-light-gray);
     padding: 3px;
 }
 
 .my-grid {
     position: relative;
     display: grid;
-    /* grid-template-columns: repeat(2, 100%); */
     gap: 5px;
     overflow: hidden;
     max-height: 100%;
@@ -246,9 +259,8 @@ export default {
 
 .button {
     padding: 5px;
-    border: 2px solid  var(--lmu-gray);
     border-radius: 5px;
-    background-color: #ccc;
+    background-color: #c4c4c4;
     color: var(--lmu-gray);
     cursor: pointer;
     text-align: center;
@@ -262,10 +274,8 @@ export default {
 }
 
 .start-button {
-    /* padding: 10px 20px; */
     width: 100%;
     height: 100%;
-    /* margin: 5px; */
     border: none;
     border-radius: 3px;
     background-color: var(--lmu-green);
@@ -281,83 +291,6 @@ export default {
 
 .row-3 {
   margin-top: 6px;
-}
-
-/* Overlay */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-/* Pop-up Container */
-.popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border: 2px solid #ccc;
-  padding: 20px;
-  width: 300px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  opacity: 0;
-  animation: fadeIn 0.3s forwards;
-}
-
-/* Animation for fade-in effect */
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-/* Pop-up Message */
-.popup-message {
-  font-size: 16px;
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Pop-up Buttons */
-.popup-buttons {
-  display: flex;
-  justify-content: space-around;
-}
-
-.popup-btn {
-  width: 100px;
-  padding: 10px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-  background-color: #333;
-  color: white;
-  transition: background-color 0.2s ease;
-}
-
-/* Try Again Button */
-.popup-btn.try-again {
-  background-color: #4CAF50; /* Green for try again */
-}
-
-.popup-btn.try-again:hover {
-  background-color: #45a049;
-}
-
-/* Skip Button */
-.popup-btn.skip {
-  background-color: #f44336; /* Red for skip */
-}
-
-.popup-btn.skip:hover {
-  background-color: #e53935;
 }
 
 </style>
