@@ -3,7 +3,6 @@ import Api from '@/services/Api'
 // Export an object that has a register method to it
 export default {
   async sendInput (productionsValue, startsymbolValue, wordValue) {
-    console.log('Input function in service was called!') // Debugging
     const data = {
       startSymbol: String(startsymbolValue),
       productions: String(productionsValue),

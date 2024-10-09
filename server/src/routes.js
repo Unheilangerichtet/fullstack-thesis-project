@@ -11,15 +11,9 @@ module.exports = (app) => {
 
   app.post('/input', async (req, res) => {
     const {startSymbol, productions, word} = req.body;
-    console.log('---------------req.body START---------------') // Debugging 
-    console.log('startSymbol:', startSymbol);                   // Debugging
-    console.log('productions:', productions);                   // Debugging
-    console.log('word:', word);                                 // Debugging
-    console.log('---------------req.body END-----------------') // Debugging
 
     try {
       const result = await runChildProcess(word, productions)
-      console.log(`RESULT FROM GO CHILD PROCESS:\n ${result} \nRESULT END`)
       res.status(200).send(result)
     } catch (err) {
       console.error(`Error: ${err}`)
@@ -29,8 +23,8 @@ module.exports = (app) => {
 
   function runChildProcess(word, productions) {
     return new Promise((resolve, reject) => {
-      const goExecutable = path.join(__dirname, 'executables/childProcessTwoLinux');
-      console.log("word: ", word)
+      const goExecutable = path.join(__dirname, 'executables/CP-Mark4.exe');
+      // const goExecutable = path.join(__dirname, 'executables/childProcessTwoLinux');
       const grammarJSON = formatProductions(productions);
 
       // Spawn the Go executable with the provided arguments
@@ -83,9 +77,6 @@ module.exports = (app) => {
     
     // Convert the JSON object to a JSON string
     const grammarJSON = JSON.stringify(grammar);
-    
-    console.log("grammarJSON:", grammarJSON) // Debugging
-
     return grammarJSON;
   }
 };

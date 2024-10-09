@@ -63,23 +63,18 @@ export default {
       this.exerciseData = exerciseData
     },
     handleNodeNamesByDepth (nodeNamesByDepth) {
-      console.log('nodeNamesByDepth in Content.vue')
       this.nodeNamesByDepth = nodeNamesByDepth
     },
     handleDataSend (data) {
-      console.log('Content.vue has recieved data')
       this.dataFromInput = data
     },
     handleWordSend (word) {
-      console.log('Content.vue has recieved word')
       this.wordFromInput = word
     },
     handleLayerChange (direction) {
       this.$refs.outputWindow.handleLayerChange(direction)
-      console.log('handleLayerChange in Content.vue activated')
     },
     handleExerciseMode (mode) {
-      console.log('handleExerciseMode in Content.vue')
       this.exerciseMode = mode
     }
   }

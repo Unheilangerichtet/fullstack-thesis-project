@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     layerButtonsFunction (direction) {
-      console.log('layerButtonsFunction called')
       if (direction === 1) {
         this.$emit('layer-change', 1)
       } else {

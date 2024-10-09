@@ -29,9 +29,6 @@ export default {
       headerTxt: 'DECISION PROBLEM FOR CONTEXT-SENSITIVE GRAMMARS'
     }
   },
-  mounted () {
-    console.log(getComputedStyle(this.$el).getPropertyValue('--lmu-green'))
-  },
   methods: {
     changeLanguage () {
       this.language = this.language === 'DE' ? 'EN' : 'DE'

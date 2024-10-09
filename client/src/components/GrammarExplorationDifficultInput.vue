@@ -46,9 +46,6 @@ export default {
     gameState: false
   },
   watch: {
-    nodeNamesByDepth () {
-      console.log('nodeNamesByDepth in GED!')
-    },
     language () {
       this.onLanguageChange()
     }

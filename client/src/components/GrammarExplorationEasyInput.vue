@@ -125,7 +125,6 @@ export default {
         if (length < minLength) minLength = length
         if (length > maxLength) maxLength = length
       })
-      console.log('minLength, maxLength', minLength, maxLength)
       return { minLength: minLength, maxLength: maxLength }
     },
     processGrammarValues () {
@@ -170,9 +169,7 @@ export default {
     },
     generateButtons () {
       const correctWords = this.nodeNamesByDepth[this.currentExerciseDepth]
-      console.log('correctWords:', correctWords)
       const randomWords = this.generateRandomStrings()
-      console.log('randomWords', randomWords)
 
       this.buttons = []
       let idCounter = 1

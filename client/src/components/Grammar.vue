@@ -185,7 +185,6 @@ export default {
              !this.wordValue
     },
     onLanguageChange () {
-      console.log('InputWindow: onLanguageChange() was called!') // Debugging
       switch (this.language) {
         case 'DE':
           this.expGrammarTxt = 'BEISPIEL GRAMMATIKEN'

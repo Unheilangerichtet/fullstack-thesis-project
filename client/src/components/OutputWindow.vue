@@ -51,18 +51,15 @@ export default {
   },
   methods: {
     handleExerciseData (exerciseData) {
-      console.log('exercise-data in OutputWindow.vue')
       this.$emit('exercise-data', exerciseData)
     },
     handleNodeNamesByDepth (nodeNamesByDepth) {
-      console.log('nodeNamesByDepth in OutputWindow.vue')
       this.$emit('node-names-by-depth', nodeNamesByDepth)
     },
     handleLayerChange (direction) {
       this.$refs.treeDiagram.onLayerChange(direction)
     },
     handleExerciseModeChange () {
-      console.log('handleExerciseModeChange in OutputWindow')
       this.$refs.treeDiagram.onExerciseModeChange()
     },
     onPropChange () {
@@ -85,7 +82,6 @@ export default {
       const root = d3.stratify()
         .id(d => d.child)
         .parentId(d => d.parent)(this.relationsArray)
-      console.log('root:', root)
 
       // Convert stratified structure to hierarchical structure
       const hierarchyData = d3.hierarchy(root)
@@ -97,13 +93,8 @@ export default {
           children: children.length ? children : undefined
         }
       }
-
       const treeDataObject = convertToTree(hierarchyData)
-
       this.treeData = JSON.stringify(treeDataObject, null, 2)
-
-      console.log('treeData:', this.treeData)
-
       this.$emit('new-tree-data', this.treeData)
     },
 
@@ -118,7 +109,6 @@ export default {
           seenChildren.add(child)
         }
       }
-      console.log('uniquePairs', uniquePairs)
       return uniquePairs
     }
   },

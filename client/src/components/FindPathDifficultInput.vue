@@ -46,9 +46,6 @@ export default {
     gameState: false
   },
   watch: {
-    pathToWord () {
-      console.log('pathToWord in FPD', this.pathToWord)
-    },
     language () {
       this.onLanguageChange()
     }
@@ -88,8 +85,6 @@ export default {
       }
     },
     isInputCorrect () {
-      console.log('this.currentExerciseDepth', this.currentExerciseDepth)
-      console.log('this.pathToWord[this.currentExerciseDepth]', this.pathToWord[this.currentExerciseDepth])
       return (this.exerciseInput === this.pathToWord[this.currentExerciseDepth])
     },
     handlePopupBtn1 () {

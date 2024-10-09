@@ -64,9 +64,7 @@ export default {
       return [false, 'the productions are missing!']
     }
     const rules = productions.split(',').map((rule) => rule.split('->'))
-    console.log(`rules: \n`, rules)
     for (let rule of rules) {
-      console.log('rule: ', rule)
       if (rule[0] === '' || rule[1] === '' || rule[0] === rule[1]) {
         return [false, `The rule "${rule}" is not valid!`]
       }

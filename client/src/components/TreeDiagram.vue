@@ -33,18 +33,12 @@ export default {
   },
   watch: {
     newTreeData () {
-      console.log('newTreeData in TreeDiagram.vue:', this.newTreeData)
       this.treeData = JSON.parse(this.newTreeData)
       this.createTreeDiagram()
-    },
-    word () {
-      console.log('recievedWord: ', this.word)
     }
-
   },
   methods: {
     onExerciseModeChange () {
-      console.log('onExerciseModeChange in TreeDiagram.vue called')
       const nodeNamesByDepth = this.getNodeNamesByDepth()
       const pathToWord = this.findPathToWord(this.root, this.word)
 
@@ -53,8 +47,6 @@ export default {
         nodeNamesByDepth: nodeNamesByDepth
       }
       this.$emit('exercise-data', exerciseData)
-      console.log('exercise-data in TreeDiagram', exerciseData.pathToWord, exerciseData.nodeNamesByDepth)
-
       this.$emit('path-to-word', pathToWord)
       this.$emit('node-names-by-depth', nodeNamesByDepth)
     },
@@ -101,7 +93,6 @@ export default {
           }
         })
       }
-      console.log(this.getNodeNamesByDepth())
       this.update(this.root)
     },
     zoomed (event) {
@@ -128,7 +119,6 @@ export default {
       this.root.y0 = 100
 
       this.pathToWord = this.findPathToWord(this.root, this.word)
-      console.log(`path from root to ${this.word}:`, this.pathToWord)
       const nodeNamesByDepth = this.getNodeNamesByDepth()
       // const pathToWord = this.findPathToWord(this.root, this.word)
 

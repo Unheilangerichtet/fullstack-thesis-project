@@ -135,13 +135,9 @@ export default {
     }
   },
   watch: {
-    nodeNamesByDepth () {
-      console.log('nodeNamesByDepth were recieved in the Input Window!', this.nodeNamesByDepth)
-    },
     exerciseData () {
       this.nodeNamesByDepth = this.exerciseData.nodeNamesByDepth
       this.pathToWord = this.exerciseData.pathToWord
-      console.log('exerciseData in InputWindow', this.nodeNamesByDepth, this.pathToWord)
     }
   },
   methods: {
@@ -164,7 +160,6 @@ export default {
       }
     },
     handleCorrectInput (direction) {
-      console.log('correct-input in InputWindow')
       this.$refs.controlPanel.layerButtonsFunction(direction)
     },
     handleIsGrammarInputValid (validity) {
@@ -189,8 +184,6 @@ export default {
       const array1 = str1.split(',').map(word => word.trim())
       const set1 = new Set(array1)
       const set2 = new Set(array2.map(word => word.trim()))
-      console.log('Set1: Input Set', Array.from(set1))
-      console.log('Set2: Solution Set', Array.from(set2))
       return set1.size === set2.size && [...set1].every(value => set2.has(value))
     },
     async enableExerciseInput (difficulty, gamemode) {
@@ -259,7 +252,6 @@ export default {
         const wordValue = grammar.getWordValue()
         this.grammarValue = [startsymbolValue, alphabetValue, variablesValue, productionsValue]
         this.wordValue = wordValue
-        console.log(startsymbolValue, alphabetValue, variablesValue, productionsValue, wordValue) // Debugging
         // Check if Input is Valid
         CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
         // Send Input to Server and await result
@@ -267,8 +259,6 @@ export default {
         // Send result to parent
         this.$emit('result-data', result)
         this.$emit('word', wordValue)
-        // Log result
-        console.log('result:', result)
       } catch (error) {
         console.log('Error:', error)
       }
@@ -282,7 +272,6 @@ export default {
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
         this.$emit('result-data', result)
         this.$emit('word', wordValue)
-        console.log('result:', result)
       } catch (error) {
         console.log('Error:', error)
       }

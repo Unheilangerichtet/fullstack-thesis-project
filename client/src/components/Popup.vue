@@ -28,7 +28,6 @@ export default {
   },
   methods: {
     openPopup () {
-      console.log('open Popup')
       this.isPopupVisible = true
     },
     closePopup () {
@@ -37,31 +36,25 @@ export default {
     handleBtn1Click () {
       this.closePopup()
       this.$emit('popup-btn-1')
-      // alert('You chose to try again!')
     },
     handleBtn2Click () {
       this.closePopup()
       this.$emit('popup-btn-2')
-      // alert('You chose to btn-two!')
     },
     handleBtn3Click () {
       this.closePopup()
       this.$emit('popup-btn-3')
     },
     setPopupMsgTxt (msg) {
-      console.log('set Popup Msg')
       this.popupMsgTxt = msg
     },
     setBtn1Txt (txt) {
-      console.log('Set Popup Btn 1 Msg')
       this.btn1Txt = txt
     },
     setBtn2Txt (txt) {
-      console.log('Set Popup Btn 2 Msg')
       this.btn2Txt = txt
     },
     setBtn3Txt (txt) {
-      console.log('Set Popup Btn 3 Msg')
       this.btn3Txt = txt
     },
     clearAll () {

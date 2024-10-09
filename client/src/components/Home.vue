@@ -24,7 +24,6 @@ export default {
   },
   methods: {
     async doSomething () {
-      console.log('doSomething called!')
       const response = await InputService.sendInput()
       console.log(response.data.message)
     },
