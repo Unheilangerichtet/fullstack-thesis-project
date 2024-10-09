@@ -7,11 +7,11 @@
           class="tree-diagramm"
           :newTreeData="this.treeData"
           :word="receivedWord"
-          @node-names-by-depth="handleNodeNamesByDepth"
-          @path-to-word="handlePathToWord"
           @exercise-data="handleExerciseData"
-        />
-     </div>
+          />
+        </div>
+        <!-- @node-names-by-depth="handleNodeNamesByDepth"
+        @path-to-word="handlePathToWord" -->
   </div>
 </template>
 

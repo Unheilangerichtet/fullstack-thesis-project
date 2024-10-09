@@ -1,0 +1,19 @@
+version: '3'
+services:
+  server:
+    build: ./server
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./server:/app
+    environment:
+      NODE_ENV: production
+
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    volumes:
+      - ./client:/app
+    environment:
+      VUE_APP_API_URL: "http://localhost:8081"
