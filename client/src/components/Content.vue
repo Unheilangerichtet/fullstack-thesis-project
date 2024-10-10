@@ -44,7 +44,10 @@ export default {
   data () {
     return {
       circleIcon: require('../assets/icons/circle-icon.svg'),
-      dataFromInput: '',
+      dataFromInput: {
+        type: Object,
+        required: false
+      },
       wordFromInput: '',
       layerChange: 0,
       exerciseMode: '',

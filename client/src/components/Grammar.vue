@@ -10,6 +10,8 @@
           <a @click="fillExp(4)">{{ expGrammar4txt }}</a>
           <a @click="fillExp(5)">{{ expGrammar5txt }}</a>
           <a @click="fillExp(6)">{{ expGrammar6txt }}</a>
+          <a @click="fillExp(7)">{{ expGrammar7txt }}</a>
+          <a @click="fillExp(8)">{{ expGrammar8txt }}</a>
         </div>
       </div>
     </div>
@@ -66,12 +68,18 @@
         {{ solutionButtonTxt }}
       </button>
     </div>
+    <Popup
+      ref="popup"
+    />
   </div>
 </template>
 
 <script>
+import CalculationService from '../services/CalculationService'
+import Popup from './Popup.vue'
 export default {
   name: 'Grammar',
+  components: {Popup},
   data () {
     return {
       toggleDropdown: false,
@@ -84,12 +92,14 @@ export default {
       expGrammarTxt: 'EXAMPLE GRAMMARS',
       inputBoxTxt: 'GRAMMAR & WORD',
       solutionButtonTxt: 'SHOW SOLUTION',
-      expGrammar1txt: 'abc Grammar',
+      expGrammar1txt: `Equal number of a's, b's, and c's`,
       expGrammar2txt: 'Even-Length Palindrome Grammar',
       expGrammar3txt: 'Balanced Parenthesis',
       expGrammar4txt: 'Simple Arithmetic Expressions',
       expGrammar5txt: 'Binary Numbers',
       expGrammar6txt: 'start & end with a',
+      expGrammar7txt: 'Binary numbers divisible by 3',
+      expGrammar8txt: 'Palindromes over {a,b}',
       startsymbolTextareaHeader: 'STARTSYMBOL',
       alphabetTextareaHeader: 'ALPHABET',
       variablesTextareaHeader: 'VARIABLES',
@@ -119,7 +129,42 @@ export default {
   },
   methods: {
     clickShowSolution () {
-      this.$emit('solution-request', this.variablesValue, this.alphabetValue, this.productionsValue, this.startsymbolValue, this.wordValue)
+      this.formatGrammar()
+      if (this.checkInputValidity()) {
+        this.$emit(
+          'solution-request',
+          this.variablesValue,
+          this.alphabetValue,
+          this.productionsValue,
+          this.startsymbolValue,
+          this.wordValue
+        )
+      }
+    },
+    checkInputValidity () {
+      const validations = [
+        CalculationService.isWordValid(this.wordValue, this.alphabetValue),
+        CalculationService.isStartsymbolValid(this.startsymbolValue),
+        CalculationService.isAlphabetValid(this.alphabetValue),
+        CalculationService.areProductionsValid(this.productionsValue),
+        CalculationService.areVariablesValid(this.variablesValue)
+      ]
+
+      // Find the first invalid validation
+      const invalidValidation = validations.find(validation => !validation.status)
+
+      if (invalidValidation) {
+        this.$refs.popup.createOneBtnPopup(invalidValidation.message, 'OK')
+        return false
+      } else {
+        return true
+      }
+    },
+    formatGrammar () {
+      this.productionsValue = CalculationService.formatProductionInput(this.productionsValue)
+      this.variablesValue = CalculationService.formatVariablesInput(this.variablesValue)
+      this.alphabetValue = CalculationService.formatAlphabet(this.alphabetValue)
+      this.wordValue = CalculationService.formatWord(this.wordValue)
     },
     chooseExpGrammar () {
       this.toggleDropdown = !this.toggleDropdown
@@ -127,20 +172,20 @@ export default {
     fillExp (value) {
       switch (value) {
         case 1:
-          // abc Grammar
+          // Equal number of a's, b's, and c's (AnBnCn) without ε-productions
           this.startsymbolValue = 'S'
           this.alphabetValue = 'a,b,c'
-          this.variablesValue = 'S,A,B,C'
-          this.productionsValue = 'S->A,S->B,S->C,S->SA,S->SB,S->SC,A->a,B->b,C->c'
-          this.wordValue = 'abc'
+          this.variablesValue = 'S,A,B,C,X,Y,Z'
+          this.productionsValue = 'S->abc,S->aXbYcZ,X->aX,X->bY,X->cZ,X->a,X->b,X->c,Y->bY,Y->c,Y->b,Y->c,Z->cZ,Z->c'
+          this.wordValue = 'aabbcc'
           break
         case 2:
           // Even-Length Palindrome Grammar
           this.startsymbolValue = 'S'
           this.alphabetValue = 'a,b'
           this.variablesValue = 'S'
-          this.productionsValue = 'S->aSb,S->bSa,S->ba,S->ab'
-          this.wordValue = 'babab'
+          this.productionsValue = 'S->aSa,S->bSb,S->aa,S->bb'
+          this.wordValue = 'abba'
           break
         case 3:
           // Balanced Parenthesis:
@@ -174,10 +219,26 @@ export default {
           this.productionsValue = 'S->aVa,V->Va,V->Vb,V->a,V->b'
           this.wordValue = 'ababa'
           break
+        case 7:
+          // Binary numbers divisible by 3
+          this.startsymbolValue = 'S'
+          this.alphabetValue = '0,1'
+          this.variablesValue = 'S,A,B'
+          this.productionsValue = 'S->0S,S->1S,S->A,S->B,A->0A1,A->1A0,B->0B1,B->1B0,B->0,B->1'
+          this.wordValue = '110'
+          break
+        case 8:
+          // Palindromes over {a,b}
+          this.startsymbolValue = 'S'
+          this.alphabetValue = 'a,b'
+          this.variablesValue = 'S,A'
+          this.productionsValue = 'S->aSa,S->bSb,S->aa,S->bb,S->a,S->b'
+          this.wordValue = 'abba'
+          break
       }
       this.chooseExpGrammar()
     },
-    checkInputValidity () {
+    areTextareasFilled () {
       return !this.startsymbolValue ||
              !this.alphabetValue ||
              !this.variablesValue ||
@@ -283,7 +344,7 @@ export default {
 }
 .dropdown-content {
   position: absolute;
-  background-color: rgba(46, 129, 76, 0.85);
+  background-color: var(--lmu-gray);
   width: 100%;
 }
 .solution-button:disabled {
