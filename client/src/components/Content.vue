@@ -10,13 +10,13 @@
         :language="language"
         :exerciseData="exerciseData"
         />
-        <!-- :nodeNamesByDepth="nodeNamesByDepth" -->
       <OutputWindow
         ref="outputWindow"
         id="output-window"
         :receivedWord="wordFromInput"
         :receivedData="dataFromInput"
         :exerciseMode="exerciseMode"
+        :startsymbol="startsymbol"
         @node-names-by-depth="handleNodeNamesByDepth"
         @exercise-data="handleExerciseData"
       />
@@ -49,6 +49,7 @@ export default {
         required: false
       },
       wordFromInput: '',
+      startsymbol: '',
       layerChange: 0,
       exerciseMode: '',
       nodeNamesByDepth: [],
@@ -68,8 +69,10 @@ export default {
     handleNodeNamesByDepth (nodeNamesByDepth) {
       this.nodeNamesByDepth = nodeNamesByDepth
     },
-    handleDataSend (data) {
+    handleDataSend (data, startsymbol) {
       this.dataFromInput = data
+      this.startsymbol = startsymbol
+      console.log('Content.vue: this.startsymbol', this.startsymbol)
     },
     handleWordSend (word) {
       this.wordFromInput = word

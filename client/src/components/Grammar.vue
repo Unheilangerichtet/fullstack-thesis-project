@@ -213,10 +213,10 @@ export default {
           break
         case 6:
           // Strings starting and ending with the Symbol 'a'
-          this.startsymbolValue = 'S'
+          this.startsymbolValue = 'K'
           this.alphabetValue = 'a,b'
-          this.variablesValue = 'S,V'
-          this.productionsValue = 'S->aVa,V->Va,V->Vb,V->a,V->b'
+          this.variablesValue = 'K,V'
+          this.productionsValue = 'K->aVa,V->Va,V->Vb,V->a,V->b'
           this.wordValue = 'ababa'
           break
         case 7:

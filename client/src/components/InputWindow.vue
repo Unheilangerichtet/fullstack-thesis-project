@@ -252,13 +252,11 @@ export default {
         const wordValue = grammar.getWordValue()
         this.grammarValue = [startsymbolValue, alphabetValue, variablesValue, productionsValue]
         this.wordValue = wordValue
-        // Check if Input is Valid
-        // CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
-        // Send Input to Server and await result
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
         console.log(result.catalog)
         // Send result to parent
-        this.$emit('result-data', result)
+        console.log('InputWindow.vue: solutionFunction: this.startsymbolValue', this.$refs.grammarComponent.getStartsymbolValue())
+        this.$emit('result-data', result, startsymbolValue)
         this.$emit('word', wordValue)
       } catch (error) {
         console.log('Error:', error)
@@ -271,7 +269,9 @@ export default {
       try {
         // CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
-        this.$emit('result-data', result)
+        const startsymbol = this.$refs.grammarComponent.getStartsymbolValue()
+        console.log('InputWindow.vue: handleSolutionRequest: this.startsymbolValue', startsymbol)
+        this.$emit('result-data', result, startsymbol)
         this.$emit('word', wordValue)
       } catch (error) {
         console.log('Error:', error)

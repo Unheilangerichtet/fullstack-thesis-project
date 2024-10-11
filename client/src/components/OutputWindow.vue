@@ -11,8 +11,6 @@
           @exercise-data="handleExerciseData"
           />
         </div>
-        <!-- @node-names-by-depth="handleNodeNamesByDepth"
-        @path-to-word="handlePathToWord" -->
   </div>
 </template>
 
@@ -32,13 +30,17 @@ export default {
   props: {
     receivedData: {
       type: Object,
-      required: false // was true when working
+      required: false
     },
     receivedWord: {
       type: String,
       required: false
     },
     exerciseMode: {
+      type: String,
+      required: false
+    },
+    startsymbol: {
       type: String,
       required: false
     }
@@ -78,7 +80,12 @@ export default {
         const [child, parent] = pair.split(',')
         return { child, parent }
       })
-      this.relationsArray.push({child: 'S', parent: null})
+      if (this.startsymbol) {
+        this.relationsArray.push({child: this.startsymbol, parent: null})
+      } else {
+        // this.relationsArray.push({child: 'S', parent: null})
+      }
+      console.log('OutputWindow: this.relationsArray', this.relationsArray)
       this.relationsArray = this.removeDuplicateChildren(this.relationsArray)
       // create hierarchy structure
       const root = d3.stratify()

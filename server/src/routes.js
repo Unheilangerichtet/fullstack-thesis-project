@@ -24,9 +24,10 @@ module.exports = (app) => {
 
   function runChildProcess(word, productions) {
     return new Promise((resolve, reject) => {
-      const goExecutable = path.join(__dirname, 'executables/CP-withP-Mark1.exe');
+      // const goExecutable = path.join(__dirname, 'executables/CP-withP-Mark1.exe');
       // const goExecutable = path.join(__dirname, 'executables/CP-Mark4.exe');
       // const goExecutable = path.join(__dirname, 'executables/childProcessTwoLinux');
+      const goExecutable = path.join(__dirname, 'executables/CP-wP-linux');
       const grammarJSON = formatProductions(productions);
 
       // Spawn the Go executable with the provided arguments
