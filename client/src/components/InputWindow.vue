@@ -79,7 +79,7 @@
 
 <script>
 import ControlPanel from './ControlPanel.vue'
-import CalculationService from '../services/CalculationService'
+// import CalculationService from '../services/CalculationService'
 import InputService from '../services/InputService'
 import ExerciseSelector from './ExerciseSelector.vue'
 import GrammarExplorationEasyInput from './GrammarExplorationEasyInput.vue'
@@ -253,9 +253,10 @@ export default {
         this.grammarValue = [startsymbolValue, alphabetValue, variablesValue, productionsValue]
         this.wordValue = wordValue
         // Check if Input is Valid
-        CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
+        // CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
         // Send Input to Server and await result
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
+        console.log(result.catalog)
         // Send result to parent
         this.$emit('result-data', result)
         this.$emit('word', wordValue)
@@ -268,7 +269,7 @@ export default {
       this.grammarValue = [startsymbolValue, alphabetValue, variablesValue, productionsValue]
       this.wordValue = wordValue
       try {
-        CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
+        // CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
         this.$emit('result-data', result)
         this.$emit('word', wordValue)

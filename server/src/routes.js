@@ -14,6 +14,7 @@ module.exports = (app) => {
 
     try {
       const result = await runChildProcess(word, productions)
+      console.log(result)
       res.status(200).send(result)
     } catch (err) {
       console.error(`Error: ${err}`)
@@ -23,7 +24,8 @@ module.exports = (app) => {
 
   function runChildProcess(word, productions) {
     return new Promise((resolve, reject) => {
-      const goExecutable = path.join(__dirname, 'executables/CP-Mark4.exe');
+      const goExecutable = path.join(__dirname, 'executables/CP-withP-Mark1.exe');
+      // const goExecutable = path.join(__dirname, 'executables/CP-Mark4.exe');
       // const goExecutable = path.join(__dirname, 'executables/childProcessTwoLinux');
       const grammarJSON = formatProductions(productions);
 

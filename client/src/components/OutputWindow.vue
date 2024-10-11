@@ -6,6 +6,7 @@
           ref="treeDiagram"
           class="tree-diagramm"
           :newTreeData="this.treeData"
+          :relationsProductionsMap="relationsProductionsMap"
           :word="receivedWord"
           @exercise-data="handleExerciseData"
           />
@@ -24,7 +25,8 @@ export default {
     return {
       relationsArray: [],
       treeData: '',
-      outputTxt: 'OUTPUT'
+      outputTxt: 'OUTPUT',
+      relationsProductionsMap: []
     }
   },
   props: {
@@ -96,6 +98,8 @@ export default {
       const treeDataObject = convertToTree(hierarchyData)
       this.treeData = JSON.stringify(treeDataObject, null, 2)
       this.$emit('new-tree-data', this.treeData)
+      console.log('this.receivedData.catalog in OutputWindow', this.receivedData.catalog)
+      this.relationsProductionsMap = this.receivedData.catalog
     },
 
     removeDuplicateChildren (pairs) {

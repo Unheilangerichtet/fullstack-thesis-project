@@ -29,7 +29,11 @@ export default {
     newTreeData: {
       type: String
     },
-    word: ''
+    word: '',
+    relationsProductionsMap: {
+      type: Array,
+      require: false
+    }
   },
   watch: {
     newTreeData () {
@@ -226,9 +230,14 @@ export default {
         .append('text')
         .attr('dy', '.35em')
         .attr('text-anchor', 'middle')
-        .text((d) => `${d.parent.data.name} → ${d.data.name}`)
+        .text((d) => {
+          const relation = this.relationsProductionsMap.find(rel =>
+            rel[0] === d.parent.data.name && rel[1] === d.data.name
+          )
+          return relation ? relation[2] : '' // Use the production text if found
+        })
 
-        // Adding a white rectangle behind the text for better readability
+      // Adding a white rectangle behind the text for better readability
       linkTextEnter
         .insert('rect', 'text')
         .attr('x', function () {
