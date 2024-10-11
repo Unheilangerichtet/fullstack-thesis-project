@@ -231,7 +231,7 @@ export default {
           // Palindromes over {a,b}
           this.startsymbolValue = 'S'
           this.alphabetValue = 'a,b'
-          this.variablesValue = 'S,A'
+          this.variablesValue = 'S'
           this.productionsValue = 'S->aSa,S->bSb,S->aa,S->bb,S->a,S->b'
           this.wordValue = 'abba'
           break

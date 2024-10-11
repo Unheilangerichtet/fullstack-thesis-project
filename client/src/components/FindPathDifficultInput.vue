@@ -89,12 +89,17 @@ export default {
     },
     handlePopupBtn1 () {
       this.exerciseInput = ''
-      // document.getElementById('exercise-input').value = ''
     },
     handlePopupBtn2 () {
       this.exerciseInput = ''
-      // document.getElementById('exercise-input').value = ''
       ++this.currentExerciseDepth
+      if (!this.pathToWord[this.currentExerciseDepth]) {
+        this.$refs.popup.createOneBtnPopup(
+          `Congratulations, you found the path to '${this.wordValue}'!`,
+          'OK'
+        )
+        this.resetGameState()
+      }
       this.$emit('correct-input', 1)
     },
     onLanguageChange () {

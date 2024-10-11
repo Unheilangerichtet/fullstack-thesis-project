@@ -17,7 +17,7 @@
     </div>
     <div class="row row-3">
       <button
-        class="start-button" @click="start">{{ inputButtonText }}</button>
+        class="start-button" @click="start()">{{ inputButtonText }}</button>
     </div>
     <Popup
       ref="popup"
@@ -113,7 +113,15 @@ export default {
     handlePopupBtn2 () {
       this.selectedButtons = []
       ++this.currentExerciseDepth
-      this.generateButtons()
+      if (this.nodeNamesByDepth[this.currentExerciseDepth]) {
+        this.generateButtons()
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
+          'OK'
+        )
+        this.resetGameState()
+      }
       this.$emit('correct-input', 1)
     },
     findMinMaxLength () {

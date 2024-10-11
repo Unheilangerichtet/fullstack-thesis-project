@@ -107,7 +107,15 @@ export default {
       this.$emit('correct-input', 1)
       this.selectedButton = ''
       this.currentExercisedepth++
-      this.generateButtons()
+      if (this.nodeNamesByDepth[this.currentExercisedepth]) {
+        this.generateButtons()
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          `Congratulations, you found the path to the word '${this.wordValue}'!`,
+          'OK'
+        )
+        this.resetGameState()
+      }
     },
     generateButtons () {
       const selection = this.nodeNamesByDepth[this.currentExercisedepth]

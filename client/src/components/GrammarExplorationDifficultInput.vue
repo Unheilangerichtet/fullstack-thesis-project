@@ -90,11 +90,18 @@ export default {
       return inputSet.size === solutionSet.size && [...inputSet].every(value => solutionSet.has(value))
     },
     handlePopupBtn1 () {
-      document.getElementById('exercise-input').value = ''
+      this.exerciseInput = ''
     },
     handlePopupBtn2 () {
-      document.getElementById('exercise-input').value = ''
+      this.exerciseInput = ''
       ++this.currentExerciseDepth
+      if (!this.nodeNamesByDepth[this.currentExerciseDepth]) {
+        this.$refs.popup.createOneBtnPopup(
+          `Congratulations, you found the path to '${this.wordValue}'!`,
+          'OK'
+        )
+        this.resetGameState()
+      }
       this.$emit('correct-input', 1)
     },
     onLanguageChange () {
