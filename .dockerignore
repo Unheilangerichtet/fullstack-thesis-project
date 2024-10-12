@@ -1,0 +1,21 @@
+# flyctl launch added from .gitignore
+**\client\node_modules
+**\server\node_modules
+
+# flyctl launch added from client\.gitignore
+client\**\.DS_Store
+client\**\node_modules
+client\dist
+client\**\npm-debug.log*
+client\**\yarn-debug.log*
+client\**\yarn-error.log*
+client\test\unit\coverage
+
+# Editor directories and files
+client\**\.idea
+client\**\.vscode
+client\**\*.suo
+client\**\*.ntvs*
+client\**\*.njsproj
+client\**\*.sln
+fly.toml
