@@ -84,7 +84,7 @@ export default {
     return {
       toggleDropdown: false,
       grammarValue: '',
-      startsymbolValue: '',
+      startsymbolValue: 'S',
       alphabetValue: '',
       variablesValue: '',
       productionsValue: '',

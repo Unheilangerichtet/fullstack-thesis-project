@@ -20,6 +20,12 @@
         @layer-change="handleLayerChange"
         :language="language"
       />
+      <div
+      class="input-placeholder"
+      v-show="inputWindowState.isPlaceholderVisible"
+      >
+      Select a gamemode and a difficulty to start a game.
+      </div>
       <GrammarExplorationDifficultInput
         class="grid-item grammar-exploration-difficult-component"
         ref="grExpDif"
@@ -123,7 +129,8 @@ export default {
         isGrammarExplorationEasyVisible: false,
         isGrammarExplorationDifficultVisible: false,
         isFindPathEasyVisible: false,
-        isFindPathDifficultVisible: true
+        isFindPathDifficultVisible: false,
+        isPlaceholderVisible: true
       }
     }
   },
@@ -140,20 +147,40 @@ export default {
       this.pathToWord = this.exerciseData.pathToWord
     }
   },
+  computed: {
+    isPlaceholderVisible () {
+      console.log('new compute of isPlaceholderVisibl')
+      return !(
+        this.gameState.grExpDif ||
+        this.gameState.grExpEasy ||
+        this.gameState.findPathDif ||
+        this.gameState.findPathEasy
+      )
+    }
+  },
   methods: {
     handleGameStateChange (game) {
+      console.log('handleGameStateChange called')
       switch (game) {
         case 'findPathDif':
           this.gameState.findPathDif = false
+          this.inputWindowState.isFindPathDifficultVisible = false
+          this.inputWindowState.isPlaceholderVisible = true
           break
         case 'findPathEasy':
           this.gameState.findPathEasy = false
+          this.inputWindowState.isFindPathEasyVisible = false
+          this.inputWindowState.isPlaceholderVisible = true
           break
         case 'grExpDif':
           this.gameState.grExpDif = false
+          this.inputWindowState.isGrammarExplorationDifficultVisible = false
+          this.inputWindowState.isPlaceholderVisible = true
           break
         case 'grExpEasy':
           this.gameState.grExpEasy = false
+          this.inputWindowState.isGrammarExplorationEasyVisible = false
+          this.inputWindowState.isPlaceholderVisible = true
           break
         default:
           console.log(`game-state-change on unknown game: ${game}`)
@@ -195,7 +222,8 @@ export default {
             isGrammarExplorationEasyVisible: false,
             isGrammarExplorationDifficultVisible: false,
             isFindPathEasyVisible: true,
-            isFindPathDifficultVisible: false
+            isFindPathDifficultVisible: false,
+            isPlaceholderVisible: false
           }
           this.gameState = { findPathEasy: true, findPathDif: false, grExpEasy: false, grExpDif: false }
           break
@@ -204,7 +232,8 @@ export default {
             isGrammarExplorationEasyVisible: false,
             isGrammarExplorationDifficultVisible: false,
             isFindPathEasyVisible: false,
-            isFindPathDifficultVisible: true
+            isFindPathDifficultVisible: true,
+            isPlaceholderVisible: false
           }
           this.gameState = { findPathEasy: false, findPathDif: true, grExpEasy: false, grExpDif: false }
           break
@@ -213,7 +242,8 @@ export default {
             isGrammarExplorationEasyVisible: true,
             isGrammarExplorationDifficultVisible: false,
             isFindPathEasyVisible: false,
-            isFindPathDifficultVisible: false
+            isFindPathDifficultVisible: false,
+            isPlaceholderVisible: false
           }
           this.gameState = { findPathEasy: false, findPathDif: false, grExpEasy: true, grExpDif: false }
           break
@@ -222,7 +252,8 @@ export default {
             isGrammarExplorationEasyVisible: false,
             isGrammarExplorationDifficultVisible: true,
             isFindPathEasyVisible: false,
-            isFindPathDifficultVisible: false
+            isFindPathDifficultVisible: false,
+            isPlaceholderVisible: false
           }
           this.gameState = { findPathEasy: false, findPathDif: false, grExpEasy: false, grExpDif: true }
           break
@@ -255,7 +286,7 @@ export default {
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
         console.log(result.catalog)
         // Send result to parent
-        console.log('InputWindow.vue: solutionFunction: this.startsymbolValue', this.$refs.grammarComponent.getStartsymbolValue())
+        // console.log('InputWindow.vue: solutionFunction: this.startsymbolValue', this.$refs.grammarComponent.getStartsymbolValue())
         this.$emit('result-data', result, startsymbolValue)
         this.$emit('word', wordValue)
       } catch (error) {
@@ -270,7 +301,7 @@ export default {
         // CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
         const startsymbol = this.$refs.grammarComponent.getStartsymbolValue()
-        console.log('InputWindow.vue: handleSolutionRequest: this.startsymbolValue', startsymbol)
+        // console.log('InputWindow.vue: handleSolutionRequest: this.startsymbolValue', startsymbol)
         this.$emit('result-data', result, startsymbol)
         this.$emit('word', wordValue)
       } catch (error) {
@@ -377,11 +408,27 @@ textarea {
 .grammar-exploration-difficult-component,
 .grammar-exploration-easy-component,
 .find-path-difficult-component,
-.find-path-easy-component {
+.find-path-easy-component,
+.input-placeholder {
   grid-area: 5 / 7 / 10 / -1;
 }
 
 .grid-item {
   padding: 5px;
+}
+
+.input-placeholder {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  background-color: var(--lmu-gray);
+  border: 2px solid var(--lmu-gray);
+  border-radius: 5px;
+  margin: 5px;
+  /* height: 100%; */
+  justify-content: center;
+  padding: 20px;
+  color: var(--lmu-light-gray);
+  font-size: 20px
 }
 </style>
