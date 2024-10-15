@@ -170,7 +170,6 @@ export default {
     display: grid;
     grid-template-rows: auto 1fr auto;
     align-items: center;
-    justify-content: center;
     margin: 5px;
     background-color: var(--lmu-gray);
     border-radius: 3px;
