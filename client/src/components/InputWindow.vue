@@ -238,6 +238,7 @@ export default {
           this.gameState = { findPathEasy: false, findPathDif: true, grExpEasy: false, grExpDif: false }
           break
         case 'grammar-exploration_easy':
+          // this.$refs.grExpEasy.startNewGame() // Work in progress
           this.inputWindowState = {
             isGrammarExplorationEasyVisible: true,
             isGrammarExplorationDifficultVisible: false,
@@ -281,12 +282,12 @@ export default {
         const variablesValue = grammar.getVariableaValue()
         const productionsValue = grammar.getProductionsValue()
         const wordValue = grammar.getWordValue()
+
         this.grammarValue = [startsymbolValue, alphabetValue, variablesValue, productionsValue]
         this.wordValue = wordValue
+
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
-        console.log(result.catalog)
-        // Send result to parent
-        // console.log('InputWindow.vue: solutionFunction: this.startsymbolValue', this.$refs.grammarComponent.getStartsymbolValue())
+
         this.$emit('result-data', result, startsymbolValue)
         this.$emit('word', wordValue)
       } catch (error) {

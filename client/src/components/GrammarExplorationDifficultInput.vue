@@ -7,7 +7,7 @@
           id="exercise-input"
           v-model="exerciseInput"
           name="exercise input"
-          placeholder="Enter words that are reachable with one production"
+          :placeholder="placeholderTxt"
         ></textarea>
         <div class="send-input-button-box">
           <button class="send-input-button" @click="sendExerciseInput()">
@@ -31,12 +31,13 @@ export default {
   components: {Popup},
   data () {
     return {
-      excerciseInputBoxHeading: 'WORDS OF NEXT LAYER',
+      excerciseInputBoxHeading: 'ENTER WORDS OF NEXT LAYER',
       inputButtonText: 'SEND INPUT',
       exerciseInput: '',
       isExerciseModeValid: false,
       currentExerciseDepth: 1,
-      popup: this.$refs.popup
+      popup: this.$refs.popup,
+      placeholderTxt: 'Enter words that are reachable with one production'
     }
   },
   props: {
@@ -65,6 +66,7 @@ export default {
         )
       } else if (this.isInputCorrect()) {
         this.$emit('correct-input', 1)
+        this.exerciseInput = ''
         ++this.currentExerciseDepth
         if (this.nodeNamesByDepth[depth].includes(this.wordValue)) {
           this.$refs.popup.createOneBtnPopup(
@@ -107,12 +109,14 @@ export default {
     onLanguageChange () {
       switch (this.language) {
         case 'EN':
-          this.excerciseInputBoxHeading = 'WORDS OF NEXT LAYER'
+          this.excerciseInputBoxHeading = 'ENTER WORDS OF NEXT LAYER'
           this.inputButtonText = 'SEND INPUT'
+          this.placeholderTxt = 'Enter all words that are reachable with one derivation'
           break
         case 'DE':
-          this.excerciseInputBoxHeading = 'WÖRTER DER NÄCHSTEN SCHICHT'
+          this.excerciseInputBoxHeading = 'WÖRTER DER NÄCHSTEN SCHICHT EINGEBEN'
           this.inputButtonText = 'INPUT SENDEN'
+          this.placeholderTxt = 'Gib alle Wörter ein, die mit einer Ableitung erreichbar sind'
           break
         default:
           console.log('unknown language!')

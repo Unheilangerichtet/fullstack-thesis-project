@@ -197,9 +197,9 @@ export default {
           break
         case 4:
           // Simple Arithmetic Expressions
-          this.startsymbolValue = 'E'
+          this.startsymbolValue = 'S'
           this.alphabetValue = 'a,+,*,(,)'
-          this.variablesValue = 'E'
+          this.variablesValue = 'S'
           this.productionsValue = 'S->S+S,S->S*S,S->(S),S->a'
           this.wordValue = '(a+a)*a'
           break

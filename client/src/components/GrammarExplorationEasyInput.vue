@@ -74,6 +74,10 @@ export default {
       if (correctWords.length !== this.selectedButtons.length) return false
       return correctWords.sort().every((value, index) => value === this.selectedButtons.sort()[index])
     },
+    startNewGame () {
+      this.selectedButtons = []
+      this.currentExerciseDepth = 1
+    },
     resetGameState () {
       this.$emit('game-state-change', 'grExpEasy')
       this.buttons = []

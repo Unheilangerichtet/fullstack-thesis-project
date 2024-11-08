@@ -7,7 +7,7 @@
           id="exercise-input"
           v-model="exerciseInput"
           name="exercise input"
-          placeholder="Enter words that are reachable with one production"
+          :placeholder="placeholderTxt"
         ></textarea>
         <div class="send-input-button-box">
           <button class="send-input-button" @click="sendExerciseInput()">
@@ -34,7 +34,9 @@ export default {
       inputBtnTet: 'SEND INPUT',
       isExerciseModeValid: false,
       exerciseInput: '',
-      currentExerciseDepth: 1
+      currentExerciseDepth: 1,
+      placeholderTxt: `Enter the next word on the path to the searched word`,
+      placeholderTxtGerman: `Gib das nächste Wort auf dem Weg zum gesuchten Wort ein`
     }
   },
   props: {
@@ -68,6 +70,7 @@ export default {
         )
       } else if (this.isInputCorrect()) {
         this.$emit('correct-input', 1)
+        this.exerciseInput = ''
         ++this.currentExerciseDepth
         if (this.exerciseInput === this.wordValue) {
           this.$refs.popup.createOneBtnPopup(
@@ -107,10 +110,12 @@ export default {
         case 'EN':
           this.inputHeading = 'WRITE NEXT WORD'
           this.inputBtnTxt = 'SEND INPUT'
+          this.placeholderTxt = 'Enter the next sentinalform on the path to the searched word'
           break
         case 'DE':
           this.inputHeading = 'SCHREIBE DAS NÄCHSTE WORT AUF DEM PFAD'
           this.inputBtnTxt = 'INPUT SENDEN'
+          this.placeholderTxt = 'Gib das nächste Satzform auf dem Weg zum gesuchten Wort ein'
           break
         default:
           console.log('unknown language!')
