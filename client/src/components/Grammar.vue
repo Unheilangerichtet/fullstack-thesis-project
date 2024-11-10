@@ -12,6 +12,7 @@
           <a @click="fillExp(6)">{{ expGrammar6txt }}</a>
           <a @click="fillExp(7)">{{ expGrammar7txt }}</a>
           <a @click="fillExp(8)">{{ expGrammar8txt }}</a>
+          <a @click="fillExp(9)">{{ expGrammar9txt }}</a>
         </div>
       </div>
     </div>
@@ -100,6 +101,7 @@ export default {
       expGrammar6txt: 'start & end with a',
       expGrammar7txt: 'Binary numbers divisible by 3',
       expGrammar8txt: 'Palindromes over {a,b}',
+      expGrammar9txt: 'Multiple Paths to Word',
       startsymbolTextareaHeader: 'STARTSYMBOL',
       alphabetTextareaHeader: 'ALPHABET',
       variablesTextareaHeader: 'VARIABLES',
@@ -235,6 +237,14 @@ export default {
           this.productionsValue = 'S->aSa,S->bSb,S->aa,S->bb,S->a,S->b'
           this.wordValue = 'abba'
           break
+        case 9:
+          // language with duplicate
+          this.startsymbolValue = 'S'
+          this.alphabetValue = 'a,b,c'
+          this.variablesValue = 'S,X,Y,A,B,C'
+          this.productionsValue = 'S->X,S->Y,X->A,X->B,Y->B,Y->C,A->a,B->b,C->c'
+          this.wordValue = 'b'
+          break
       }
       this.chooseExpGrammar()
     },
@@ -256,6 +266,9 @@ export default {
           this.expGrammar4txt = 'einfache Arithmetische Ausdrücke'
           this.expGrammar5txt = 'binärzahlen'
           this.expGrammar6txt = 'startet & endet mit a'
+          this.expGrammar7txt = 'duch 3 teilbare binäre Zahlen'
+          this.expGrammar8txt = 'Palindrom in {a,b}'
+          this.expGrammar9txt = 'Multiple Pfade zum Wort'
           this.startsymbolTextareaHeader = 'STARTSYMBOL'
           this.alphabetTextareaHeader = 'ALPHABET'
           this.variablesTextareaHeader = 'VARIABLEN'
@@ -271,6 +284,9 @@ export default {
           this.expGrammar4txt = 'Simple Arithmetic Expressions'
           this.expGrammar5txt = 'Binary Numbers'
           this.expGrammar6txt = 'start & end with a'
+          this.expGrammar7txt = 'Binary numbers divisible by 3'
+          this.expGrammar8txt = 'Palindromes over {a,b}'
+          this.expGrammar9txt = 'Multiple Paths to Word'
           this.startsymbolTextareaHeader = 'STARTSYMBOL'
           this.alphabetTextareaHeader = 'ALPHABET'
           this.variablesTextareaHeader = 'VARIABLES'
