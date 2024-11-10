@@ -48,7 +48,7 @@ export default {
       exerciseSelectorHeading: 'SELECT GAMEMODE',
       guidedModeBtnTxt: 'EASY',
       freeModeBtnTxt: 'DIFFICULT',
-      pathModeBtnTxt: 'FIND THE PATH',
+      pathModeBtnTxt: 'FIND OPTIMAL PATH',
       grammarExplorationButtonTxt: 'GRAMMAR EXPLORATION',
       selectDifficultyTxt: 'SELECT DIFFICULTY'
     }
@@ -86,7 +86,7 @@ export default {
           this.exerciseSelectorHeading = 'SPIELMODUS'
           this.guidedModeBtnTxt = 'EINFACH'
           this.freeModeBtnTxt = 'SCHWER'
-          this.pathModeBtnTxt = 'FINDE DEN PFAD'
+          this.pathModeBtnTxt = 'FINDE OPTIMALEN PFAD'
           this.grammarExplorationButtonTxt = 'GRAMMATIK ERKUNDUNG'
           this.selectDifficultyTxt = 'SCHWIERIGKEITSSTUFE'
           break
@@ -94,7 +94,7 @@ export default {
           this.exerciseSelectorHeading = 'SELECT GAMEMODE'
           this.guidedModeBtnTxt = 'EASY'
           this.freeModeBtnTxt = 'DIFFICULT'
-          this.pathModeBtnTxt = 'FIND THE PATH'
+          this.pathModeBtnTxt = 'FIND OPTIMAL PATH'
           this.grammarExplorationButtonTxt = 'GRAMMAR EXPLORATION'
           this.selectDifficultyTxt = 'SELECT DIFFICULTY'
           break
