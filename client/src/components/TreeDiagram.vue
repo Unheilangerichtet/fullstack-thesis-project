@@ -22,7 +22,8 @@ export default {
       zoom: d3.zoom().on('zoom', this.zoomed),
       recievedTreeData: '',
       maxDepth: 0,
-      pathToWord: []
+      pathToWord: [],
+      pathsToDuplicates: []
     }
   },
   props: {
@@ -48,6 +49,7 @@ export default {
 
       const exerciseData = {
         pathToWord: this.pathToWord,
+        pathsToDuplicates: this.pathsToDuplicates, // Work in progress
         nodeNamesByDepth: nodeNamesByDepth
       }
       this.$emit('exercise-data', exerciseData)
@@ -124,10 +126,12 @@ export default {
 
       this.pathToWord = this.findPathToWord(this.root, this.word)
       const nodeNamesByDepth = this.getNodeNamesByDepth()
-      // const pathToWord = this.findPathToWord(this.root, this.word)
+      const duplicatesOnCorrectPath = this.findDuplicates(this.root, this.pathToWord)
+      this.pathsToDuplicates = this.findPathsToDuplicates(this.root, duplicatesOnCorrectPath)
 
       const exerciseData = {
         pathToWord: this.pathToWord,
+        pathsToDuplicates: this.pathsToDuplicates,
         nodeNamesByDepth: nodeNamesByDepth
       }
       this.$emit('exercise-data', exerciseData)
@@ -193,11 +197,20 @@ export default {
         .attr('d', (d) => this.diagonal(d, d.parent))
         .style('fill', 'none')
         .style('stroke', d => {
-          return this.pathToWord.includes(d.parent.data.name) && this.pathToWord.includes(d.data.name) ? '#2e814c90' : '#ccc'
+          const isInDuplicatePath = this.pathsToDuplicates.some(path =>
+            path.includes(d.parent.data.name) && path.includes(d.data.name)
+          )
+          if (isInDuplicatePath) {
+            return '#add8e6'
+          } else if (this.pathToWord.includes(d.parent.data.name) && this.pathToWord.includes(d.data.name)) {
+            return '#2e814c90'
+          } else {
+            return '#ccc'
+          }
         })
         .style('stroke-width', '5px')
 
-        // Remove any exiting links
+      // Remove any exiting links
       link
         .exit()
         .transition()
@@ -231,8 +244,12 @@ export default {
         .attr('dy', '.35em')
         .attr('text-anchor', 'middle')
         .text((d) => {
+          const getBaseName = (name) => name.replace(/\s*\(duplicate(\s*\d+)?\)$/, '').trim()
+          const parentName = getBaseName(d.parent.data.name)
+          const childName = getBaseName(d.data.name)
+
           const relation = this.relationsProductionsMap.find(rel =>
-            rel[0] === d.parent.data.name && rel[1] === d.data.name
+            rel[0] === parentName && rel[1] === childName
           )
           return relation ? relation[2] : '' // Use the production text if found
         })
@@ -338,10 +355,12 @@ export default {
         .attr('height', 1e-6)
         .attr('x', -25)
         .attr('y', -25)
-        .attr('rx', 10)
-        .attr('ry', 10)
+        .attr('rx', d => (d.data.name.includes('(duplicate)') ? 5 : 10))
+        .attr('ry', d => (d.data.name.includes('(duplicate)') ? 5 : 10))
         .style('fill', d => {
-          if (d.data.name.length > this.word.length) {
+          if (d.data.name.includes('(duplicate)')) {
+            return '#232323'
+          } else if (d.data.name.length > this.word.length) {
             return '#ff5858'
           } else if (d._children) {
             return '#070087'
@@ -355,7 +374,7 @@ export default {
         })
         .attr('filter', 'url(#drop-shadow)')
 
-        // Add labels for the nodes inside the squares
+      // Add labels for the nodes inside the squares
       nodeEnter
         .append('text')
         .attr('dy', '.35em')
@@ -368,7 +387,7 @@ export default {
         .text((d) => d.data.name)
         .attr('cursor', 'pointer')
 
-        // UPDATE
+      // UPDATE
       const nodeUpdate = nodeEnter.merge(node)
 
       // Transition to the proper position for the node
@@ -383,10 +402,12 @@ export default {
         .attr('width', function (d) { return Math.max(50, this.nextSibling.getBBox().width + 10) })
         .attr('height', 50)
         .attr('x', function (d) { return -Math.max(25, (this.nextSibling.getBBox().width + 10) / 2) })
-        .attr('rx', 50) // Set rounded corners
-        .attr('ry', 50) // Set rounded corners
+        .attr('rx', d => (d.data.name.includes('(duplicate)') ? 10 : 50))
+        .attr('ry', d => (d.data.name.includes('(duplicate)') ? 10 : 50))
         .style('fill', d => {
-          if (d.data.name.length > this.word.length) {
+          if (d.data.name.includes('(duplicate)')) {
+            return '#232323'
+          } else if (d.data.name.length > this.word.length) {
             return '#ff5858'
           } else if (d._children) {
             return '#070087'
@@ -470,6 +491,39 @@ export default {
       }
       traverse(root)
       return path
+    },
+
+    findDuplicates (root, path) {
+      const duplicates = []
+      const stack = [root]
+
+      function getBaseName (name) {
+        return name.replace(/\s*\(duplicate(\s*\d+)?\)$/, '').trim()
+      }
+      while (stack.length > 0) {
+        const node = stack.pop()
+        const baseName = getBaseName(node.data.name)
+        if (!path.includes(node.data.name) && path.includes(baseName)) {
+          duplicates.push(node.data.name)
+        }
+        if (node.children) {
+          for (const child of node.children) {
+            stack.push(child)
+          }
+        }
+      }
+      return duplicates
+    },
+
+    findPathsToDuplicates (root, duplicates) {
+      const allPaths = []
+      for (const word of duplicates) {
+        const path = this.findPathToWord(root, word)
+        if (path.length > 0) {
+          allPaths.push(path)
+        }
+      }
+      return allPaths
     }
   }
 }
