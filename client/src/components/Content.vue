@@ -22,6 +22,17 @@
       />
     </div>
     <div id="diagram-legend">
+      <!-- Legend for lines -->
+      <svg class="legend-svg">
+        <line x1="5" y1="15" x2="25" y2="15" class="optimal-path"></line>
+      </svg>
+      <div>optimal path</div>
+
+      <svg class="legend-svg">
+        <line x1="5" y1="15" x2="25" y2="15" class="alternative-path"></line>
+      </svg>
+      <div>alternative path</div>
+
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-1"></circle></svg>
       <div>nodes with children</div>
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-2"></circle></svg>
@@ -43,7 +54,6 @@ export default {
   components: {InputWindow, OutputWindow},
   data () {
     return {
-      circleIcon: require('../assets/icons/circle-icon.svg'),
       dataFromInput: {
         type: Object,
         required: false
@@ -144,4 +154,15 @@ export default {
   width: 30px;
   height: 30px;
 }
+
+.optimal-path {
+  stroke: #2e814c;
+  stroke-width: 5;
+}
+
+.alternative-path {
+  stroke: #00bfff;
+  stroke-width: 5;
+}
+
 </style>
