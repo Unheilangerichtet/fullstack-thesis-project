@@ -19,12 +19,14 @@ import TreeDiagram from './TreeDiagram.vue'
 import * as d3 from 'd3'
 export default {
   name: 'OutputWindow',
+  components: { TreeDiagram },
   data () {
     return {
       relationsArray: [],
       treeData: '',
       outputTxt: 'OUTPUT',
-      relationsProductionsMap: []
+      relationsProductionsMap: [],
+      duplicatesCounter: 1
     }
   },
   props: {
@@ -67,6 +69,7 @@ export default {
       this.$refs.treeDiagram.onExerciseModeChange()
     },
     onPropChange () {
+      this.duplicatesCounter = 1
       const outputWindowDiv = document.getElementById('output-window')
       if (this.receivedData.result === true) {
         outputWindowDiv.classList.add('output-window-true-styles')
@@ -82,11 +85,14 @@ export default {
       })
       if (this.startsymbol) {
         this.relationsArray.push({child: this.startsymbol, parent: null})
-      } else {
-        // this.relationsArray.push({child: 'S', parent: null})
       }
-      console.log('OutputWindow: this.relationsArray', this.relationsArray)
-      this.relationsArray = this.removeDuplicateChildren(this.relationsArray)
+
+      console.table('this.relationsArray', this.relationsArray)
+
+      this.relationsArray = this.altHierarchy(this.relationsArray)
+
+      this.relationsArray = this.markDuplicates(this.relationsArray)
+
       // create hierarchy structure
       const root = d3.stratify()
         .id(d => d.child)
@@ -105,25 +111,71 @@ export default {
       const treeDataObject = convertToTree(hierarchyData)
       this.treeData = JSON.stringify(treeDataObject, null, 2)
       this.$emit('new-tree-data', this.treeData)
-      console.log('this.receivedData.catalog in OutputWindow', this.receivedData.catalog)
       this.relationsProductionsMap = this.receivedData.catalog
     },
 
-    removeDuplicateChildren (pairs) {
+    markDuplicates (pairs) {
       const seenChildren = new Set()
       const uniquePairs = []
       for (let i = 0; i < pairs.length; i++) {
-        const child = pairs[i].child
-        const parent = pairs[i].parent
+        let child = pairs[i].child
+        let parent = pairs[i].parent
         if (!seenChildren.has(child)) {
           uniquePairs.push({ child, parent })
           seenChildren.add(child)
+        } else {
+          child += ` (duplicate ${this.duplicatesCounter})`
+          this.duplicatesCounter++
+          uniquePairs.push({child, parent})
         }
       }
       return uniquePairs
+    },
+
+    altHierarchy (relationsArray) {
+      const flatData = relationsArray.map((relation, index) => ({
+        id: `${relation.child}-${relation.parent}`,
+        name: relation.child,
+        parentId: relation.parent
+      }))
+      const idLookup = {}
+      flatData.forEach(node => {
+        idLookup[node.name] = node.id
+      })
+      flatData.forEach(node => {
+        node.parentId = idLookup[node.parentId] || null
+      })
+
+      const allParents = new Set(flatData.map(d => d.parentId))
+      const allChildren = new Set(flatData.map(d => d.name))
+      const rootName = [...allParents].find(parent => !allChildren.has(parent))
+
+      if (rootName && !flatData.some(d => d.id === rootName)) {
+        flatData.push({ id: rootName, name: rootName, parentId: null })
+      }
+
+      const root = d3.stratify()
+        .id(d => d.id)
+        .parentId(d => d.parentId)(flatData)
+
+      let result = this.getNdesByDepth(root)
+      result = result.map(relation => ({
+        ...relation,
+        parent: relation.parent === 'null' ? null : relation.parent
+      }))
+      return result
+    },
+
+    getNdesByDepth (root) {
+      const sortedFlatData = []
+      root.each(node => {
+        const child = node.id.split('-')[0]
+        const parent = node.id.split('-')[1] || null
+        sortedFlatData.push({ child: child, parent: parent, depth: node.depth })
+      })
+      return sortedFlatData.sort((a, b) => a.depth - b.depth)
     }
-  },
-  components: { TreeDiagram }
+  }
 }
 </script>
 

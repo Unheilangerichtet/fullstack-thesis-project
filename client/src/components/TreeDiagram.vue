@@ -23,7 +23,9 @@ export default {
       recievedTreeData: '',
       maxDepth: 0,
       pathToWord: [],
-      pathsToDuplicates: []
+      pathsToDuplicates: [],
+      optimalAlternativePaths: [],
+      notOptimalAlternativePaths: []
     }
   },
   props: {
@@ -49,7 +51,9 @@ export default {
 
       const exerciseData = {
         pathToWord: this.pathToWord,
-        pathsToDuplicates: this.pathsToDuplicates, // Work in progress
+        pathsToDuplicates: this.pathsToDuplicates,
+        optimalAlternativePaths: this.optimalAlternativePaths,
+        notOptimalAlternativePaths: this.notOptimalAlternativePaths,
         nodeNamesByDepth: nodeNamesByDepth
       }
       this.$emit('exercise-data', exerciseData)
@@ -128,10 +132,13 @@ export default {
       const nodeNamesByDepth = this.getNodeNamesByDepth()
       const duplicatesOnCorrectPath = this.findDuplicates(this.root, this.pathToWord)
       this.pathsToDuplicates = this.findPathsToDuplicates(this.root, duplicatesOnCorrectPath)
+      this.findOptimalAlternativePaths()
 
       const exerciseData = {
         pathToWord: this.pathToWord,
         pathsToDuplicates: this.pathsToDuplicates,
+        optimalAlternativePaths: this.optimalAlternativePaths,
+        notOptimalAlternativePaths: this.notOptimalAlternativePaths,
         nodeNamesByDepth: nodeNamesByDepth
       }
       this.$emit('exercise-data', exerciseData)
@@ -197,12 +204,15 @@ export default {
         .attr('d', (d) => this.diagonal(d, d.parent))
         .style('fill', 'none')
         .style('stroke', d => {
-          const isInDuplicatePath = this.pathsToDuplicates.some(path =>
+          const isInOptimalPath = this.optimalAlternativePaths.some(path =>
             path.includes(d.parent.data.name) && path.includes(d.data.name)
           )
-          if (isInDuplicatePath) {
+          const isInNotOptimalPath = this.notOptimalAlternativePaths.some(path =>
+            path.includes(d.parent.data.name) && path.includes(d.data.name)
+          )
+          if (isInNotOptimalPath) {
             return '#add8e6'
-          } else if (this.pathToWord.includes(d.parent.data.name) && this.pathToWord.includes(d.data.name)) {
+          } else if (isInOptimalPath || (this.pathToWord.includes(d.parent.data.name) && this.pathToWord.includes(d.data.name))) {
             return '#2e814c90'
           } else {
             return '#ccc'
@@ -355,10 +365,15 @@ export default {
         .attr('height', 1e-6)
         .attr('x', -25)
         .attr('y', -25)
-        .attr('rx', d => (d.data.name.includes('(duplicate)') ? 5 : 10))
-        .attr('ry', d => (d.data.name.includes('(duplicate)') ? 5 : 10))
+        // .attr('rx', d => (d.data.name.includes('(duplicate)') ? 5 : 10))
+        // .attr('ry', d => (d.data.name.includes('(duplicate)') ? 5 : 10))
+        .attr('rx', d => (/\s*\(duplicate(\s*\d+)?\)$/.test(d.data.name) ? 10 : 50))
+        .attr('ry', d => (/\s*\(duplicate(\s*\d+)?\)$/.test(d.data.name) ? 10 : 50))
         .style('fill', d => {
-          if (d.data.name.includes('(duplicate)')) {
+          // if (d.data.name.includes('(duplicate)')) {
+          //   return '#232323'
+          // }
+          if (/\(duplicate \d+\)$/.test(d.data.name)) {
             return '#232323'
           } else if (d.data.name.length > this.word.length) {
             return '#ff5858'
@@ -402,12 +417,15 @@ export default {
         .attr('width', function (d) { return Math.max(50, this.nextSibling.getBBox().width + 10) })
         .attr('height', 50)
         .attr('x', function (d) { return -Math.max(25, (this.nextSibling.getBBox().width + 10) / 2) })
-        .attr('rx', d => (d.data.name.includes('(duplicate)') ? 10 : 50))
-        .attr('ry', d => (d.data.name.includes('(duplicate)') ? 10 : 50))
+        // .attr('rx', d => (d.data.name.includes('(duplicate)') ? 10 : 50))
+        // .attr('ry', d => (d.data.name.includes('(duplicate)') ? 10 : 50))
+        .attr('rx', d => (/\s*\(duplicate(\s*\d+)?\)$/.test(d.data.name) ? 10 : 50))
+        .attr('ry', d => (/\s*\(duplicate(\s*\d+)?\)$/.test(d.data.name) ? 10 : 50))
         .style('fill', d => {
-          if (d.data.name.includes('(duplicate)')) {
+          if (/\(duplicate \d+\)$/.test(d.data.name)) {
             return '#232323'
           } else if (d.data.name.length > this.word.length) {
+            console.log('d.data.name', d.data.name)
             return '#ff5858'
           } else if (d._children) {
             return '#070087'
@@ -524,6 +542,38 @@ export default {
         }
       }
       return allPaths
+    },
+
+    findOptimalAlternativePaths () {
+      for (const alternativePath of this.pathsToDuplicates) {
+        if (this.isAlternativePathOptimal(this.pathToWord, alternativePath)) {
+          this.optimalAlternativePaths.push(alternativePath)
+        } else {
+          this.notOptimalAlternativePaths.push(alternativePath)
+        }
+      }
+    },
+
+    isAlternativePathOptimal (pathToWord, alternativePath) {
+      for (let i = 0; i < alternativePath.length; i++) {
+        const name = alternativePath[i]
+        const baseName = this.getBaseName(name)
+        if (this.hasDuplicateSuffix(name)) {
+          const baseIndexInWord = pathToWord.indexOf(baseName)
+          if (i === baseIndexInWord) {
+            return true
+          }
+        }
+      }
+      return false
+    },
+
+    getBaseName (name) {
+      return name.replace(/\s*\(duplicate(\s*\d+)?\)$/, '').trim()
+    },
+
+    hasDuplicateSuffix (name) {
+      return /\(duplicate(\s*\d+)?\)$/.test(name)
     }
   }
 }
@@ -551,6 +601,7 @@ path {
   fill: none;
   stroke: #ccc;
   stroke-width: 3px;
+  /* stroke: #ffffe0; */
 }
 
 svg#treeSVG {

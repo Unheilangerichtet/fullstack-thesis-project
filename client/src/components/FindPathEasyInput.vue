@@ -48,6 +48,8 @@ export default {
     grammarValue: [],
     pathToWord: [],
     nodeNamesByDepth: [],
+    optimalAlternativePaths: [],
+    notOptimalAlternativePaths: [],
     gameState: false
   },
   watch: {
@@ -70,16 +72,15 @@ export default {
       this.$emit('game-state-change', 'findPathEasy')
       this.buttons = []
       this.selectedButton = ''
-      this.currentExerciseDepth = 1
+      this.currentExercisedepth = 1
     },
     start () {
-      const result = this.selectedButton === this.pathToWord[this.currentExercisedepth]
       if (!this.gameState) {
         this.$refs.popup.createOneBtnPopup(
           'There is no active Game running',
           'OK'
         )
-      } else if (result) {
+      } else if (this.isInputCorrect()) {
         this.$emit('correct-input', 1)
         if (this.selectedButton === this.wordValue) {
           this.$refs.popup.createOneBtnPopup(
@@ -92,6 +93,12 @@ export default {
           this.currentExercisedepth++
           this.generateButtons()
         }
+      } else if (this.isSelectionNotOptimal()) {
+        this.$refs.popup.createTwoBtnPopup(
+          `Your Input was wrong! \n '${this.selectedButton}' is not on an optimal Path to '${this.wordValue}'`,
+          'Try Again',
+          'Skip'
+        )
       } else {
         this.$refs.popup.createTwoBtnPopup(
           'Your Input was wrong!',
@@ -121,16 +128,18 @@ export default {
       const selection = this.nodeNamesByDepth[this.currentExercisedepth]
       this.buttons = []
       selection.forEach(word => {
-        if (word === this.wordValue) {
-          this.buttons.push({
-            label: word,
-            value: true
-          })
-        } else {
-          this.buttons.push({
-            label: word,
-            value: false
-          })
+        if (!this.hasDuplicateSuffix(word)) {
+          if (word === this.wordValue) {
+            this.buttons.push({
+              label: word,
+              value: true
+            })
+          } else {
+            this.buttons.push({
+              label: word,
+              value: false
+            })
+          }
         }
       })
       this.shuffleArray(this.buttons)
@@ -154,7 +163,41 @@ export default {
         default:
           console.log('unknown language!')
       }
+    },
+
+    isInputCorrect () {
+      if (this.selectedButton === this.pathToWord[this.currentExercisedepth]) {
+        return true
+      }
+      for (const optAltPath of this.optimalAlternativePaths) {
+        if (optAltPath[this.currentExercisedepth] !== undefined) {
+          const baseName = this.getBaseName(optAltPath[this.currentExercisedepth])
+          if (this.selectedButton === baseName) {
+            return true
+          }
+        }
+      }
+      return false
+    },
+
+    isSelectionNotOptimal () {
+      for (const notOptAltPath of this.notOptimalAlternativePaths) {
+        const baseName = this.getBaseName(notOptAltPath[this.currentExercisedepth])
+        if (this.selectedButton === baseName) {
+          return true
+        }
+      }
+      return false
+    },
+
+    getBaseName (name) {
+      return name.replace(/\s*\(duplicate(\s*\d+)?\)$/, '').trim()
+    },
+
+    hasDuplicateSuffix (name) {
+      return /\(duplicate(\s*\d+)?\)$/.test(name)
     }
+
   }
 }
 </script>

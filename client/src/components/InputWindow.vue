@@ -72,6 +72,8 @@
         :language="language"
         :nodeNamesByDepth="nodeNamesByDepth"
         :pathToWord="pathToWord"
+        :optimalAlternativePaths="optimalAlternativePaths"
+        :notOptimalAlternativePaths="notOptimalAlternativePaths"
         :grammarValue="grammarValue"
         :wordValue="wordValue"
         :gameState="gameState.findPathEasy"
@@ -119,6 +121,8 @@ export default {
       wordValue: '',
       nodeNamesByDepth: [],
       pathToWord: [],
+      optimalAlternativePaths: [],
+      notOptimalAlternativePaths: [],
       gameState: {
         grExpEasy: false,
         grExpDif: false,
@@ -145,11 +149,12 @@ export default {
     exerciseData () {
       this.nodeNamesByDepth = this.exerciseData.nodeNamesByDepth
       this.pathToWord = this.exerciseData.pathToWord
+      this.optimalAlternativePaths = this.exerciseData.optimalAlternativePaths
+      this.notOptimalAlternativePaths = this.exerciseData.notOptimalAlternativePaths
     }
   },
   computed: {
     isPlaceholderVisible () {
-      console.log('new compute of isPlaceholderVisibl')
       return !(
         this.gameState.grExpDif ||
         this.gameState.grExpEasy ||
@@ -160,7 +165,6 @@ export default {
   },
   methods: {
     handleGameStateChange (game) {
-      console.log('handleGameStateChange called')
       switch (game) {
         case 'findPathDif':
           this.gameState.findPathDif = false
@@ -302,7 +306,6 @@ export default {
         // CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
         const startsymbol = this.$refs.grammarComponent.getStartsymbolValue()
-        // console.log('InputWindow.vue: handleSolutionRequest: this.startsymbolValue', startsymbol)
         this.$emit('result-data', result, startsymbol)
         this.$emit('word', wordValue)
       } catch (error) {
