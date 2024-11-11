@@ -242,7 +242,7 @@ export default {
           this.startsymbolValue = 'S'
           this.alphabetValue = 'a,b,c'
           this.variablesValue = 'S,X,Y,A,B,C'
-          this.productionsValue = 'S->X,S->Y,X->A,X->B,Y->B,Y->C,A->a,B->b,C->c'
+          this.productionsValue = 'S->X,S->Y,X->A,X->B,Y->B,Y->C,A->a,B->b,C->c,S->Z,Z->U,U->B,Z->C'
           this.wordValue = 'b'
           break
       }
