@@ -23,6 +23,7 @@
       ref="popup"
       @popup-btn-1="handlePopupBtn1"
       @popup-btn-2="handlePopupBtn2"
+      @popup-btn-3="handlePopupBtn3"
     />
   </div>
 </template>
@@ -70,7 +71,9 @@ export default {
       return this.selectedButtons.includes(label)
     },
     isSelectionCorrect () {
-      const correctWords = this.nodeNamesByDepth[this.currentExerciseDepth]
+      const correctWords = this.nodeNamesByDepth[this.currentExerciseDepth].filter(
+        (name) => !this.hasDuplicateSuffix(name)
+      )
       if (correctWords.length !== this.selectedButtons.length) return false
       return correctWords.sort().every((value, index) => value === this.selectedButtons.sort()[index])
     },
@@ -97,7 +100,6 @@ export default {
             `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
             'OK'
           )
-          this.resetGameState()
         } else {
           this.selectedButtons = []
           ++this.currentExerciseDepth
@@ -128,8 +130,14 @@ export default {
       }
       this.$emit('correct-input', 1)
     },
+    handlePopupBtn3 () {
+      this.resetGameState()
+    },
     findMinMaxLength () {
-      const nodeNames = this.nodeNamesByDepth[this.currentExerciseDepth]
+      const nodeNames = this.nodeNamesByDepth[this.currentExerciseDepth].filter(
+        (name) => !this.hasDuplicateSuffix(name)
+      )
+      // const nodeNames = this.nodeNamesByDepth[this.currentExerciseDepth]
       let minLength = this.wordValue.length
       let maxLength = 0
       nodeNames.forEach(name => {
@@ -173,7 +181,9 @@ export default {
         }
 
         if (!this.nodeNamesByDepth[this.currentExerciseDepth].includes(randomString)) {
-          result.push(randomString)
+          if (!result.includes(randomString)) {
+            result.push(randomString)
+          }
           attempts++
         }
       }
@@ -187,11 +197,13 @@ export default {
       let idCounter = 1
 
       correctWords.forEach(word => {
-        this.buttons.push({
-          id: idCounter++,
-          label: word,
-          value: true
-        })
+        if (!this.hasDuplicateSuffix(word)) {
+          this.buttons.push({
+            id: idCounter++,
+            label: word,
+            value: true
+          })
+        }
       })
 
       randomWords.forEach(word => {
@@ -223,6 +235,9 @@ export default {
         default:
           console.log('unknown language!')
       }
+    },
+    hasDuplicateSuffix (name) {
+      return /\(duplicate(\s*\d+)?\)$/.test(name)
     }
   }
 }

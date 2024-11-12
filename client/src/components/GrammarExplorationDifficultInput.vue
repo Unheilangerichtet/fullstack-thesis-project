@@ -18,6 +18,7 @@
           ref="popup"
           @popup-btn-1="handlePopupBtn1"
           @popup-btn-2="handlePopupBtn2"
+          @popup-btn-3="handlePopupBtn3"
         />
     </div>
   </div>
@@ -73,7 +74,6 @@ export default {
             `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
             'OK'
           )
-          this.resetGameState()
         }
       } else {
         this.$refs.popup.createTwoBtnPopup(
@@ -85,7 +85,9 @@ export default {
     },
     isInputCorrect () {
       const input = this.exerciseInput
-      const solution = this.nodeNamesByDepth[this.currentExerciseDepth]
+      const solution = this.nodeNamesByDepth[this.currentExerciseDepth].filter(
+        (name) => !this.hasDuplicateSuffix(name)
+      )
       const inputArray = input.split(',').map(word => word.trim())
       const inputSet = new Set(inputArray)
       const solutionSet = new Set(solution.map(word => word.trim()))
@@ -106,6 +108,9 @@ export default {
       }
       this.$emit('correct-input', 1)
     },
+    handlePopupBtn3 () {
+      this.resetGameState()
+    },
     onLanguageChange () {
       switch (this.language) {
         case 'EN':
@@ -121,6 +126,9 @@ export default {
         default:
           console.log('unknown language!')
       }
+    },
+    hasDuplicateSuffix (name) {
+      return /\(duplicate(\s*\d+)?\)$/.test(name)
     }
   }
 }
