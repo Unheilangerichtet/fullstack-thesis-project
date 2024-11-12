@@ -23,6 +23,7 @@
       ref="popup"
       @popup-btn-1="handlePopupBtn1"
       @popup-btn-2="handlePopupBtn2"
+      @popup-btn-3="handlePopupBtn3"
     />
   </div>
 </template>
@@ -87,7 +88,6 @@ export default {
             `Congratulations, you found the path to '${this.wordValue}'!`,
             'OK'
           )
-          this.resetGameState()
         } else {
           this.selectedButton = ''
           this.currentExercisedepth++
@@ -123,6 +123,9 @@ export default {
         )
         this.resetGameState()
       }
+    },
+    handlePopupBtn3 () {
+      this.resetGameState()
     },
     generateButtons () {
       const selection = this.nodeNamesByDepth[this.currentExercisedepth]
