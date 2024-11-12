@@ -545,6 +545,8 @@ export default {
     },
 
     findOptimalAlternativePaths () {
+      this.optimalAlternativePaths = []
+      this.notOptimalAlternativePaths = []
       for (const alternativePath of this.pathsToDuplicates) {
         if (this.isAlternativePathOptimal(this.pathToWord, alternativePath)) {
           this.optimalAlternativePaths.push(alternativePath)
