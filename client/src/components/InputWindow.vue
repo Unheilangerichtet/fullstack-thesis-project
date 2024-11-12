@@ -59,6 +59,8 @@
         :language="language"
         :nodeNamesByDepth="nodeNamesByDepth"
         :pathToWord="pathToWord"
+        :optimalAlternativePaths="optimalAlternativePaths"
+        :notOptimalAlternativePaths="notOptimalAlternativePaths"
         :grammarValue="grammarValue"
         :wordValue="wordValue"
         :gameState="gameState.findPathDif"

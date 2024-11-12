@@ -19,6 +19,7 @@
       ref="popup"
       @popup-btn-1="handlePopupBtn1"
       @popup-btn-2="handlePopupBtn2"
+      @popup-btn-3="handlePopupBtn3"
     />
   </div>
 </template>
@@ -45,6 +46,8 @@ export default {
     grammarValue: [],
     pathToWord: [],
     nodeNamesByDepth: [],
+    optimalAlternativePaths: [],
+    notOptimalAlternativePaths: [],
     gameState: false
   },
   watch: {
@@ -70,15 +73,21 @@ export default {
         )
       } else if (this.isInputCorrect()) {
         this.$emit('correct-input', 1)
-        this.exerciseInput = ''
-        ++this.currentExerciseDepth
         if (this.exerciseInput === this.wordValue) {
           this.$refs.popup.createOneBtnPopup(
             `Congratulations, you found the path to '${this.wordValue}'!`,
             'OK'
           )
-          this.resetGameState()
+        } else {
+          ++this.currentExerciseDepth
+          this.exerciseInput = ''
         }
+      } else if (this.isSelectionNotOptimal()) {
+        this.$refs.popup.createTwoBtnPopup(
+          `Your Input was wrong! \n '${this.exerciseInput}' is not on an optimal Path to '${this.wordValue}'`,
+          'Try Again',
+          'Skip'
+        )
       } else {
         this.$refs.popup.createTwoBtnPopup(
           'Your Input was wrong!',
@@ -88,7 +97,41 @@ export default {
       }
     },
     isInputCorrect () {
-      return (this.exerciseInput === this.pathToWord[this.currentExerciseDepth])
+      if (this.exerciseInput === this.pathToWord[this.currentExerciseDepth]) {
+        return true
+      }
+      for (const optAltPath of this.optimalAlternativePaths) {
+        console.log()
+        if (optAltPath[this.currentExerciseDepth] !== undefined) {
+          const baseName = this.getBaseName(optAltPath[this.currentExerciseDepth])
+          console.log(this.exerciseInput, baseName)
+          if (this.exerciseInput === baseName) {
+            return true
+          }
+        } else {
+          console.error('optAltPath[this.currentExerciseDepth] is undefined')
+          console.log('currentExerciseDepth:', this.currentExerciseDepth)
+          console.log('optAltPath', optAltPath)
+        }
+      }
+      return false
+    },
+    isSelectionNotOptimal () {
+      for (const notOptAltPath of this.notOptimalAlternativePaths) {
+        if (notOptAltPath[this.currentExerciseDepth] !== undefined) {
+          const baseName = this.getBaseName(notOptAltPath[this.currentExerciseDepth])
+          if (this.exerciseInput === baseName) {
+            return true
+          }
+        }
+      }
+      return false
+    },
+    getBaseName (name) {
+      return name.replace(/\s*\(duplicate(\s*\d+)?\)$/, '').trim()
+    },
+    hasDuplicateSuffix (name) {
+      return /\(duplicate(\s*\d+)?\)$/.test(name)
     },
     handlePopupBtn1 () {
       this.exerciseInput = ''
@@ -104,6 +147,9 @@ export default {
         this.resetGameState()
       }
       this.$emit('correct-input', 1)
+    },
+    handlePopupBtn3 () {
+      this.resetGameState()
     },
     onLanguageChange () {
       switch (this.language) {
