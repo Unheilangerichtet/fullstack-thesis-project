@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div class="multi-select-grid">
     <div class="row multi-select-heading">{{ inputHeading }}</div>
     <div class="scrollable-container">
@@ -89,28 +89,50 @@ export default {
     },
     start () {
       if (!this.gameState) {
-        this.$refs.popup.createOneBtnPopup(
-          'There is no active Game running',
-          'OK'
-        )
+        if (this.language === 'DE') {
+          this.$refs.popup.createOneBtnPopup(
+            'Es gibt kein aktives Spiel',
+            'OK'
+          )
+        } else {
+          this.$refs.popup.createOneBtnPopup(
+            'There is no active Game running',
+            'OK'
+          )
+        }
       } else if (this.isSelectionCorrect()) {
         this.$emit('correct-input', 1)
         if (this.nodeNamesByDepth[this.currentExerciseDepth].includes(this.wordValue)) {
-          this.$refs.popup.createOneBtnPopup(
-            `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
-            'OK'
-          )
+          if (this.language === 'DE') {
+            this.$refs.popup.createOneBtnPopup(
+              `Glückwunsch! Sie haben die Grammatik erkundet und das Wort '${this.wordValue}' gefunden!`,
+              'OK'
+            )
+          } else {
+            this.$refs.popup.createOneBtnPopup(
+              `Congratulations, you explored the grammar until finding the word '${this.wordValue}'!`,
+              'OK'
+            )
+          }
         } else {
           this.selectedButtons = []
           ++this.currentExerciseDepth
           this.generateButtons()
         }
       } else {
-        this.$refs.popup.createTwoBtnPopup(
-          `Your Selection was wrong! Try Again or Skip to the next Layer`,
-          'Try Again',
-          'Skip'
-        )
+        if (this.language === 'DE') {
+          this.$refs.popup.createTwoBtnPopup(
+            'Ihre Auswahl war falsch! Versuchen Sie es erneut oder überspringen Sie zur nächsten Ebene',
+            'Erneut versuchen',
+            'Überspringen'
+          )
+        } else {
+          this.$refs.popup.createTwoBtnPopup(
+            'Your selection was wrong! Try Again or Skip to the next Layer',
+            'Try Again',
+            'Skip'
+          )
+        }
       }
     },
     handlePopupBtn1 () {
@@ -122,10 +144,17 @@ export default {
       if (this.nodeNamesByDepth[this.currentExerciseDepth]) {
         this.generateButtons()
       } else {
-        this.$refs.popup.createOneBtnPopup(
-          `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
-          'OK'
-        )
+        if (this.language === 'DE') {
+          this.$refs.popup.createOneBtnPopup(
+            `Glückwunsch! Sie haben die Grammatik erkundet und das Wort '${this.wordValue}' gefunden!`,
+            'OK'
+          )
+        } else {
+          this.$refs.popup.createOneBtnPopup(
+            `Congratulations, you explored the grammar until finding the word '${this.wordValue}'!`,
+            'OK'
+          )
+        }
         this.resetGameState()
       }
       this.$emit('correct-input', 1)
