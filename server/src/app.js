@@ -9,6 +9,9 @@ app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(cors());
 
-require('./routes')(app);
+// require('./routes')(app);
+const routes = require('./routes');
+// console.log(routes); // This should log: [Function]
+routes(app);
 
 app.listen(process.env.PORT || config.port);

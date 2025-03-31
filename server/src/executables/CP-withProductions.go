@@ -51,8 +51,10 @@ func next(currentSet map[string]struct{}, n int, productions []Production, catal
 			derivedSententialForms := derive(sententialForm, production, catalog)
 			for _, form := range derivedSententialForms {
 				if len(form) <= n {
-					nextSet[form] = struct{}{}
-					relations[form+","+sententialForm] = struct{}{}
+					// nextSet and relations are maps that act as Sets by just having empty struncs as values.
+					// As each key can only exist once, it is like as set
+					nextSet[form] = struct{}{}                      //adds the key form to nextSet, with an empty struct as value.
+					relations[form+","+sententialForm] = struct{}{} //adds the key 'form+","+sententialForm' to relations, with an empty struct as value.
 				}
 			}
 		}
