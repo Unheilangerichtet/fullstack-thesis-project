@@ -20,15 +20,11 @@ export default new Router({
       component: Home,
     }
   ],
-  // scrollBehavior(to, from, savedPosition) {
-  //   if (savedPosition) {
-  //     return savedPosition;
-  //   } else if (to.hash) {
-  //     return { selector: to.hash, behavior: 'smooth' };
-  //   } else {
-  //     return { x: 0, y: 0 };
-  //   }
-  // }
+  
+  /* 
+  When clicking on Tiles or the Guide Button, this function is used to create an scrolling effect that brings
+  the User to the clicked on info section in a smoth scrolling motion instead of directly jumping to that section
+  */
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
