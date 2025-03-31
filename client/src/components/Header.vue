@@ -51,6 +51,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-content: center;
+  position: relative;
 }
 
 .header-flag {
@@ -63,6 +64,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-content: center;
+  margin-right: 100px;
 }
 
 .header-text {
@@ -76,28 +78,6 @@ export default {
 
 #lmu-logo {
   margin: 7px;
-}
-
-.language-button {
-  width: 100%;
-  height: 100%;
-  padding: 10px 15px;
-  color: white;
-  border: none;
-  cursor: pointer;
-  background-color: var(--lmu-gray);
-  margin-right: 5px;
-}
-
-.language-button:hover {
-  background-color: var(--lmu-green);
-  opacity: 0.7;
-}
-
-.language-button-container {
-  margin: 8px;
-  border-left: 2px solid white;
-  border-right: 2px solid white;
 }
 
 .wave {
@@ -118,5 +98,35 @@ export default {
 
 .wave .shape-fill {
     fill: var(--lmu-gray);
+}
+
+.language-button-container {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 1000;
+  border: 2px solid white;
+  background-color: var(--lmu-gray);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.language-button {
+  padding: 12px 20px;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  min-width: 60px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.language-button:hover {
+  background-color: var(--lmu-green);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 1;
 }
 </style>
