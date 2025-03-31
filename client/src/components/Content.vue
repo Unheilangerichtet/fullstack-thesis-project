@@ -17,30 +17,29 @@
         :receivedData="dataFromInput"
         :exerciseMode="exerciseMode"
         :startsymbol="startsymbol"
+        :language="language"
         @node-names-by-depth="handleNodeNamesByDepth"
         @exercise-data="handleExerciseData"
       />
     </div>
     <div id="diagram-legend">
-      <!-- Legend for lines -->
-      <svg class="legend-svg">
-        <line x1="5" y1="15" x2="25" y2="15" class="optimal-path"></line>
-      </svg>
-      <div>optimal path</div>
+      <svg class="legend-svg"><line x1="5" y1="15" x2="25" y2="15" class="optimal-path"></line></svg>
+      <div>{{ legendTxt1 }}</div>
 
-      <svg class="legend-svg">
-        <line x1="5" y1="15" x2="25" y2="15" class="alternative-path"></line>
-      </svg>
-      <div>alternative path</div>
+      <svg class="legend-svg"><line x1="5" y1="15" x2="25" y2="15" class="alternative-path"></line></svg>
+      <div>{{ legendTxt2 }}</div>
 
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-1"></circle></svg>
-      <div>nodes with children</div>
+      <div>{{ legendTxt3 }}</div>
+      
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-2"></circle></svg>
-      <div>nodes with collapsed children</div>
+      <div>{{ legendTxt4 }}</div>
+      
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-3"></circle></svg>
-      <div>nodes without children</div>
+      <div>{{ legendTxt5 }}</div>
+      
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-4"></circle></svg>
-      <div>searched word</div>
+      <div>{{ legendTxt6 }}</div>
     </div>
   </div>
 </template>
@@ -54,6 +53,12 @@ export default {
   components: {InputWindow, OutputWindow},
   data () {
     return {
+      legendTxt1: 'optimal path',
+      legendTxt2: 'alternative path',
+      legendTxt3: 'nodes with children',
+      legendTxt4: 'nodes with collapsed children',
+      legendTxt5: 'nodes without children',
+      legendTxt6: 'searched word',
       dataFromInput: {
         type: Object,
         required: false
@@ -72,7 +77,32 @@ export default {
   props: {
     language: String
   },
+  watch: {
+    language () {
+      this.onlanguageChange()
+    }
+  },
   methods: {
+    onlanguageChange () {
+      switch (this.language) {
+        case 'DE':
+          this.legendTxt1 = 'optimaler Pfad';
+          this.legendTxt2 = 'alternativer Pfad';
+          this.legendTxt3 = 'Knoten mit Kindern';
+          this.legendTxt4 = 'Knoten mit eingeklappten Kindern';
+          this.legendTxt5 = 'Knoten ohne Kinder';
+          this.legendTxt6 = 'gesuchtes Wort';
+          break;
+        case 'EN':
+          this.legendTxt1 = 'optimal path';
+          this.legendTxt2 = 'alternative path';
+          this.legendTxt3 = 'nodes with children';
+          this.legendTxt4 = 'nodes with collapsed children';
+          this.legendTxt5 = 'nodes without children';
+          this.legendTxt6 = 'searched word';
+          break;
+      }
+    },
     handleExerciseData (exerciseData) {
       this.exerciseData = exerciseData
     },

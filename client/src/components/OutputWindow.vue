@@ -45,9 +45,13 @@ export default {
     startsymbol: {
       type: String,
       required: false
-    }
+    },
+    language: String
   },
   watch: {
+    language () {
+      this.onLanguageChange()
+    },
     receivedData () {
       this.onPropChange()
     },
@@ -56,6 +60,16 @@ export default {
     }
   },
   methods: {
+    onLanguageChange () {
+      switch (this.language) {
+        case 'DE':
+          this.outputTxt = 'AUSGABE'
+          break
+        case 'EN':
+          this.outputTxt = 'OUTPUT'
+          break
+      }
+    },
     handleExerciseData (exerciseData) {
       this.$emit('exercise-data', exerciseData)
     },
@@ -158,7 +172,7 @@ export default {
         .id(d => d.id)
         .parentId(d => d.parentId)(flatData)
 
-      let result = this.getNdesByDepth(root)
+      let result = this.getNodesByDepth(root)
       result = result.map(relation => ({
         ...relation,
         parent: relation.parent === 'null' ? null : relation.parent
@@ -166,7 +180,7 @@ export default {
       return result
     },
 
-    getNdesByDepth (root) {
+    getNodesByDepth (root) {
       const sortedFlatData = []
       root.each(node => {
         const child = node.id.split('-')[0]

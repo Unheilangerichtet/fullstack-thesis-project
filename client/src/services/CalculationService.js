@@ -1,48 +1,37 @@
-// import Api from '@/services/Api'
-
 export default {
-  isInputValid (variables, alphabet, productions, startsymbol, word) {
-    // check if variables are valid
-    const variableValidity = this.areVariablesValid(variables)
-    console.log(variableValidity)
-    // check if alphabet is valid
-    const alphabetValidity = this.isAlphabetValid(alphabet)
-    console.log(alphabetValidity)
-    // check if productions are valid
-    const productionsValidity = this.areProductionsValid(productions)
-    console.log(productionsValidity)
-    // check if startsymbol is valid
-    const startsymbolValidity = this.isStartsymbolValid(startsymbol)
-    console.log(startsymbolValidity)
-    // check if word is valid
-    const wordValidity = this.isWordValid(word, alphabet)
-    console.log(wordValidity)
-  },
-
   areVariablesValid (variables) {
     if (variables === '') {
-      return [false, 'the variables are missing!']
+      return {
+        status: false,
+        messageEN: 'Variables are missing!',
+        messageDE: 'Variablen fehlen!'
+      }
     }
     const regex = /[^,\s][^,]*[^,\s]*/g
     const variableArray = variables.match(regex) || []
-    for (let variable in variableArray) {
-      if (!(variable.length === 1)) {
+    for (let variable of variableArray) {
+      if (variable.length !== 1) {
         return {
           status: false,
-          message: `the variable '${variable}' is not valid, it is to long! variables must be of length 1`
+          messageEN: `Variable '${variable}' is invalid! Variables must be single characters.`,
+          messageDE: `Variable '${variable}' ist ungültig! Variablen müssen Einzelzeichen sein.`
         }
       }
     }
     return {
-      // validity; true
       status: true,
-      message: 'the variables are valid!'
+      messageEN: 'Variables are valid!',
+      messageDE: 'Variablen sind gültig!'
     }
   },
 
   isAlphabetValid (alphabet) {
     if (alphabet === '') {
-      return [false, 'the alphabet is missing!']
+      return {
+        status: false,
+        messageEN: 'Alphabet is missing!',
+        messageDE: 'Alphabet fehlt!'
+      }
     }
     const regex = /[^,\s][^,]*[^,\s]*/g
     const alphabetArray = alphabet.match(regex) || []
@@ -50,54 +39,81 @@ export default {
       if (letter.length !== 1) {
         return {
           status: false,
-          message: `the letter '${letter}' is not valid, it is to long! letters must be of length 1`
+          messageEN: `Symbol '${letter}' is invalid! Alphabet symbols must be single characters.`,
+          messageDE: `Symbol '${letter}' ist ungültig! Alphabetzeichen müssen Einzelzeichen sein.`
         }
       }
     }
     return {
       status: true,
-      message: 'the alphabet is valid!'
+      messageEN: 'Alphabet is valid!',
+      messageDE: 'Alphabet ist gültig!'
     }
   },
 
-  areProductionsValid (productions) {
+  areProductionsValid (productions, alphabet, variables) {
     if (productions === '') {
-      return [false, 'the productions are missing!']
+      return {
+        status: false,
+        messageEN: 'Productions are missing!',
+        messageDE: 'Produktionen fehlen!'
+      }
     }
     productions = productions.replace(/\s+/g, '')
-    const rules = productions.split(',').map((rule) => rule.split('->'))
+    const rules = productions.split(',').map(rule => rule.split('->'))
+
+    const validSymbols = new Set([...alphabet.split(','), ...variables.split(',')])
+
     for (let rule of rules) {
-      if (rule[0] === '' || rule[1] === '' || rule[0] === rule[1]) {
+      if (!rule[0] || !rule[1]) {
         return {
           status: false,
-          message: `The rule "${rule}" is not valid!`
+          messageEN: `Invalid rule format! Use "X->Y" format.`,
+          messageDE: `Ungültiges Regelformat! Verwende "X->Y" Format.`
         }
       }
       if (rule[0].length > rule[1].length) {
         return {
           status: false,
-          message: `The production '${rule[0]}'->'${rule[1]}' is not valid! productions from Typ 1 Grammars cannot have a left side which is longer then the right side!`
+          messageEN: `Production '${rule[0]}->${rule[1]}' is invalid! Left side cannot be longer than right side in Type 1 grammars.`,
+          messageDE: `Produktion '${rule[0]}->${rule[1]}' ist ungültig! Die linke Seite darf bei Typ-1-Grammatiken nicht länger als die rechte sein.`
+        }
+      }
+      for (let symbol of rule[0] + rule[1]) {
+        if (!validSymbols.has(symbol)) {
+          return {
+            status: false,
+            messageEN: `Symbol '${symbol}' in production '${rule[0]}->${rule[1]}' is not in alphabet or variables.`,
+            messageDE: `Symbol '${symbol}' in Produktion '${rule[0]}->${rule[1]}' ist nicht im Alphabet oder den Variablen enthalten.`
+          }
         }
       }
     }
     return {
       status: true,
-      message: 'The productions are valid!'
+      messageEN: 'Productions are valid!',
+      messageDE: 'Produktionen sind gültig!'
     }
   },
 
   isStartsymbolValid (startsymbol) {
     if (startsymbol === '') {
-      return [false, 'the startsymbol is missing']
+      return {
+        status: false,
+        messageEN: 'Start symbol is missing!',
+        messageDE: 'Startsymbol fehlt!'
+      }
     } else if (startsymbol.length !== 1) {
       return {
         status: false,
-        message: `the startsymbol '${startsymbol}' is not valid! startsymbols must be of length 1`
+        messageEN: `Start symbol '${startsymbol}' must be a single character!`,
+        messageDE: `Startsymbol '${startsymbol}' muss ein einzelnes Zeichen sein!`
       }
     }
     return {
       status: true,
-      message: 'the startsymbol is valid!'
+      messageEN: 'Start symbol is valid!',
+      messageDE: 'Startsymbol ist gültig!'
     }
   },
 
@@ -105,20 +121,30 @@ export default {
     if (word === '') {
       return {
         status: false,
-        message: 'the word is missing!'
+        messageEN: 'Word is missing!',
+        messageDE: 'Wort fehlt!'
       }
     }
     for (let char of word) {
       if (!alphabet.includes(char)) {
         return {
           status: false,
-          message: `the word '${word}' is not valid, the alphabet does not contain the letter '${char}'`
+          messageEN: `Word contains invalid character '${char}'!`,
+          messageDE: `Wort enthält ungültiges Zeichen '${char}'!`
         }
+      }
+    }
+    if (word.length > 8) {
+      return {
+        status: false,
+        messageEN: 'Word is too long! Maximum length is 8 characters due to algorithm complexity.',
+        messageDE: 'Wort ist zu lang! Maximale Länge ist 8 Zeichen wegen Algorithmus-Komplexität.'
       }
     }
     return {
       status: true,
-      message: `the word "${word}" is valid!`
+      messageEN: `Word "${word}" is valid!`,
+      messageDE: `Wort "${word}" ist gültig!`
     }
   },
 
@@ -134,8 +160,6 @@ export default {
       .replace(/\s+/g, '') // Remove all spaces and newlines
       .replace(/,+/g, ',') // Ensure no multiple consecutive commas
       .replace(/^,|,$/g, '') // Remove any leading or trailing commas
-      // .toUpperCase() // Convert everything to uppercase
-      // .replace(/[^A-Z,]/g, '') // Remove anything that is not an uppercase letter or a comma
   },
 
   formatAlphabet (input) {

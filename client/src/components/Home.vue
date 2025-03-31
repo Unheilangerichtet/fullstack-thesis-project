@@ -2,8 +2,8 @@
   <div id="home-div">
     <Header @change-language="onChangeLanguage"></Header>
     <Content :language="this.language"></Content>
-    <Tiles></Tiles>
-    <Info></Info>
+    <Tiles :language="this.language"></Tiles>
+    <Info :language="this.language"></Info>
   </div>
 </template>
 
