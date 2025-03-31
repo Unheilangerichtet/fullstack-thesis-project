@@ -14,7 +14,7 @@
           <div class="front">{{ TileHaeder1 }}</div>
           <div class="back">
             {{ TileTxt1 }}
-            <router-link :to="{ path: '/info', hash: '#info-section-1' }">learn more</router-link>
+            <router-link :to="{ path: '/info', hash: '#info-section-1' }">{{ linkTxt }}</router-link>
           </div>
         </div>
       </div>
@@ -23,7 +23,7 @@
           <div class="front">{{ TileHaeder2 }}</div>
           <div class="back">
             {{ TileTxt2 }}
-            <router-link :to="{ path: '/info', hash: '#info-section-2' }">learn more</router-link>
+            <router-link :to="{ path: '/info', hash: '#info-section-2' }">{{ linkTxt }}</router-link>
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
           <div class="front">{{ TileHaeder3 }}</div>
           <div class="back">
             {{ TileTxt3 }}
-            <router-link :to="{ path: '/info', hash: '#info-section-3' }">learn more</router-link>
+            <router-link :to="{ path: '/info', hash: '#info-section-3' }">{{ linkTxt }}</router-link>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
           <div class="front">{{ TileHaeder4 }}</div>
           <div class="back">
             {{ TileTxt4 }}
-            <router-link :to="{ path: '/info', hash: '#info-section-4' }">learn more</router-link>
+            <router-link :to="{ path: '/info', hash: '#info-section-4' }">{{ linkTxt }}</router-link>
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@
           <div class="front">{{ TileHaeder5 }}</div>
           <div class="back">
             {{ TileTxt5 }}
-            <router-link :to="{ path: '/info', hash: '#info-section-5' }">learn more</router-link>
+            <router-link :to="{ path: '/info', hash: '#info-section-5' }">{{ linkTxt }}</router-link>
           </div>
         </div>
       </div>
@@ -58,8 +58,8 @@
         <div class="tile">
           <div class="front">{{ TileHaeder6 }}</div>
           <div class="back">
-              {{ TileTxt6 }}
-              <router-link :to="{ path: '/info', hash: '#info-section-6' }">learn more</router-link>
+            {{ TileTxt6 }}
+            <router-link :to="{ path: '/info', hash: '#info-section-6' }">{{ linkTxt }}</router-link>
           </div>
         </div>
       </div>
@@ -75,41 +75,32 @@ export default {
   name: 'Tiles',
   data () {
     return {
+      linkTxt: 'learn more',
       layeredWavesSvg: require('../assets/images/layered-waves-h100.svg'),
-      language: '',
-      TileHaeder1: 
+      TileHaeder1:
         'What is a formal Grammar?',
-      TileTxt1: 
-        'A formal grammar is a mathematical framework G = (V, Σ, P, S) describing how to generate words of a formal language. \
-        It consists of variables V, an Alphabet Σ, production rules P, and a start symbol S.',
-      TileHaeder2: 
+      TileTxt1:
+        'A formal grammar is a mathematical framework G = (V, Σ, P, S) describing how to generate words of a formal language. It consists of variables V, an Alphabet Σ, production rules P, and a start symbol S.',
+      TileHaeder2:
         'What is a formal Language?',
-      TileTxt2: 
-        'A formal language is the set of all words that can be derived from a formal grammar\'s start symbol using its production rules. \
-         It is defined by an alphabet and can be either finite or infinite.',
-      TileHaeder3: 
+      TileTxt2:
+        'A formal language is the set of all words that can be derived from a formal grammar\'s start symbol using its production rules. It is defined by an alphabet and can be either finite or infinite.',
+      TileHaeder3:
         'What is a contextsensitive Language?',
-      TileTxt3: 
-        'Context-sensitive grammars only allow productions where left-side symbols never exceed right-side length (|u| ≤ |v|). \
-        Their languages are recognized by linear-bounded automata and are decidable.',
-      TileHaeder4: 
+      TileTxt3:
+        'Context-sensitive grammars only allow productions where left-side symbols never exceed right-side length (|u| ≤ |v|). Their languages are recognized by linear-bounded automata and are decidable.',
+      TileHaeder4:
         'What is the Wordproblem?',
-      TileTxt4: 
-        'The word problem asks whether a given word belongs to a specific formal language. \
-        A formal language class is called \'decidable\' when its word problem is algorithmically solvable.  \
-        It is fundamental to formal language theory and its applications in computer science.',
-      TileHaeder5: 
+      TileTxt4:
+        'The word problem asks whether a given word belongs to a specific formal language. A formal language class is called \'decidable\' when its word problem is algorithmically solvable. It is fundamental to formal language theory and its applications in computer science.',
+      TileHaeder5:
         'Why is the Wordproblem solvable for contextsensitive Languages?',
-      TileTxt5: 
-        'Because derivation steps are bounded by the non-shrinking condition, \
-        and linear-bounded automata can systematically check all possible paths. \
-        This enables an algorithm working within limited memory.',
-      TileHaeder6: 
+      TileTxt5:
+        'Because derivation steps are bounded by the non-shrinking condition, and linear-bounded automata can systematically check all possible paths. This enables an algorithm working within limited memory.',
+      TileHaeder6:
         'What are practical applications of formal language theory?',
-      TileTxt6: 
-        'It enables critical computing tools like programming language compilers (using CFGs) and \
-        regular expressions for text processing. Applications also span bioinformatics (DNA pattern matching) and \
-        AI (natural language syntax analysis)',
+      TileTxt6:
+        'It enables critical computing tools like programming language compilers (using CFGs) and regular expressions for text processing. Applications also span bioinformatics (DNA pattern matching) and AI (natural language syntax analysis)'
     }
   },
   props: {
@@ -133,36 +124,38 @@ export default {
         })
       })
     },
-    onLanguageChange() {
+    onLanguageChange () {
       switch (this.language) {
         case 'DE':
-          this.TileHaeder1 = 'Was ist eine formale Grammatik?';
-          this.TileTxt1 = 'Eine formale Grammatik ist ein mathematisches Rahmenwerk G = (V, Σ, P, S), das beschreibt, wie Wörter einer formalen Sprache erzeugt werden. Sie besteht aus Variablen V, einem Alphabet Σ, Produktionsregeln P und einem Startsymbol S.';
-          this.TileHaeder2 = 'Was ist eine formale Sprache?';
-          this.TileTxt2 = 'Eine formale Sprache ist die Menge aller Wörter, die aus dem Startsymbol einer formalen Grammatik unter Verwendung ihrer Produktionsregeln abgeleitet werden können. Sie wird durch ein Alphabet definiert und kann endlich oder unendlich sein.';
-          this.TileHaeder3 = 'Was ist eine kontextsensitive Sprache?';
-          this.TileTxt3 = 'Kontextsensitive Grammatiken erlauben nur Produktionen, bei denen die linke Seite nicht länger als die rechte ist (|u| ≤ |v|). Ihre Sprachen werden durch linear beschränkte Automaten erkannt und sind entscheidbar.';
-          this.TileHaeder4 = 'Was ist das Wortproblem?';
-          this.TileTxt4 = 'Das Wortproblem fragt, ob ein gegebenes Wort zu einer bestimmten formalen Sprache gehört. Eine Klasse formaler Sprachen heißt "entscheidbar", wenn ihr Wortproblem algorithmisch lösbar ist. Es ist grundlegend für die Theorie formaler Sprachen und ihre Anwendungen in der Informatik.';
-          this.TileHaeder5 = 'Warum ist das Wortproblem für kontextsensitive Sprachen lösbar?';
-          this.TileTxt5 = 'Weil die Ableitungsschritte durch die Nicht-Verkleinerungsbedingung beschränkt sind und linear beschränkte Automaten alle möglichen Pfade systematisch überprüfen können. Dies ermöglicht einen Algorithmus, der mit begrenztem Speicher arbeitet.';
-          this.TileHaeder6 = 'Was sind praktische Anwendungen der formalen Sprachtheorie?';
-          this.TileTxt6 = 'Sie ermöglicht wichtige Computing-Tools wie Compiler für Programmiersprachen (mit CFGs) und reguläre Ausdrücke für Textverarbeitung. Anwendungen reichen von Bioinformatik (DNA-Mustererkennung) bis zu KI (syntaktische Analyse natürlicher Sprache).';
-          break;
+          this.linkTxt = 'mehr erfahren'
+          this.TileHaeder1 = 'Was ist eine formale Grammatik?'
+          this.TileTxt1 = 'Eine formale Grammatik ist ein mathematisches Rahmenwerk G = (V, Σ, P, S), das beschreibt, wie Wörter einer formalen Sprache erzeugt werden. Sie besteht aus Variablen V, einem Alphabet Σ, Produktionsregeln P und einem Startsymbol S.'
+          this.TileHaeder2 = 'Was ist eine formale Sprache?'
+          this.TileTxt2 = 'Eine formale Sprache ist die Menge aller Wörter, die aus dem Startsymbol einer formalen Grammatik unter Verwendung ihrer Produktionsregeln abgeleitet werden können. Sie wird durch ein Alphabet definiert und kann endlich oder unendlich sein.'
+          this.TileHaeder3 = 'Was ist eine kontextsensitive Sprache?'
+          this.TileTxt3 = 'Kontextsensitive Grammatiken erlauben nur Produktionen, bei denen die linke Seite nicht länger als die rechte ist (|u| ≤ |v|). Ihre Sprachen werden durch linear beschränkte Automaten erkannt und sind entscheidbar.'
+          this.TileHaeder4 = 'Was ist das Wortproblem?'
+          this.TileTxt4 = 'Das Wortproblem fragt, ob ein gegebenes Wort zu einer bestimmten formalen Sprache gehört. Eine Klasse formaler Sprachen heißt "entscheidbar", wenn ihr Wortproblem algorithmisch lösbar ist. Es ist grundlegend für die Theorie formaler Sprachen und ihre Anwendungen in der Informatik.'
+          this.TileHaeder5 = 'Warum ist das Wortproblem für kontextsensitive Sprachen lösbar?'
+          this.TileTxt5 = 'Weil die Ableitungsschritte durch die Nicht-Verkleinerungsbedingung beschränkt sind und linear beschränkte Automaten alle möglichen Pfade systematisch überprüfen können. Dies ermöglicht einen Algorithmus, der mit begrenztem Speicher arbeitet.'
+          this.TileHaeder6 = 'Was sind praktische Anwendungen der formalen Sprachtheorie?'
+          this.TileTxt6 = 'Sie ermöglicht wichtige Computing-Tools wie Compiler für Programmiersprachen (mit CFGs) und reguläre Ausdrücke für Textverarbeitung. Anwendungen reichen von Bioinformatik (DNA-Mustererkennung) bis zu KI (syntaktische Analyse natürlicher Sprache).'
+          break
         case 'EN':
-          this.TileHaeder1 = 'What is a formal Grammar?';
-          this.TileTxt1 = 'A formal grammar is a mathematical framework G = (V, Σ, P, S) describing how to generate words of a formal language. It consists of variables V, an Alphabet Σ, production rules P, and a start symbol S.';
-          this.TileHaeder2 = 'What is a formal Language?';
-          this.TileTxt2 = 'A formal language is the set of all words that can be derived from a formal grammar\'s start symbol using its production rules. It is defined by an alphabet and can be either finite or infinite.';
-          this.TileHaeder3 = 'What is a contextsensitive Language?';
-          this.TileTxt3 = 'Context-sensitive grammars only allow productions where left-side symbols never exceed right-side length (|u| ≤ |v|). Their languages are recognized by linear-bounded automata and are decidable.';
-          this.TileHaeder4 = 'What is the Wordproblem?';
-          this.TileTxt4 = 'The word problem asks whether a given word belongs to a specific formal language. A formal language class is called \'decidable\' when its word problem is algorithmically solvable. It is fundamental to formal language theory and its applications in computer science.';
-          this.TileHaeder5 = 'Why is the Wordproblem solvable for contextsensitive Languages?';
-          this.TileTxt5 = 'Because derivation steps are bounded by the non-shrinking condition, and linear-bounded automata can systematically check all possible paths. This enables an algorithm working within limited memory.';
-          this.TileHaeder6 = 'What are practical applications of formal language theory?';
-          this.TileTxt6 = 'It enables critical computing tools like programming language compilers (using CFGs) and regular expressions for text processing. Applications also span bioinformatics (DNA pattern matching) and AI (natural language syntax analysis).';
-          break;
+          this.linkTxt = 'learn more'
+          this.TileHaeder1 = 'What is a formal Grammar?'
+          this.TileTxt1 = 'A formal grammar is a mathematical framework G = (V, Σ, P, S) describing how to generate words of a formal language. It consists of variables V, an Alphabet Σ, production rules P, and a start symbol S.'
+          this.TileHaeder2 = 'What is a formal Language?'
+          this.TileTxt2 = 'A formal language is the set of all words that can be derived from a formal grammar\'s start symbol using its production rules. It is defined by an alphabet and can be either finite or infinite.'
+          this.TileHaeder3 = 'What is a contextsensitive Language?'
+          this.TileTxt3 = 'Context-sensitive grammars only allow productions where left-side symbols never exceed right-side length (|u| ≤ |v|). Their languages are recognized by linear-bounded automata and are decidable.'
+          this.TileHaeder4 = 'What is the Wordproblem?'
+          this.TileTxt4 = 'The word problem asks whether a given word belongs to a specific formal language. A formal language class is called \'decidable\' when its word problem is algorithmically solvable. It is fundamental to formal language theory and its applications in computer science.'
+          this.TileHaeder5 = 'Why is the Wordproblem solvable for contextsensitive Languages?'
+          this.TileTxt5 = 'Because derivation steps are bounded by the non-shrinking condition, and linear-bounded automata can systematically check all possible paths. This enables an algorithm working within limited memory.'
+          this.TileHaeder6 = 'What are practical applications of formal language theory?'
+          this.TileTxt6 = 'It enables critical computing tools like programming language compilers (using CFGs) and regular expressions for text processing. Applications also span bioinformatics (DNA pattern matching) and AI (natural language syntax analysis).'
+          break
       }
     }
   }
@@ -270,7 +263,6 @@ html {
 }
 
 a {
-  color: darkorange;
   position: absolute;
   bottom: 8px;
   right: 10px;
