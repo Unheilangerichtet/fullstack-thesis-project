@@ -1,8 +1,13 @@
 <template>
   <div id="info-wrapper">
     <section id="info-section-1" class="info-section info-section-1">
-      <h1 class="h-1">What is a Context-Sensitive Language?</h1>
-      <p class="p-1">{{ lorem }}</p>
+      <div class="content-wrapper">
+        <img v-bind:src="ChomskyHierarchyImg" id="ChomskyierarchyImg" class="section-image">
+        <div class="text-content">
+          <h1 class="h-1 multiline-text">{{ section1Title }}</h1>
+          <p class="p-1 multiline-text">{{ section1Content }}</p>
+        </div>
+      </div>
     </section>
     <div class="wave wave-1">
       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -10,8 +15,8 @@
       </svg>
     </div>
     <section id="info-section-2" class="info-section info-section-2">
-      <h1 class="h-2">What is the Word Problem for Context-Sensitive Languages?</h1>
-      <p class="p-2">{{ lorem }}</p>
+      <h1 class="h-2 multiline-text">{{ section2Title }}</h1>
+      <p class="p-2 multiline-text">{{ section2Content }}</p>
     </section>
     <div class="wave wave-2">
       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -21,8 +26,8 @@
       </svg>
     </div>
     <section id="info-section-3" class="info-section info-section-3">
-      <h1 class="h-3">What practical applications exist for the Word Problem in Context-Sensitive Languages?</h1>
-      <p class="p-3">{{ lorem }}</p>
+      <h1 class="h-3 multiline-text">{{ section3Title }}</h1>
+      <p class="p-3 multiline-text">{{ section3Content }}</p>
     </section>
     <div class="wave wave-3">
       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -30,8 +35,8 @@
       </svg>
     </div>
     <section id="info-section-4" class="info-section info-section-4">
-      <h1 class="h-4">How do you use the Website?</h1>
-      <p class="p-4">{{ lorem }}</p>
+      <h1 class="h-4 multiline-text">{{ section4Title}}</h1>
+      <p class="p-4 multiline-text">{{ section4Content }}</p>
     </section>
     <div class="wave wave-4">
       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -41,8 +46,8 @@
       </svg>
     </div>
     <section id="info-section-5" class="info-section info-section-5">
-      <h1 class="h-5">What is the Purpose of the Website?</h1>
-      <p class="p-5">{{ lorem }}</p>
+      <h1 class="h-5 multiline-text">{{ section5Title }}</h1>
+      <p class="p-5 multiline-text">{{ section5Content }}</p>
     </section>
     <div class="wave wave-5">
       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -50,35 +55,147 @@
       </svg>
     </div>
     <section id="info-section-6" class="info-section info-section-6">
-      <h1 class="h-6">Further Reading</h1>
-      <p class="p-6">{{ lorem }}</p>
+      <h1 class="h-6 multiline-text">{{ section6Title }}</h1>
+      <p class="p-6 multiline-text">{{ section6Content }}</p>
+    </section>
+    <div class="wave wave-3">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
+      </svg>
+    </div>
+    <section id="info-section-7" class="info-section info-section-7">
+      <h1 class="h-7 multiline-text">{{ section7Title }}</h1>
+      <p class="p-7 multiline-text"> {{ section7Content }}</p>
     </section>
   </div>
 </template>
 
 <script>
+import { infoContent } from '@/content/infoContent'
 export default {
   name: 'Info',
   data () {
     return {
-      language: '',
-      lorem: 'Lorem ipsum odor amet, consectetuer adipiscing elit. Fusce himenaeos mattis pharetra dui purus orci. Lacinia iaculis vitae quam etiam accumsan, duis platea. Enim nullam purus facilisi felis; lacinia vivamus urna. Tempus sem convallis convallis gravida; commodo interdum. Augue sit hac laoreet neque penatibus dapibus. Aptent felis nec egestas; risus fames himenaeos. Turpis fermentum amet pulvinar nisi euismod finibus, et netus. Egestas lacus nunc penatibus lobortis class a. Sodales nibh nam adipiscing fermentum vulputate at consectetur facilisi. Arcu etiam nullam commodo sociosqu placerat sollicitudin. Quam donec maximus ultricies sapien commodo curabitur eros eget. Ligula blandit aliquam augue; condimentum vulputate rutrum. Aduis mi suspendisse platea magna nisl, ex velit senectus. At sollicitudin tempus elementum maximus suscipit ultrices class gravida efficitur. Eleifend ullamcorper bibendum scelerisque habitasse inceptos mauris placerat. Vitae parturient tortor suspendisse montes congue vehicula. Parturient feugiat phasellus; hac pharetra sed metus. Asit penatibus varius faucibus sit diam praesent nibh. Ipsum inceptos lacus in; finibus nam nisi. Quisque tempor lacus volutpat tristique nisl purus urna. Pretium in fusce efficitur bibendum ridiculus aptent elit arcu sit. Mauris accumsan conubia elementum ultricies; scelerisque sit volutpat. Lobortis montes rhoncus ut malesuada sagittis potenti. Curae ligula etiam suscipit suspendisse fames pulvinar. Feugiat primis a laoreet non a morbi mattis. Augue mollis vestibulum tempus augue conubia taciti magnis interdum. Pulvinar nullam egestas mi purus aliquam. Phasellus blandit aptent litora torquent et dui vivamus. Convallis augue ad tristique cursus velit. In nullam et maecenas vulputate quis quam ligula sed ultricies. Eros orci bibendum netus nisi aliquet. Felis curae ligula phasellus non lacinia mollis. Mus sed efficitur pharetra at eros faucibus litora integer.'
+      ChomskyHierarchyImg: require('../assets/images/Chomsky-Hierarchie-english.drawio.svg'),
+      // ChomskyHierarchyImgDE: require('../assets/images/Chomsky-Hierarchie-deutsch.drawio.svg'),
+      content: infoContent,
+      section1Title: infoContent.section1.title.EN,
+      section1Content: infoContent.section1.content.EN,
+      section2Title: infoContent.section2.title.EN,
+      section2Content: infoContent.section2.content.EN,
+      section3Title: infoContent.section3.title.EN,
+      section3Content: infoContent.section3.content.EN,
+      section4Title: infoContent.section4.title.EN,
+      section4Content: infoContent.section4.content.EN,
+      section5Title: infoContent.section5.title.EN,
+      section5Content: infoContent.section5.content.EN,
+      section6Title: infoContent.section6.title.EN,
+      section6Content: infoContent.section6.content.EN,
+      section7Title: infoContent.section7.title.EN,
+      section7Content: infoContent.section7.content.EN,
+    }
+  },
+  props: {
+    language: String
+  },
+  watch: {
+    language () {
+      this.onLanguageChange ()
     }
   },
   methods: {
+    onLanguageChange () {
+      const lang = this.language;
+      this.section1Title = infoContent.section1.title[lang];
+      this.section1Content = infoContent.section1.content[lang];
+      
+      this.section2Title = infoContent.section2.title[lang];
+      this.section2Content = infoContent.section2.content[lang];
+      
+      this.section3Title = infoContent.section3.title[lang];
+      this.section3Content = infoContent.section3.content[lang];
+      
+      this.section4Title = infoContent.section4.title[lang];
+      this.section4Content = infoContent.section4.content[lang];
+      
+      this.section5Title = infoContent.section5.title[lang];
+      this.section5Content = infoContent.section5.content[lang];
+      
+      this.section6Title = infoContent.section6.title[lang];
+      this.section6Content = infoContent.section6.content[lang];
+
+      this.section7Title = infoContent.section7.title[lang];
+      this.section7Content = infoContent.section7.content[lang];
+      
+      this.ChomskyHierarchyImg = lang === 'DE' 
+        ? require('../assets/images/Chomsky-Hierarchie-deutsch.drawio.svg')
+        : require('../assets/images/Chomsky-Hierarchie-english.drawio.svg');
+    }
   }
 }
 
 </script>
 
 <style scoped>
+.info-section-2, 
+.info-section-3,
+.info-section-4,
+.info-section-5,
+.info-section-6,
+.info-section-7 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.info-section-2 .multiline-text,
+.info-section-3 .multiline-text,
+.info-section-4 .multiline-text,
+.info-section-5 .multiline-text,
+.info-section-6 .multiline-text,
+.info-section-7 .multiline-text {
+  width: fit-content;
+  max-width: 800px;
+  text-align: left;
+  margin: 0 auto;
+}
+/* Add margin below headings */
+.info-section-2 .h-2,
+.info-section-3 .h-3,
+.info-section-4 .h-4,
+.info-section-5 .h-5,
+.info-section-6 .h-6,
+.info-section-7 .h-7 {
+  margin-bottom: 1.5rem; /* Adjust this value as needed */
+}
+
+.info-section-1 .content-wrapper {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start; 
+}
+.info-section-1 .section-image {
+  width: 300px;
+  height: auto;
+  flex-shrink: 0; 
+}
+.info-section-1 .text-content {
+  display: flex;
+  flex-direction: column;
+}
+#ChomskyierarchyImg {
+  filter: invert(1); /* Turns white → black */
+}
+.multiline-text {
+  white-space: pre-line;
+  text-align: left;
+}
+
 #info-wrapper {
   width: 100%;
   background-color: var(--lmu-light-gray);
 }
 .info-section {
   padding: 50px;
-  height: 400px;
 }
 
 .info-section-1 {
@@ -170,32 +287,31 @@ export default {
 }
 
 .wave-5 {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-    transform: rotate(180deg);
-    background-color: var(--lmu-gray);
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  background-color: var(--lmu-gray);
+  margin-top: -1px; 
 }
-
 .wave-5 svg {
-    position: relative;
-    display: block;
-    width: calc(100% + 1.3px);
-    height: 45px;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 45px;
+  position: relative;
+  transform: rotate(180deg);
+  top: -1px;
 }
 
 .wave-5 .shape-fill {
     fill: #00883A;
-}
+} 
 
 .h-2, .p-2, .h-3, .p-3, .h-5, .p-5, .h-6, .p-6 {
   color: var(--lmu-light-gray);
 }
 
-.h-1, .p-1, .h-4, .p-4 {
+.h-1, .p-1, .h-4, .p-4, .h-7, .p-7 {
   color: var(--lmu-gray);
 }
 
