@@ -92,7 +92,7 @@ export default {
       section6Title: infoContent.section6.title.EN,
       section6Content: infoContent.section6.content.EN,
       section7Title: infoContent.section7.title.EN,
-      section7Content: infoContent.section7.content.EN,
+      section7Content: infoContent.section7.content.EN
     }
   },
   props: {
@@ -100,36 +100,36 @@ export default {
   },
   watch: {
     language () {
-      this.onLanguageChange ()
+      this.onLanguageChange()
     }
   },
   methods: {
     onLanguageChange () {
-      const lang = this.language;
-      this.section1Title = infoContent.section1.title[lang];
-      this.section1Content = infoContent.section1.content[lang];
-      
-      this.section2Title = infoContent.section2.title[lang];
-      this.section2Content = infoContent.section2.content[lang];
-      
-      this.section3Title = infoContent.section3.title[lang];
-      this.section3Content = infoContent.section3.content[lang];
-      
-      this.section4Title = infoContent.section4.title[lang];
-      this.section4Content = infoContent.section4.content[lang];
-      
-      this.section5Title = infoContent.section5.title[lang];
-      this.section5Content = infoContent.section5.content[lang];
-      
-      this.section6Title = infoContent.section6.title[lang];
-      this.section6Content = infoContent.section6.content[lang];
+      const lang = this.language
+      this.section1Title = infoContent.section1.title[lang]
+      this.section1Content = infoContent.section1.content[lang]
 
-      this.section7Title = infoContent.section7.title[lang];
-      this.section7Content = infoContent.section7.content[lang];
-      
-      this.ChomskyHierarchyImg = lang === 'DE' 
+      this.section2Title = infoContent.section2.title[lang]
+      this.section2Content = infoContent.section2.content[lang]
+
+      this.section3Title = infoContent.section3.title[lang]
+      this.section3Content = infoContent.section3.content[lang]
+
+      this.section4Title = infoContent.section4.title[lang]
+      this.section4Content = infoContent.section4.content[lang]
+
+      this.section5Title = infoContent.section5.title[lang]
+      this.section5Content = infoContent.section5.content[lang]
+
+      this.section6Title = infoContent.section6.title[lang]
+      this.section6Content = infoContent.section6.content[lang]
+
+      this.section7Title = infoContent.section7.title[lang]
+      this.section7Content = infoContent.section7.content[lang]
+
+      this.ChomskyHierarchyImg = lang === 'DE'
         ? require('../assets/images/Chomsky-Hierarchie-deutsch.drawio.svg')
-        : require('../assets/images/Chomsky-Hierarchie-english.drawio.svg');
+        : require('../assets/images/Chomsky-Hierarchie-english.drawio.svg')
     }
   }
 }
@@ -137,7 +137,7 @@ export default {
 </script>
 
 <style scoped>
-.info-section-2, 
+.info-section-2,
 .info-section-3,
 .info-section-4,
 .info-section-5,
@@ -171,12 +171,12 @@ export default {
 .info-section-1 .content-wrapper {
   display: flex;
   gap: 2rem;
-  align-items: flex-start; 
+  align-items: flex-start;
 }
 .info-section-1 .section-image {
   width: 300px;
   height: auto;
-  flex-shrink: 0; 
+  flex-shrink: 0;
 }
 .info-section-1 .text-content {
   display: flex;
@@ -292,7 +292,7 @@ export default {
   overflow: hidden;
   line-height: 0;
   background-color: var(--lmu-gray);
-  margin-top: -1px; 
+  margin-top: -1px;
 }
 .wave-5 svg {
   display: block;
@@ -305,7 +305,7 @@ export default {
 
 .wave-5 .shape-fill {
     fill: #00883A;
-} 
+}
 
 .h-2, .p-2, .h-3, .p-3, .h-5, .p-5, .h-6, .p-6 {
   color: var(--lmu-light-gray);

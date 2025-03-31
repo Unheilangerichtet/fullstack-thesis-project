@@ -31,13 +31,13 @@
 
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-1"></circle></svg>
       <div>{{ legendTxt3 }}</div>
-      
+
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-2"></circle></svg>
       <div>{{ legendTxt4 }}</div>
-      
+
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-3"></circle></svg>
       <div>{{ legendTxt5 }}</div>
-      
+
       <svg class="legend-svg"><circle cx="15" cy="15" r="10" id="circle-4"></circle></svg>
       <div>{{ legendTxt6 }}</div>
     </div>
@@ -86,21 +86,21 @@ export default {
     onlanguageChange () {
       switch (this.language) {
         case 'DE':
-          this.legendTxt1 = 'optimaler Pfad';
-          this.legendTxt2 = 'alternativer Pfad';
-          this.legendTxt3 = 'Knoten mit Kindern';
-          this.legendTxt4 = 'Knoten mit eingeklappten Kindern';
-          this.legendTxt5 = 'Knoten ohne Kinder';
-          this.legendTxt6 = 'gesuchtes Wort';
-          break;
+          this.legendTxt1 = 'optimaler Pfad'
+          this.legendTxt2 = 'alternativer Pfad'
+          this.legendTxt3 = 'Knoten mit Kindern'
+          this.legendTxt4 = 'Knoten mit eingeklappten Kindern'
+          this.legendTxt5 = 'Knoten ohne Kinder'
+          this.legendTxt6 = 'gesuchtes Wort'
+          break
         case 'EN':
-          this.legendTxt1 = 'optimal path';
-          this.legendTxt2 = 'alternative path';
-          this.legendTxt3 = 'nodes with children';
-          this.legendTxt4 = 'nodes with collapsed children';
-          this.legendTxt5 = 'nodes without children';
-          this.legendTxt6 = 'searched word';
-          break;
+          this.legendTxt1 = 'optimal path'
+          this.legendTxt2 = 'alternative path'
+          this.legendTxt3 = 'nodes with children'
+          this.legendTxt4 = 'nodes with collapsed children'
+          this.legendTxt5 = 'nodes without children'
+          this.legendTxt6 = 'searched word'
+          break
       }
     },
     handleExerciseData (exerciseData) {

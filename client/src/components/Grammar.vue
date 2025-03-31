@@ -226,22 +226,22 @@ export default {
           this.wordValue = 'ababa'
           break
         case 7: // Binary numbers divisible by 3 (verified CFG)
-          this.startsymbolValue = 'S';
-          this.alphabetValue = '0,1';
-          this.variablesValue = 'S,A,B'; // S=0mod3, A=1mod3, B=2mod3
+          this.startsymbolValue = 'S'
+          this.alphabetValue = '0,1'
+          this.variablesValue = 'S,A,B' // S=0mod3, A=1mod3, B=2mod3
           this.productionsValue = [
             // Modulo-tracking rules
-            'S->0S',  // 0mod3 + '0' → (0*2 + 0)%3 = 0mod3
-            'S->1A',  // 0mod3 + '1' → (0*2 + 1)%3 = 1mod3
-            'A->0B',  // 1mod3 + '0' → (1*2 + 0)%3 = 2mod3
-            'A->1S',  // 1mod3 + '1' → (1*2 + 1)%3 = 0mod3
-            'B->0A',  // 2mod3 + '0' → (2*2 + 0)%3 = 1mod3
-            'B->1B',  // 2mod3 + '1' → (2*2 + 1)%3 = 2mod3
+            'S->0S', // 0mod3 + '0' → (0*2 + 0)%3 = 0mod3
+            'S->1A', // 0mod3 + '1' → (0*2 + 1)%3 = 1mod3
+            'A->0B', // 1mod3 + '0' → (1*2 + 0)%3 = 2mod3
+            'A->1S', // 1mod3 + '1' → (1*2 + 1)%3 = 0mod3
+            'B->0A', // 2mod3 + '0' → (2*2 + 0)%3 = 1mod3
+            'B->1B', // 2mod3 + '1' → (2*2 + 1)%3 = 2mod3
             // Terminals (only allowed from S=0mod3)
-            'S->0'    // Accept "0" (0 is divisible by 3)
-          ].join(',');
-          this.wordValue = '110'; // Test case: 6 (divisible by 3)
-          break;
+            'S->0' // Accept "0" (0 is divisible by 3)
+          ].join(',')
+          this.wordValue = '110' // Test case: 6 (divisible by 3)
+          break
         case 8:
           // Palindromes over {a,b}
           this.startsymbolValue = 'S'

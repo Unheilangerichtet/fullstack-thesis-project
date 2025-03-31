@@ -81,7 +81,7 @@
         :gameState="gameState.findPathEasy"
       />
       <div class="grid-item tutorial-button-box">
-        <router-link 
+        <router-link
           :to="{ path: '/info', hash: '#info-section-7' }"
           custom
           v-slot="{ navigate }"
