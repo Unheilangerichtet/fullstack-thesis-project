@@ -61,26 +61,16 @@ export default {
     sendExerciseInput () {
       let depth = this.currentExerciseDepth
       if (!this.gameState) {
-        this.$refs.popup.createOneBtnPopup(
-          'There is no active Game running',
-          'OK'
-        )
+        this.showNoActiveGamePopup()
       } else if (this.isInputCorrect()) {
         this.$emit('correct-input', 1)
         this.exerciseInput = ''
         ++this.currentExerciseDepth
         if (this.nodeNamesByDepth[depth].includes(this.wordValue)) {
-          this.$refs.popup.createOneBtnPopup(
-            `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
-            'OK'
-          )
+          this.showCongratulationsPopup()
         }
       } else {
-        this.$refs.popup.createTwoBtnPopup(
-          `Your Input was wrong! Try Again or Skip to the next Layer`,
-          'Try Again',
-          'Skip'
-        )
+        this.showWrongInputPopup()
       }
     },
     isInputCorrect () {
@@ -100,10 +90,7 @@ export default {
       this.exerciseInput = ''
       ++this.currentExerciseDepth
       if (!this.nodeNamesByDepth[this.currentExerciseDepth]) {
-        this.$refs.popup.createOneBtnPopup(
-          `Congratulations, you found the path to '${this.wordValue}'!`,
-          'OK'
-        )
+        this.showPathFoundPopup()
         this.resetGameState()
       }
       this.$emit('correct-input', 1)
@@ -125,6 +112,60 @@ export default {
           break
         default:
           console.log('unknown language!')
+      }
+    },
+    showNoActiveGamePopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createOneBtnPopup(
+          'Es gibt kein aktives Spiel',
+          'OK'
+        )
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          'There is no active Game running',
+          'OK'
+        )
+      }
+    },
+    showCongratulationsPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createOneBtnPopup(
+          `Glückwunsch, Sie haben die Grammatik vollständig erkundet und das Wort '${this.wordValue}' gefunden!`,
+          'OK'
+        )
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          `Congratulations, you fully explored the grammar until finding the word '${this.wordValue}'!`,
+          'OK'
+        )
+      }
+    },
+    showWrongInputPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createTwoBtnPopup(
+          'Ihre Eingabe war falsch! Versuchen Sie es erneut oder überspringen Sie zur nächsten Schicht',
+          'Nochmal versuchen',
+          'Überspringen'
+        )
+      } else {
+        this.$refs.popup.createTwoBtnPopup(
+          'Your Input was wrong! Try Again or Skip to the next Layer',
+          'Try Again',
+          'Skip'
+        )
+      }
+    },
+    showPathFoundPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createOneBtnPopup(
+          `Glückwunsch, Sie haben den Pfad zu '${this.wordValue}' gefunden!`,
+          'OK'
+        )
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          `Congratulations, you found the path to '${this.wordValue}'!`,
+          'OK'
+        )
       }
     },
     hasDuplicateSuffix (name) {

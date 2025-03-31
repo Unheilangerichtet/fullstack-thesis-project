@@ -11,7 +11,7 @@
         ></textarea>
         <div class="send-input-button-box">
           <button class="send-input-button" @click="sendExerciseInput()">
-            {{ inputBtnTet }}
+            {{ inputBtnTxt }}
           </button>
         </div>
     </div>
@@ -32,12 +32,11 @@ export default {
   data () {
     return {
       inputHeading: 'WRITE NEXT WORD',
-      inputBtnTet: 'SEND INPUT',
+      inputBtnTxt: 'SEND INPUT',
       isExerciseModeValid: false,
       exerciseInput: '',
       currentExerciseDepth: 1,
-      placeholderTxt: `Enter the next word on the path to the searched word`,
-      placeholderTxtGerman: `Gib das nächste Wort auf dem Weg zum gesuchten Wort ein`
+      placeholderTxt: 'Enter the next word on the path to the searched word'
     }
   },
   props: {
@@ -67,33 +66,19 @@ export default {
     },
     sendExerciseInput () {
       if (!this.gameState) {
-        this.$refs.popup.createOneBtnPopup(
-          'There is no active Game running',
-          'OK'
-        )
+        this.showNoActiveGamePopup()
       } else if (this.isInputCorrect()) {
         this.$emit('correct-input', 1)
         if (this.exerciseInput === this.wordValue) {
-          this.$refs.popup.createOneBtnPopup(
-            `Congratulations, you found the path to '${this.wordValue}'!`,
-            'OK'
-          )
+          this.showPathFoundPopup()
         } else {
           ++this.currentExerciseDepth
           this.exerciseInput = ''
         }
       } else if (this.isSelectionNotOptimal()) {
-        this.$refs.popup.createTwoBtnPopup(
-          `Your Input was wrong! \n '${this.exerciseInput}' is not on an optimal Path to '${this.wordValue}'`,
-          'Try Again',
-          'Skip'
-        )
+        this.showNotOptimalPathPopup()
       } else {
-        this.$refs.popup.createTwoBtnPopup(
-          'Your Input was wrong!',
-          'Try Again',
-          'Skip'
-        )
+        this.showWrongInputPopup()
       }
     },
     isInputCorrect () {
@@ -101,10 +86,8 @@ export default {
         return true
       }
       for (const optAltPath of this.optimalAlternativePaths) {
-        console.log()
         if (optAltPath[this.currentExerciseDepth] !== undefined) {
           const baseName = this.getBaseName(optAltPath[this.currentExerciseDepth])
-          console.log(this.exerciseInput, baseName)
           if (this.exerciseInput === baseName) {
             return true
           }
@@ -140,10 +123,7 @@ export default {
       this.exerciseInput = ''
       ++this.currentExerciseDepth
       if (!this.pathToWord[this.currentExerciseDepth]) {
-        this.$refs.popup.createOneBtnPopup(
-          `Congratulations, you found the path to '${this.wordValue}'!`,
-          'OK'
-        )
+        this.showPathFoundPopup()
         this.resetGameState()
       }
       this.$emit('correct-input', 1)
@@ -165,6 +145,62 @@ export default {
           break
         default:
           console.log('unknown language!')
+      }
+    },
+    showNoActiveGamePopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createOneBtnPopup(
+          'Es gibt kein aktives Spiel',
+          'OK'
+        )
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          'There is no active Game running',
+          'OK'
+        )
+      }
+    },
+    showPathFoundPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createOneBtnPopup(
+          `Glückwunsch, Sie haben den Pfad zu '${this.wordValue}' gefunden!`,
+          'OK'
+        )
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          `Congratulations, you found the path to '${this.wordValue}'!`,
+          'OK'
+        )
+      }
+    },
+    showNotOptimalPathPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createTwoBtnPopup(
+          `Ihre Eingabe war falsch! \n '${this.exerciseInput}' ist nicht auf einem optimalen Pfad zu '${this.wordValue}'`,
+          'Nochmal versuchen',
+          'Überspringen'
+        )
+      } else {
+        this.$refs.popup.createTwoBtnPopup(
+          `Your Input was wrong! \n '${this.exerciseInput}' is not on an optimal Path to '${this.wordValue}'`,
+          'Try Again',
+          'Skip'
+        )
+      }
+    },
+    showWrongInputPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createTwoBtnPopup(
+          'Ihre Eingabe war falsch!',
+          'Nochmal versuchen',
+          'Überspringen'
+        )
+      } else {
+        this.$refs.popup.createTwoBtnPopup(
+          'Your Input was wrong!',
+          'Try Again',
+          'Skip'
+        )
       }
     }
   }

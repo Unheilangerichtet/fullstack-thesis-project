@@ -77,34 +77,20 @@ export default {
     },
     start () {
       if (!this.gameState) {
-        this.$refs.popup.createOneBtnPopup(
-          'There is no active Game running',
-          'OK'
-        )
+        this.showNoActiveGamePopup()
       } else if (this.isInputCorrect()) {
         this.$emit('correct-input', 1)
         if (this.selectedButton === this.wordValue) {
-          this.$refs.popup.createOneBtnPopup(
-            `Congratulations, you found the path to '${this.wordValue}'!`,
-            'OK'
-          )
+          this.showPathFoundPopup()
         } else {
           this.selectedButton = ''
           this.currentExercisedepth++
           this.generateButtons()
         }
       } else if (this.isSelectionNotOptimal()) {
-        this.$refs.popup.createTwoBtnPopup(
-          `Your Input was wrong! \n '${this.selectedButton}' is not on an optimal Path to '${this.wordValue}'`,
-          'Try Again',
-          'Skip'
-        )
+        this.showNotOptimalPathPopup()
       } else {
-        this.$refs.popup.createTwoBtnPopup(
-          'Your Input was wrong!',
-          'Try Again',
-          'Skip'
-        )
+        this.showWrongInputPopup()
       }
     },
     handlePopupBtn1 () {
@@ -117,10 +103,7 @@ export default {
       if (this.nodeNamesByDepth[this.currentExercisedepth]) {
         this.generateButtons()
       } else {
-        this.$refs.popup.createOneBtnPopup(
-          `Congratulations, you found the path to the word '${this.wordValue}'!`,
-          'OK'
-        )
+        this.showPathFoundPopup()
         this.resetGameState()
       }
     },
@@ -167,7 +150,62 @@ export default {
           console.log('unknown language!')
       }
     },
-
+    showNoActiveGamePopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createOneBtnPopup(
+          'Es gibt kein aktives Spiel',
+          'OK'
+        )
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          'There is no active Game running',
+          'OK'
+        )
+      }
+    },
+    showPathFoundPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createOneBtnPopup(
+          `Glückwunsch, Sie haben den Pfad zu '${this.wordValue}' gefunden!`,
+          'OK'
+        )
+      } else {
+        this.$refs.popup.createOneBtnPopup(
+          `Congratulations, you found the path to '${this.wordValue}'!`,
+          'OK'
+        )
+      }
+    },
+    showNotOptimalPathPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createTwoBtnPopup(
+          `Ihre Eingabe war falsch! \n '${this.selectedButton}' ist nicht auf einem optimalen Pfad zu '${this.wordValue}'`,
+          'Nochmal versuchen',
+          'Überspringen'
+        )
+      } else {
+        this.$refs.popup.createTwoBtnPopup(
+          `Your Input was wrong! \n '${this.selectedButton}' is not on an optimal Path to '${this.wordValue}'`,
+          'Try Again',
+          'Skip'
+        )
+      }
+    },
+    showWrongInputPopup () {
+      if (this.language === 'DE') {
+        this.$refs.popup.createTwoBtnPopup(
+          'Ihre Eingabe war falsch!',
+          'Nochmal versuchen',
+          'Überspringen'
+        )
+      } else {
+        this.$refs.popup.createTwoBtnPopup(
+          'Your Input was wrong!',
+          'Try Again',
+          'Skip'
+        )
+      }
+    },
     isInputCorrect () {
       if (this.selectedButton === this.pathToWord[this.currentExercisedepth]) {
         return true
@@ -182,7 +220,6 @@ export default {
       }
       return false
     },
-
     isSelectionNotOptimal () {
       for (const notOptAltPath of this.notOptimalAlternativePaths) {
         const baseName = this.getBaseName(notOptAltPath[this.currentExercisedepth])
@@ -192,15 +229,12 @@ export default {
       }
       return false
     },
-
     getBaseName (name) {
       return name.replace(/\s*\(duplicate(\s*\d+)?\)$/, '').trim()
     },
-
     hasDuplicateSuffix (name) {
       return /\(duplicate(\s*\d+)?\)$/.test(name)
     }
-
   }
 }
 </script>
