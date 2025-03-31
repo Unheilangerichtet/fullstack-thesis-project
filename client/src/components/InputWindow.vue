@@ -81,7 +81,15 @@
         :gameState="gameState.findPathEasy"
       />
       <div class="grid-item tutorial-button-box">
-        <button class="tutorial-button">{{ tutorialButtonTxt }}</button>
+        <router-link 
+          :to="{ path: '/info', hash: '#info-section-7' }"
+          custom
+          v-slot="{ navigate }"
+        >
+          <button class="tutorial-button" @click="navigate">
+            {{ tutorialButtonTxt }}
+          </button>
+        </router-link>
       </div>
     </div>
   </div>
@@ -89,7 +97,6 @@
 
 <script>
 import ControlPanel from './ControlPanel.vue'
-// import CalculationService from '../services/CalculationService'
 import InputService from '../services/InputService'
 import ExerciseSelector from './ExerciseSelector.vue'
 import GrammarExplorationEasyInput from './GrammarExplorationEasyInput.vue'
@@ -113,7 +120,7 @@ export default {
     return {
       showExerciseInputBox: true,
       toggleDropdown: false,
-      tutorialButtonTxt: 'TUTORIAL',
+      tutorialButtonTxt: 'GUIDE',
       isExerciseModeValid: false,
       exerciseMode: '',
       exerciseInput: '',
@@ -305,7 +312,6 @@ export default {
       this.grammarValue = [startsymbolValue, alphabetValue, variablesValue, productionsValue]
       this.wordValue = wordValue
       try {
-        // CalculationService.isInputValid(variablesValue, alphabetValue, productionsValue, startsymbolValue, wordValue)
         const result = await InputService.sendInput(productionsValue, startsymbolValue, wordValue)
         const startsymbol = this.$refs.grammarComponent.getStartsymbolValue()
         this.$emit('result-data', result, startsymbol)
