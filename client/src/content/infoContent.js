@@ -91,15 +91,24 @@ export const infoContent = {
     },
     content: {
       DE:
-        `Für 𝘬𝘰𝘯𝘵𝘦𝘹𝘵𝘴𝘦𝘯𝘴𝘪𝘵𝘪𝘷𝘦 𝘚𝘱𝘳𝘢𝘤𝘩𝘦𝘯 ist das Wortproblem 𝘦𝘯𝘵𝘴𝘤𝘩𝘦𝘪𝘥𝘣𝘢𝘳, weil:\n\
-        \u2003 1. Die 𝘕𝘪𝘤𝘩𝘵𝘷𝘦𝘳𝘬𝘭𝘦𝘪𝘯𝘦𝘳𝘶𝘯𝘨𝘴𝘣𝘦𝘥𝘪𝘯𝘨𝘶𝘯𝘨 (|α| ≤ |β|) garantiert, dass Ableitungen höchstens linear in der Länge von 𝐰 wachsen.\n\
-        \u2003 2. Ein 𝘭𝘪𝘯𝘦𝘢𝘳 𝘣𝘦𝘴𝘤𝘩𝘳𝘢𝘯𝘬𝘵𝘦𝘳 𝘈𝘶𝘵𝘰𝘮𝘢𝘵 (LBA) alle möglichen Ableitungspfade in begrenztem Speicher überprüfen kann.\n\
-        \u2003 3. Die Anzahl möglicher Ableitungsschritte ist durch |𝐰| · |𝐆| beschränkt, was einen Algorithmus ermöglicht.`,
+      `Die Regel ∀(u → v) ∈ P: |u| ≤ |v| bedeutet, dass die rechte Seite v einer Produktion nie kürzer als die linke Seite u sein darf.  
+
+      Dadurch kann man einfach überprüfen, ob alle Wörter bis zu einer bestimmten Länge n in der Sprache L gefunden wurden.  
+      Beim Aufzählen der Wörter mit |w| ≤ n (n ∈ ℕ⁺) werden Ableitungen so lange durchgeführt, bis keine neuen Wörter oder Satzformen mit |w| ≤ n mehr entstehen.  
+
+      Da sowohl das Alphabet Σ als auch die Menge der Variablen V endlich sind, gibt es nur endlich viele mögliche Kombinationen von Symbolen aus (Σ ∪ V) mit Länge ≤ n.  
+      Das bedeutet, dass auch die Anzahl der möglichen Satzformen begrenzt ist und sie alle in endlicher Zeit bestimmt werden können.  
+      Man kann also in endlicher Zeit bestimmen, ob ein Wort w in einer Sprache L enthalten ist oder nicht. Somit ist das Wortproblem für kontextsensitive Sprachen entscheidbar.`,
+
       EN:
-        `The word problem is 𝘥𝘦𝘤𝘪𝘥𝘢𝘣𝘭𝘦 for 𝘤𝘰𝘯𝘵𝘦𝘹𝘵-𝘴𝘦𝘯𝘴𝘪𝘵𝘪𝘷𝘦 𝘭𝘢𝘯𝘨𝘶𝘢𝘨𝘦𝘴 because:\n\
-        \u2003 1. The 𝘯𝘰𝘯-𝘴𝘩𝘳𝘪𝘯𝘬𝘪𝘯𝘨 𝘤𝘰𝘯𝘥𝘪𝘵𝘪𝘰𝘯 (|α| ≤ |β|) ensures derivations grow at most linearly with |𝐰|.\n\
-        \u2003 2. A 𝘭𝘪𝘯𝘦𝘢𝘳-𝘣𝘰𝘶𝘯𝘥𝘦𝘥 𝘢𝘶𝘵𝘰𝘮𝘢𝘵𝘰𝘯 (LBA) can check all derivation paths within bounded memory.\n\
-        \u2003 3. The number of possible derivation steps is bounded by |𝐰| · |𝐆|, enabling an algorithm.`
+      `The rule ∀(u → v) ∈ P: |u| ≤ |v| means that the right-hand side v of a production can never be shorter than the left-hand side u.  
+
+      This makes it easy to check whether all words up to a certain length n in the language L have been found.  
+      When listing words with |w| ≤ n (n ∈ ℕ⁺), derivations continue until no new words or sentential forms with |w| ≤ n appear.  
+
+      Since both the alphabet Σ and the set of variables V are finite, there are only a limited number of possible symbol combinations from (Σ ∪ V) with length ≤ n.  
+      This means that the number of possible sentential forms is also limited, and they can all be determined in a finite amount of time.  
+      Consequently, one can decide in finite time whether a word w is part of a language L or not. Thus, the word problem for context-sensitive languages is decidable.`
     }
   },
   section6: {
@@ -111,18 +120,19 @@ export const infoContent = {
       DE:
         `𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗲𝗿𝘀𝗽𝗿𝗮𝗰𝗵𝗲𝗻:\n` +
         ` • 𝐂𝐨𝐦𝐩𝐢𝐥𝐞𝐫-𝐏𝐚𝐫𝐬𝐢𝐧𝐠 (LL/LR-Grammatiken):\n` +
-        `\u2003  Moderne Compiler nutzen kontextfreie Grammatiken für AST-Generierung.\n` +
+        `\u2003  Moderne Compiler nutzen kontextfreie Grammatiken zur Strukturanalyse von Quellcode\n` +
+        `\u2003  und zur Erzeugung eines Abstrakten Syntaxbaums (AST).\n` +
         `\u2003  (Siehe: 𝘞𝘢𝘨𝘦𝘯𝘬𝘯𝘦𝘤𝘩𝘵, 𝘊., 𝘏𝘪𝘦𝘭𝘴𝘤𝘩𝘦, 𝘔.: "𝘍𝘰𝘳𝘮𝘢𝘭𝘦 𝘚𝘱𝘳𝘢𝘤𝘩𝘦𝘯, 𝘢𝘣𝘴𝘵𝘳𝘢𝘬𝘵𝘦 𝘈𝘶𝘵𝘰𝘮𝘢𝘵𝘦𝘯 𝘶𝘯𝘥 𝘊𝘰𝘮𝘱𝘪𝘭𝘦𝘳")\n` +
         `• 𝐒𝐲𝐧𝐭𝐚𝐱𝐡𝐞𝐫𝐯𝐨𝐫𝐡𝐞𝐛𝐮𝐧𝐠:\n` +
         `\u2003  Editoren analysieren Code in Echtzeit mit regulären Ausdrücken für farbliche Markierungen.\n` +
         `\u2003  (Siehe: 𝘍𝘳𝘪𝘦𝘥𝘭, 𝘑. 𝘌. 𝘍.: "𝘔𝘢𝘴𝘵𝘦𝘳𝘪𝘯𝘨 𝘙𝘦𝘨𝘶𝘭𝘢𝘳 𝘌𝘹𝘱𝘳𝘦𝘴𝘴𝘪𝘰𝘯𝘴")\n\n` +
 
         `𝗧𝗲𝘅𝘁𝘃𝗲𝗿𝗮𝗿𝗯𝗲𝗶𝘁𝘂𝗻𝗴:\n` +
-        `• 𝐑𝐞𝐠𝐮𝐥ä𝐫𝐞 𝐀𝐮𝐬𝐝𝐫ü𝐜𝐤𝐞:\n` +
+        `• 𝐑𝐞𝐠𝐮𝐥ä𝐫𝐞 𝐀𝐮𝐬𝐝𝐫ü𝐜𝐤𝐞 (Typ 3 Grammatiken):\n` +
         `\u2003  Ermöglichen komplexe Suchen/Ersetzen in Texten durch Mustererkennung.\n` +
         `\u2003  (Siehe: 𝘍𝘳𝘪𝘦𝘥𝘭, 𝘑. 𝘌. 𝘍.: "𝘔𝘢𝘴𝘵𝘦𝘳𝘪𝘯𝘨 𝘙𝘦𝘨𝘶𝘭𝘢𝘳 𝘌𝘹𝘱𝘳𝘦𝘴𝘴𝘪𝘰𝘯𝘴")\n` +
         `• 𝐗𝐌𝐋/𝐉𝐒𝐎𝐍-𝐕𝐚𝐥𝐢𝐝𝐢𝐞𝐫𝐮𝐧𝐠:\n` +
-        `\u2003  Dokumentenstrukturen werden durch Grammatiken auf Wohlgeformtheit geprüft.\n` +
+        `\u2003  Dokumentenstrukturen werden durch formale Grammatiken auf ihre Korrektheit überprüft.\n` +
         `\u2003  (Siehe: 𝘒𝘢𝘺, 𝘔.: "𝘟𝘚𝘓𝘛 2.0 𝘢𝘯𝘥 𝘟𝘗𝘢𝘵𝘩 2.0")\n\n` +
 
         `𝗕𝗶𝗼𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗸:\n` +
@@ -135,18 +145,19 @@ export const infoContent = {
       EN:
         `𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲𝘀:\n` +
         ` • 𝐂𝐨𝐦𝐩𝐢𝐥𝐞𝐫 𝐏𝐚𝐫𝐬𝐢𝐧𝐠 (LL/LR Grammars):\n` +
-        `\u2003  Modern compilers use context-free grammars for AST generation.\n` +
+        `\u2003  Modern compilers use context-free grammars to analyze source code structure\n` +
+        `\u2003  and to generate an Abstract Syntax Tree (AST).\n` +
         `\u2003  (See: 𝘞𝘢𝘨𝘦𝘯𝘬𝘯𝘦𝘤𝘩𝘵, 𝘊., 𝘏𝘪𝘦𝘭𝘴𝘤𝘩𝘦, 𝘔.: "𝘍𝘰𝘳𝘮𝘢𝘭𝘦 𝘚𝘱𝘳𝘢𝘤𝘩𝘦𝘯, 𝘢𝘣𝘴𝘵𝘳𝘢𝘬𝘵𝘦 𝘈𝘶𝘵𝘰𝘮𝘢𝘵𝘦𝘯 𝘶𝘯𝘥 𝘊𝘰𝘮𝘱𝘪𝘭𝘦𝘳")\n` +
         `• 𝐒𝐲𝐧𝐭𝐚𝐱 𝐇𝐢𝐠𝐡𝐥𝐢𝐠𝐡𝐭𝐢𝐧𝐠:\n` +
         `\u2003  Editors analyze code in real time using regular expressions for color-based highlighting.\n` +
         `\u2003  (See: 𝘍𝘳𝘪𝘦𝘥𝘭, 𝘑. 𝘌. 𝘍.: "𝘔𝘢𝘴𝘵𝘦𝘳𝘪𝘯𝘨 𝘙𝘦𝘨𝘶𝘭𝘢𝘳 𝘌𝘹𝘱𝘳𝘦𝘴𝘴𝘪𝘰𝘯𝘴")\n\n` +
 
         `𝗧𝗲𝘅𝘁 𝗣𝗿𝗼𝗰𝗲𝘀𝘀𝗶𝗻𝗴:\n` +
-        `• 𝐑𝐞𝐠𝐮𝐥𝐚𝐫 𝐄𝐱𝐩𝐫𝐞𝐬𝐬𝐢𝐨𝐧𝐬:\n` +
+        `• 𝐑𝐞𝐠𝐮𝐥𝐚𝐫 𝐄𝐱𝐩𝐫𝐞𝐬𝐬𝐢𝐨𝐧𝐬 (Typ 3 Grammars):\n` +
         `\u2003  Enable complex search/replace operations in text using pattern matching.\n` +
         `\u2003  (See: 𝘍𝘳𝘪𝘦𝘥𝘭, 𝘑. 𝘌. 𝘍.: "𝘔𝘢𝘴𝘵𝘦𝘳𝘪𝘯𝘨 𝘙𝘦𝘨𝘶𝘭𝘢𝘳 𝘌𝘹𝘱𝘳𝘦𝘴𝘴𝘪𝘰𝘯𝘴")\n` +
         `• 𝐗𝐌𝐋/𝐉𝐒𝐎𝐍 𝐕𝐚𝐥𝐢𝐝𝐚𝐭𝐢𝐨𝐧:\n` +
-        `\u2003  Document structures are verified for well-formedness using grammars.\n` +
+        `\u2003  Document structures are verified for correctness using formal grammars.\n` +
         `\u2003  (See: 𝘒𝘢𝘺, 𝘔.: "𝘟𝘚𝘓𝘛 2.0 𝘢𝘯𝘥 𝘟𝘗𝘢𝘵𝘩 2.0")\n\n` +
 
         `𝗕𝗶𝗼𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗰𝘀:\n` +
